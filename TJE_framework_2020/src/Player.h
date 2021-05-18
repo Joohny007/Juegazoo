@@ -9,9 +9,6 @@
 class Player
 {
 public:
-    Player(); //constructor
-    virtual ~Player(); //DESTRUCTOR MASIVO
-
     //some attributes 
     Matrix44 model;
     Mesh* mesh;
@@ -19,5 +16,7 @@ public:
     Shader* shader;
     Vector4 color;
 
+    Player(); //constructor
+    virtual ~Player(); //DESTRUCTOR MASIVO
     void render();
 };
