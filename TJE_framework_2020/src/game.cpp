@@ -6,11 +6,14 @@
 #include "shader.h"
 #include "input.h"
 #include "animation.h"
+#include "Player.h"
 
 #include <cmath>
 
 //some globals
 Mesh* mesh = NULL;
+Mesh* mesh2 = NULL;
+Mesh* mesh3 = NULL;
 Mesh* grass = NULL;
 Texture* texture = NULL;
 Texture* textureMesh = NULL;
@@ -20,6 +23,8 @@ float angle = 0;
 float mouse_speed = 10.0f;
 FBO* fbo = NULL;
 
+bool free_camera;
+Player* player;
 Game* Game::instance = NULL;
 
 Game::Game(int window_width, int window_height, SDL_Window* window)
@@ -35,6 +40,8 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	time = 0.0f;
 	elapsed_time = 0.0f;
 	mouse_locked = false;
+
+	//EntityMesh player;
 
 	//OpenGL flags
 	glEnable( GL_CULL_FACE ); //render both sides of every triangle
@@ -52,8 +59,13 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	// example of loading Mesh from Mesh Manager
 
 	texture = Texture::Get("data/texture.tga");
-	mesh = Mesh::Get("data/GiantGeneralPack/Animals_T/penguin_20.obj");
-	grass = Mesh::Get("data/GiantGeneralPack/Grass_T/grass-long_orange_8.obj");
+	//mesh = Mesh::Get("data/GiantGeneralPack/Animals_T/penguin_20.obj");
+	mesh2 = Mesh::Get("data/GiantGeneralPack/Ice_T/floe-long_3.obj");
+	mesh3 = Mesh::Get("data/GiantGeneralPack/Ice_T/floe-long_3.obj");
+
+	player->mesh->Get("data/GiantGeneralPack/Animals_T/penguin_20.obj");
+
+	//grass = Mesh::Get("data/GiantGeneralPack/Grass_T/grass-long_orange_8.obj");
 	textureMesh = Texture::Get("data/GiantGeneralPack/color-atlas-new.png"); //JOAN CALLATE LA BOCA
 
 	// example of shader loading using the shaders manager
@@ -96,7 +108,9 @@ void Game::render(void)
 
 	//do the draw call
 	mesh->render( GL_TRIANGLES );
-	//grass->render(GL_TRIANGLES);
+	mesh2->render(GL_TRIANGLES);
+	player->render();
+	//mesh3->render(GL_TRIANGLES);
 
 	//disable shader
 	shader->disable();
@@ -125,12 +139,25 @@ void Game::update(double seconds_elapsed)
 		camera->rotate(Input::mouse_delta.y * 0.005f, camera->getLocalVector( Vector3(-1.0f,0.0f,0.0f)));
 	}
 
-	//async input to move the camera around
-	if(Input::isKeyPressed(SDL_SCANCODE_LSHIFT) ) speed *= 10; //move faster with left shift
-	if (Input::isKeyPressed(SDL_SCANCODE_W) || Input::isKeyPressed(SDL_SCANCODE_UP)) camera->move(Vector3(0.0f, 0.0f, 1.0f) * speed);
-	if (Input::isKeyPressed(SDL_SCANCODE_S) || Input::isKeyPressed(SDL_SCANCODE_DOWN)) camera->move(Vector3(0.0f, 0.0f,-1.0f) * speed);
-	if (Input::isKeyPressed(SDL_SCANCODE_A) || Input::isKeyPressed(SDL_SCANCODE_LEFT)) camera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
-	if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) camera->move(Vector3(-1.0f,0.0f, 0.0f) * speed);
+	if (free_camera) {
+		//async input to move the camera around
+		if(Input::isKeyPressed(SDL_SCANCODE_LSHIFT) ) speed *= 10; //move faster with left shift
+		if (Input::isKeyPressed(SDL_SCANCODE_W) || Input::isKeyPressed(SDL_SCANCODE_UP)) camera->move(Vector3(0.0f, 0.0f, 1.0f) * speed);
+		if (Input::isKeyPressed(SDL_SCANCODE_S) || Input::isKeyPressed(SDL_SCANCODE_DOWN)) camera->move(Vector3(0.0f, 0.0f,-1.0f) * speed);
+		if (Input::isKeyPressed(SDL_SCANCODE_A) || Input::isKeyPressed(SDL_SCANCODE_LEFT)) camera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
+		if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) camera->move(Vector3(-1.0f,0.0f, 0.0f) * speed);
+	}
+	else {
+		if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT)) speed *= 10; //move faster with left shift
+		if (Input::isKeyPressed(SDL_SCANCODE_W) || Input::isKeyPressed(SDL_SCANCODE_UP)) player->model.translate(0.0f, 0.0f, 1.0f * speed);
+		if (Input::isKeyPressed(SDL_SCANCODE_S) || Input::isKeyPressed(SDL_SCANCODE_DOWN)) player->model.translate(0.0f, 0.0f, -1.0f * speed);
+		if (Input::isKeyPressed(SDL_SCANCODE_A) || Input::isKeyPressed(SDL_SCANCODE_LEFT)) player->model.translate(1.0f, 0.0f, 0.0f * speed);
+		if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) player->model.translate(-1.0f, 0.0f, 0.0f * speed);
+	}
+
+	if (Input::wasKeyPressed(SDL_SCANCODE_TAB)) {
+		free_camera != !free_camera;
+	}
 
 	//to navigate with the mouse fixed in the middle
 	if (mouse_locked)
