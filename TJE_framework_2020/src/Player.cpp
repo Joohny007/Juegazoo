@@ -9,17 +9,20 @@ Player::Player(int x)
 	
 }
 
-void Player::render()
+void Player::inicialize()
 {
-	//get the last camera that was activated
-	Camera* camera = Camera::current;
-	Matrix44 model = this->model;
-
 	//enable shader and pass uniforms
 	this->mesh = Mesh::Get("data/GiantGeneralPack/Animals_T/penguin_20.obj");
 	this->texture = Texture::Get("data/GiantGeneralPack/color-atlas-new.png"); //JOAN CALLATE LA BOCA
 	// example of shader loading using the shaders manager
 	this->shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+}
+
+void Player::render()
+{
+	//get the last camera that was activated
+	Camera* camera = Camera::current;
+	Matrix44 model = this->model;
 
 	//enable shader and pass uniforms
 	shader->enable();

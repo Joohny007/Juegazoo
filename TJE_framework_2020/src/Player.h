@@ -19,5 +19,6 @@ public:
     Vector4 color;
 
     Player(int x); //constructor
+    void inicialize();
     void render();
 };

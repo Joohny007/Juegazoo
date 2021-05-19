@@ -23,7 +23,7 @@ float angle = 0;
 float mouse_speed = 10.0f;
 FBO* fbo = NULL;
 
-bool free_camera;
+bool free_camera = true;
 Player player(2);
 Game* Game::instance = NULL;
 
@@ -63,7 +63,7 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	mesh2 = Mesh::Get("data/GiantGeneralPack/Ice_T/floe-long_3.obj");
 	mesh3 = Mesh::Get("data/GiantGeneralPack/Ice_T/floe-long_3.obj");
 
-	//player->mesh = Mesh::Get("data/GiantGeneralPack/Animals_T/penguin_20.obj");
+	player.inicialize();
 
 	//grass = Mesh::Get("data/GiantGeneralPack/Grass_T/grass-long_orange_8.obj");
 	textureMesh = Texture::Get("data/GiantGeneralPack/color-atlas-new.png"); //JOAN CALLATE LA BOCA
@@ -151,12 +151,12 @@ void Game::update(double seconds_elapsed)
 		if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT)) speed *= 10; //move faster with left shift
 		if (Input::isKeyPressed(SDL_SCANCODE_W) || Input::isKeyPressed(SDL_SCANCODE_UP)) player.model.translate(0.0f, 0.0f, 1.0f * speed);
 		if (Input::isKeyPressed(SDL_SCANCODE_S) || Input::isKeyPressed(SDL_SCANCODE_DOWN)) player.model.translate(0.0f, 0.0f, -1.0f * speed);
-		if (Input::isKeyPressed(SDL_SCANCODE_A) || Input::isKeyPressed(SDL_SCANCODE_LEFT)) player.model.translate(1.0f, 0.0f, 0.0f * speed);
-		if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) player.model.translate(-1.0f, 0.0f, 0.0f * speed);
+		if (Input::isKeyPressed(SDL_SCANCODE_A) || Input::isKeyPressed(SDL_SCANCODE_LEFT)) player.model.translate(1.0f * speed, 0.0f, 0.0f);
+		if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) player.model.translate(-1.0f * speed, 0.0f, 0.0f);
 	}
 
 	if (Input::wasKeyPressed(SDL_SCANCODE_TAB)) {
-		free_camera != !free_camera;
+		free_camera = !free_camera;
 	}
 
 	//to navigate with the mouse fixed in the middle
