@@ -9,6 +9,13 @@ public:
     virtual ~Entity(); //DESTRUCTOR MASIVO
 
     //some attributes 
+    enum {
+        PLAYER,
+        ICE,
+        PENGUIN,
+        BOAT
+    } type; 
+
     std::string name;
     Matrix44 model;
 

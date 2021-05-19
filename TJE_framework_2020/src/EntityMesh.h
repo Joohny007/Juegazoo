@@ -8,6 +8,7 @@
 class EntityMesh : public Entity
 {
 public:
+
     //Attributes of this class 
     Mesh* mesh;
     Texture* texture;

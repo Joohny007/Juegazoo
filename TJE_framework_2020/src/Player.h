@@ -10,7 +10,7 @@ class Player
 {
 public:
     Player(); //constructor
-    virtual ~Player(); //DESTRUCTOR MASIVO
+    //virtual ~Player(); //DESTRUCTOR MASIVO
 
     //some attributes 
     Matrix44 model;
