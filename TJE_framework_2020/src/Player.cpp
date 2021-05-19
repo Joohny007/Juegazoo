@@ -2,7 +2,8 @@
 
 Player::Player()
 {
-	this->model.setIdentity();
+	//this->model.setIdentity();
+	mesh = NULL;
 }
 
 void Player::render()

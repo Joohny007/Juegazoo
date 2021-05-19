@@ -24,7 +24,7 @@ float mouse_speed = 10.0f;
 FBO* fbo = NULL;
 
 bool free_camera;
-Player* player;
+Player* player = NULL;
 Game* Game::instance = NULL;
 
 Game::Game(int window_width, int window_height, SDL_Window* window)
@@ -63,7 +63,11 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	mesh2 = Mesh::Get("data/GiantGeneralPack/Ice_T/floe-long_3.obj");
 	mesh3 = Mesh::Get("data/GiantGeneralPack/Ice_T/floe-long_3.obj");
 
+<<<<<<< HEAD
 	
+=======
+	player->mesh = Mesh::Get("data/GiantGeneralPack/Animals_T/penguin_20.obj");
+>>>>>>> 5893b91b443e923a025487510e1eb3f8e2502fda
 
 	//grass = Mesh::Get("data/GiantGeneralPack/Grass_T/grass-long_orange_8.obj");
 	textureMesh = Texture::Get("data/GiantGeneralPack/color-atlas-new.png"); //JOAN CALLATE LA BOCA
@@ -107,7 +111,7 @@ void Game::render(void)
 	shader->setUniform("u_time", time);
 
 	//do the draw call
-	mesh->render( GL_TRIANGLES );
+	//mesh->render( GL_TRIANGLES );
 	mesh2->render(GL_TRIANGLES);
 	player->render();
 	//mesh3->render(GL_TRIANGLES);
