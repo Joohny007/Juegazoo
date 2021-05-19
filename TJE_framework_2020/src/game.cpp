@@ -24,7 +24,7 @@ float mouse_speed = 10.0f;
 FBO* fbo = NULL;
 
 bool free_camera;
-Player* player = NULL;
+Player player(2);
 Game* Game::instance = NULL;
 
 Game::Game(int window_width, int window_height, SDL_Window* window)
@@ -63,11 +63,7 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	mesh2 = Mesh::Get("data/GiantGeneralPack/Ice_T/floe-long_3.obj");
 	mesh3 = Mesh::Get("data/GiantGeneralPack/Ice_T/floe-long_3.obj");
 
-<<<<<<< HEAD
-	
-=======
-	player->mesh = Mesh::Get("data/GiantGeneralPack/Animals_T/penguin_20.obj");
->>>>>>> 5893b91b443e923a025487510e1eb3f8e2502fda
+	//player->mesh = Mesh::Get("data/GiantGeneralPack/Animals_T/penguin_20.obj");
 
 	//grass = Mesh::Get("data/GiantGeneralPack/Grass_T/grass-long_orange_8.obj");
 	textureMesh = Texture::Get("data/GiantGeneralPack/color-atlas-new.png"); //JOAN CALLATE LA BOCA
@@ -113,7 +109,7 @@ void Game::render(void)
 	//do the draw call
 	//mesh->render( GL_TRIANGLES );
 	mesh2->render(GL_TRIANGLES);
-	player->render();
+	player.render();
 	//mesh3->render(GL_TRIANGLES);
 
 	//disable shader
@@ -153,10 +149,10 @@ void Game::update(double seconds_elapsed)
 	}
 	else {
 		if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT)) speed *= 10; //move faster with left shift
-		if (Input::isKeyPressed(SDL_SCANCODE_W) || Input::isKeyPressed(SDL_SCANCODE_UP)) player->model.translate(0.0f, 0.0f, 1.0f * speed);
-		if (Input::isKeyPressed(SDL_SCANCODE_S) || Input::isKeyPressed(SDL_SCANCODE_DOWN)) player->model.translate(0.0f, 0.0f, -1.0f * speed);
-		if (Input::isKeyPressed(SDL_SCANCODE_A) || Input::isKeyPressed(SDL_SCANCODE_LEFT)) player->model.translate(1.0f, 0.0f, 0.0f * speed);
-		if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) player->model.translate(-1.0f, 0.0f, 0.0f * speed);
+		if (Input::isKeyPressed(SDL_SCANCODE_W) || Input::isKeyPressed(SDL_SCANCODE_UP)) player.model.translate(0.0f, 0.0f, 1.0f * speed);
+		if (Input::isKeyPressed(SDL_SCANCODE_S) || Input::isKeyPressed(SDL_SCANCODE_DOWN)) player.model.translate(0.0f, 0.0f, -1.0f * speed);
+		if (Input::isKeyPressed(SDL_SCANCODE_A) || Input::isKeyPressed(SDL_SCANCODE_LEFT)) player.model.translate(1.0f, 0.0f, 0.0f * speed);
+		if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) player.model.translate(-1.0f, 0.0f, 0.0f * speed);
 	}
 
 	if (Input::wasKeyPressed(SDL_SCANCODE_TAB)) {

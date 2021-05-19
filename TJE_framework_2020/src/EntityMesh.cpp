@@ -6,12 +6,6 @@ void EntityMesh::render()
 	Camera* camera = Camera::current;
 	Matrix44 model = this->model;
 
-	//enable shader and pass uniforms
-	mesh = Mesh::Get("data/GiantGeneralPack/Animals_T/penguin_20.obj");
-	texture = Texture::Get("data/GiantGeneralPack/color-atlas-new.png"); //JOAN CALLATE LA BOCA
-	// example of shader loading using the shaders manager
-	shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
-
 	shader->enable();
 	shader->setUniform("u_model", model);
 	shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
