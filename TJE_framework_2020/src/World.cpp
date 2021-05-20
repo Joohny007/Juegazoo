@@ -32,7 +32,7 @@ void World::inicializeBlocks()
 	for (int id = 0; id < max_blocks; id++) {
 		this->blocks.push_back(Block(id, pos));
 		pos.x += 5;
-		penguins[id].inicialize();
+		blocks[id].inicialize();
 	}
 }
 
