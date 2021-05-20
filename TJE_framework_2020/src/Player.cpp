@@ -31,7 +31,6 @@ void Player::render()
 	shader->setTexture("u_texture", texture->texture_id);
 
 	//render the mesh using the shader
-	mesh = Mesh::Get("data/GiantGeneralPack/Animals_T/penguin_20.obj");
 	mesh->render(GL_TRIANGLES);
 
 	//disable the shader after finishing rendering

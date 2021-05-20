@@ -60,13 +60,13 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 
 	texture = Texture::Get("data/texture.tga");
 	//mesh = Mesh::Get("data/GiantGeneralPack/Animals_T/penguin_20.obj");
-	mesh2 = Mesh::Get("data/GiantGeneralPack/Ice_T/floe-long_3.obj");
+	mesh2 = Mesh::Get("data/bloquePrueba3.obj");
 	mesh3 = Mesh::Get("data/GiantGeneralPack/Ice_T/floe-long_3.obj");
 
 	player.inicialize();
 
 	//grass = Mesh::Get("data/GiantGeneralPack/Grass_T/grass-long_orange_8.obj");
-	textureMesh = Texture::Get("data/GiantGeneralPack/color-atlas-new.png"); //JOAN CALLATE LA BOCA
+	textureMesh = Texture::Get("data/bloquePrueba3_initialShadingGroup_Base_Color.png"); //JOAN CALLATE LA BOCA
 
 	// example of shader loading using the shaders manager
 	shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
