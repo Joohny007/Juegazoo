@@ -5,12 +5,13 @@
 #include "Entity.h"
 #include "camera.h"
 #include "shader.h"
+#include "Player.h"
+#include "Block.h"
+#include "Penguin.h"
 
 class World 
 {
 public:
-	World();
-
 	enum {
 		PLAYER,
 		ICE,
@@ -19,4 +20,16 @@ public:
 	} type;
 
 	std::vector<Entity> entities;
+	std::vector<Block> blocks;
+	std::vector<Penguin> penguins;
+	//Player player;
+	int pingu_counter;
+	int max_penguins;
+	int max_blocks;
+
+	World(int x);
+	void inicializePenguins();
+	void renderPenguins();
+	void inicializeBlocks();
+	void renderBlocks();
 };

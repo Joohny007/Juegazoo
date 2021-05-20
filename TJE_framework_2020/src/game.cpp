@@ -7,6 +7,7 @@
 #include "input.h"
 #include "animation.h"
 #include "Player.h"
+#include "World.h"
 
 #include <cmath>
 
@@ -25,6 +26,7 @@ FBO* fbo = NULL;
 
 bool free_camera = true;
 Player player(2);
+World world(2);
 Game* Game::instance = NULL;
 
 Game::Game(int window_width, int window_height, SDL_Window* window)
@@ -60,13 +62,14 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 
 	texture = Texture::Get("data/texture.tga");
 	//mesh = Mesh::Get("data/GiantGeneralPack/Animals_T/penguin_20.obj");
-	mesh2 = Mesh::Get("data/bloquePrueba3.obj");
-	mesh3 = Mesh::Get("data/GiantGeneralPack/Ice_T/floe-long_3.obj");
+	//mesh2 = Mesh::Get("data/bloquePrueba4.obj");
 
-	player.inicialize();
+	world.inicializePenguins();
+	world.inicializeBlocks();
+	//player.inicialize();
 
 	//grass = Mesh::Get("data/GiantGeneralPack/Grass_T/grass-long_orange_8.obj");
-	textureMesh = Texture::Get("data/bloquePrueba3_initialShadingGroup_Base_Color.png"); //JOAN CALLATE LA BOCA
+	textureMesh = Texture::Get("data/initialShadingGroup_Base_Color3.png"); //JOAN CALLATE LA BOCA
 
 	// example of shader loading using the shaders manager
 	shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
@@ -108,9 +111,10 @@ void Game::render(void)
 
 	//do the draw call
 	//mesh->render( GL_TRIANGLES );
-	mesh2->render(GL_TRIANGLES);
-	player.render();
-	//mesh3->render(GL_TRIANGLES);
+	//mesh2->render(GL_TRIANGLES);
+	//player.render();
+	world.renderPenguins();
+	world.renderBlocks();
 
 	//disable shader
 	shader->disable();
