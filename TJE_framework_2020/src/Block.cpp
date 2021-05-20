@@ -22,6 +22,7 @@ void Block::render()
 	//get the last camera that was activated
 	Camera* camera = Camera::current;
 	Matrix44 model = this->model;
+	
 
 	//enable shader and pass uniforms
 	shader->enable();

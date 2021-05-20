@@ -4,7 +4,7 @@ World::World(int x)
 {
 	this->pingu_counter = 0;
 	this->max_penguins = 15;
-	this->max_blocks = 15;
+	this->max_blocks = 56;
 	//this->player = Player(2);
 }
 
@@ -31,8 +31,12 @@ void World::inicializeBlocks()
 	Vector3 pos = Vector3(1, 0, 0);
 	for (int id = 0; id < max_blocks; id++) {
 		this->blocks.push_back(Block(id, pos));
-		pos.x += 5;
+		pos.x += 6.5;
 		blocks[id].inicialize();
+		if (pos.x == (7*6.5) + 1) {
+			pos.x = 1;
+			pos.z += 4.9;
+		}
 	}
 }
 
