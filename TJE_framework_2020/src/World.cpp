@@ -71,3 +71,9 @@ bool World::isPlayeronaBlock(Vector3 playerpos) {
 	}
 	return false;
 }
+void World::BlockVibration(int block, int dir, float ep){
+	Vector3 trans = blocks[block].model.getTranslation();
+	trans.y += dir*ep*10.0f;
+	blocks[block].model.setTranslation(trans.x,trans.y,trans.z);
+
+}
