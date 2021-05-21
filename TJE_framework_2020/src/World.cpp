@@ -64,10 +64,10 @@ bool World::isPlayeronaBlock(Vector3 playerpos) {
 		Vector3 blockpos = blocks[i].model.getTranslation();
 		/*printf("Blockpos: %f playerpos: %f\n", blockpos.x, playerpos.x);
 		printf("Blockpos: %f playerpos: %f\n", blockpos.z, playerpos.z);*/
-		if (((blockpos.x - 3.25) <= (playerpos.x+1)) && ((playerpos.x+1) <= (blockpos.x + 3.25)) && ((blockpos.z - 2.45) <= (playerpos.z+1)) && ((playerpos.z+1) <= (blockpos.z + 2.45))) { return true; }
-		if (((blockpos.x - 3.25) <= (playerpos.x+1)) && ((playerpos.x+1) <= (blockpos.x + 3.25)) && ((blockpos.z - 2.45) <= (playerpos.z-1)) && ((playerpos.z-1) <= (blockpos.z + 2.45))) { return true; }
-		if (((blockpos.x - 3.25) <= (playerpos.x-1)) && ((playerpos.x-1) <= (blockpos.x + 3.25)) && ((blockpos.z - 2.45) <= (playerpos.z+1)) && ((playerpos.z+1) <= (blockpos.z + 2.45))) { return true; }
-		if (((blockpos.x - 3.25) <= (playerpos.x-1)) && ((playerpos.x-1) <= (blockpos.x + 3.25)) && ((blockpos.z - 2.45) <= (playerpos.z-1)) && ((playerpos.z-1) <= (blockpos.z + 2.45))) { return true; }
+		if (((blockpos.x - 3.25) <= (playerpos.x+.25)) && ((playerpos.x+.25) <= (blockpos.x + 3.25)) && ((blockpos.z - 2.45) <= (playerpos.z+.25)) && ((playerpos.z+1) <= (blockpos.z + 2.45))) { return true; }
+		if (((blockpos.x - 3.25) <= (playerpos.x+.25)) && ((playerpos.x+.25) <= (blockpos.x + 3.25)) && ((blockpos.z - 2.45) <= (playerpos.z-.25)) && ((playerpos.z-1) <= (blockpos.z + 2.45))) { return true; }
+		if (((blockpos.x - 3.25) <= (playerpos.x-.25)) && ((playerpos.x-.25) <= (blockpos.x + 3.25)) && ((blockpos.z - 2.45) <= (playerpos.z+.25)) && ((playerpos.z+1) <= (blockpos.z + 2.45))) { return true; }
+		if (((blockpos.x - 3.25) <= (playerpos.x-.25)) && ((playerpos.x-.25) <= (blockpos.x + 3.25)) && ((blockpos.z - 2.45) <= (playerpos.z-.25)) && ((playerpos.z-1) <= (blockpos.z + 2.45))) { return true; }
 	}
 	return false;
 }
