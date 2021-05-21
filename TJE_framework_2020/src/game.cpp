@@ -184,6 +184,10 @@ void Game::update(double seconds_elapsed)
 
 		Vector3 targetPos = player.pos + playerSpeed;
 		player.pos = targetPos;
+		if (world.isPlayeronaBlock(player.pos) == true) {
+			player.pos.y = 1;
+		}
+		else { player.pos.y = 0;}
 	}
 
 	if (Input::wasKeyPressed(SDL_SCANCODE_TAB)) {

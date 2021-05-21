@@ -34,4 +34,5 @@ public:
 	void renderBlocks();
 	void inicializePlayer();
 	void renderPlayer();
+	bool isPlayeronaBlock(Vector3 playerpos);
 };
