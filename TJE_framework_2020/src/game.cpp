@@ -91,11 +91,10 @@ void Game::render(void)
 	camera->enable();
 
 	player.model.translate(player.pos.x, player.pos.y, player.pos.z);
-	player.model.rotate(player.yaw * DEG2RAD, Vector3(0.0f, 1.0f, 0.0f));
 
 	if (!free_camera) {
-		Vector3 eye = player.model * Vector3(0.0f, 6.0f, 3.5f);
-		Vector3 center = player.model * Vector3(0.0f, 0.0f, -10.0f);
+		Vector3 eye = player.model * Vector3(0.0f, 8.0f, -5.5f);
+		Vector3 center = player.model * Vector3(0.0f, 0.0f, 10.0f);
 		Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
 		camera->lookAt(eye, center, up);
 	}
@@ -174,13 +173,13 @@ void Game::update(double seconds_elapsed)
 
 		Vector3 playerSpeed;
 		if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT)) speed *= 10; //move faster with left shift
-		if (Input::isKeyPressed(SDL_SCANCODE_W)) playerSpeed = playerSpeed + (playerFront * speed);
-		if (Input::isKeyPressed(SDL_SCANCODE_S)) playerSpeed = playerSpeed + (playerFront * -speed);
-		if (Input::isKeyPressed(SDL_SCANCODE_Q)) playerSpeed = playerSpeed + (playerRight * -speed);
-		if (Input::isKeyPressed(SDL_SCANCODE_E)) playerSpeed = playerSpeed + (playerRight * speed);
+		if (Input::isKeyPressed(SDL_SCANCODE_W)) playerSpeed = playerSpeed + (playerFront * -speed);
+		if (Input::isKeyPressed(SDL_SCANCODE_S)) playerSpeed = playerSpeed + (playerFront * speed);
+		if (Input::isKeyPressed(SDL_SCANCODE_A)) playerSpeed = playerSpeed + (playerRight * speed);
+		if (Input::isKeyPressed(SDL_SCANCODE_D)) playerSpeed = playerSpeed + (playerRight * -speed);
 
-		if (Input::isKeyPressed(SDL_SCANCODE_D)) player.yaw += rot_speed;
-		if (Input::isKeyPressed(SDL_SCANCODE_A)) player.yaw -= rot_speed;
+		if (Input::isKeyPressed(SDL_SCANCODE_Q)) player.yaw -= rot_speed;
+		if (Input::isKeyPressed(SDL_SCANCODE_E)) player.yaw += rot_speed;
 
 		Vector3 targetPos = player.pos + playerSpeed;
 		player.pos = targetPos;
@@ -189,6 +188,7 @@ void Game::update(double seconds_elapsed)
 		}
 		else { player.pos.y = 0;}
 	}
+
 
 	if (Input::wasKeyPressed(SDL_SCANCODE_TAB)) {
 		free_camera = !free_camera;
