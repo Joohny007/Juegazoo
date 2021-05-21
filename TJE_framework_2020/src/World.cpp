@@ -5,7 +5,7 @@ World::World(int x)
 	this->pingu_counter = 0;
 	this->max_penguins = 15;
 	this->max_blocks = 56;
-	//this->player = Player(2);
+	this->player = Player();
 }
 
 void World::inicializePenguins()
@@ -45,4 +45,16 @@ void World::renderBlocks()
 	for (int id = 0; id < max_blocks; id++) {
 		this->blocks[id].render();
 	}
+}
+
+void World::inicializePlayer()
+{
+	this->player.inicialize();
+
+}
+
+void World::renderPlayer()
+{
+	this->player.render();
+
 }

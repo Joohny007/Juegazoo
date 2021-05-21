@@ -22,7 +22,7 @@ public:
 	std::vector<Entity> entities;
 	std::vector<Block> blocks;
 	std::vector<Penguin> penguins;
-	//Player player;
+	Player player;
 	int pingu_counter;
 	int max_penguins;
 	int max_blocks;
@@ -32,4 +32,6 @@ public:
 	void renderPenguins();
 	void inicializeBlocks();
 	void renderBlocks();
+	void inicializePlayer();
+	void renderPlayer();
 };

@@ -1,18 +1,28 @@
 #include "Player.h"
 
-Player::Player(int x)
+Player::Player()
 {
 	//this->model.setIdentity();
+	this->speed = 10.0f;
+	this->rot_speed = 120.0f;
+	this->yaw = 3;
+	this->pos = model.getTranslation();
 	this->mesh = NULL;
 	this->shader = NULL;
 	this->texture = NULL;
 	
 }
 
+void Player::setPos(Vector3 pos)
+{
+	this->model.setTranslation(pos.x, pos.y, pos.z);
+	this->pos = pos;
+}
+
 void Player::inicialize()
 {
 	//enable shader and pass uniforms
-	this->mesh = Mesh::Get("data/GiantGeneralPack/Animals_T/penguin_20.obj");
+	this->mesh = Mesh::Get("data/GiantGeneralPack/People_T/man-samurai-black_25.obj");
 	this->texture = Texture::Get("data/GiantGeneralPack/color-atlas-new.png"); //JOAN CALLATE LA BOCA
 	// example of shader loading using the shaders manager
 	this->shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");

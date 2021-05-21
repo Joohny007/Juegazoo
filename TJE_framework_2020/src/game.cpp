@@ -25,8 +25,8 @@ float mouse_speed = 10.0f;
 FBO* fbo = NULL;
 
 bool free_camera = true;
-Player player(2);
 World world(2);
+Player& player = world.player;
 Game* Game::instance = NULL;
 
 Game::Game(int window_width, int window_height, SDL_Window* window)
@@ -60,13 +60,13 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 
 	// example of loading Mesh from Mesh Manager
 
-	texture = Texture::Get("data/texture.tga");
+	//texture = Texture::Get("data/texture.tga");
 	//mesh = Mesh::Get("data/GiantGeneralPack/Animals_T/penguin_20.obj");
 	//mesh2 = Mesh::Get("data/bloquePrueba4.obj");
 
 	world.inicializePenguins();
 	world.inicializeBlocks();
-	//player.inicialize();
+	world.inicializePlayer();
 
 	//grass = Mesh::Get("data/GiantGeneralPack/Grass_T/grass-long_orange_8.obj");
 	textureMesh = Texture::Get("data/initialShadingGroup_Base_Color3.png"); //JOAN CALLATE LA BOCA
@@ -89,6 +89,16 @@ void Game::render(void)
 
 	//set the camera as default
 	camera->enable();
+
+	player.model.translate(player.pos.x, player.pos.y, player.pos.z);
+	player.model.rotate(player.yaw * DEG2RAD, Vector3(0.0f, 1.0f, 0.0f));
+
+	if (!free_camera) {
+		Vector3 eye = player.model * Vector3(0.0f, 6.0f, 3.5f);
+		Vector3 center = player.model * Vector3(0.0f, 0.0f, -10.0f);
+		Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
+		camera->lookAt(eye, center, up);
+	}
 
 	//set flags
 	glDisable(GL_BLEND);
@@ -115,6 +125,7 @@ void Game::render(void)
 	//player.render();
 	world.renderPenguins();
 	world.renderBlocks();
+	world.renderPlayer();
 
 	//disable shader
 	shader->disable();
@@ -152,11 +163,27 @@ void Game::update(double seconds_elapsed)
 		if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) camera->move(Vector3(-1.0f,0.0f, 0.0f) * speed);
 	}
 	else {
+		float speed = player.speed * elapsed_time;
+		float rot_speed = player.rot_speed * elapsed_time;
+		float character_radius = 0.5;
+
+		player.model.setRotation(player.yaw * DEG2RAD, Vector3(0, 1, 0));
+
+		Vector3 playerFront = player.model.rotateVector(Vector3(0.0f, 0.0f, -1.0f));
+		Vector3 playerRight = player.model.rotateVector(Vector3(1.0f, 0.0f, 0.0f));
+
+		Vector3 playerSpeed;
 		if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT)) speed *= 10; //move faster with left shift
-		if (Input::isKeyPressed(SDL_SCANCODE_W) || Input::isKeyPressed(SDL_SCANCODE_UP)) player.model.translate(0.0f, 0.0f, 1.0f * speed);
-		if (Input::isKeyPressed(SDL_SCANCODE_S) || Input::isKeyPressed(SDL_SCANCODE_DOWN)) player.model.translate(0.0f, 0.0f, -1.0f * speed);
-		if (Input::isKeyPressed(SDL_SCANCODE_A) || Input::isKeyPressed(SDL_SCANCODE_LEFT)) player.model.translate(1.0f * speed, 0.0f, 0.0f);
-		if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) player.model.translate(-1.0f * speed, 0.0f, 0.0f);
+		if (Input::isKeyPressed(SDL_SCANCODE_W)) playerSpeed = playerSpeed + (playerFront * speed);
+		if (Input::isKeyPressed(SDL_SCANCODE_S)) playerSpeed = playerSpeed + (playerFront * -speed);
+		if (Input::isKeyPressed(SDL_SCANCODE_Q)) playerSpeed = playerSpeed + (playerRight * -speed);
+		if (Input::isKeyPressed(SDL_SCANCODE_E)) playerSpeed = playerSpeed + (playerRight * speed);
+
+		if (Input::isKeyPressed(SDL_SCANCODE_D)) player.yaw += rot_speed;
+		if (Input::isKeyPressed(SDL_SCANCODE_A)) player.yaw -= rot_speed;
+
+		Vector3 targetPos = player.pos + playerSpeed;
+		player.pos = targetPos;
 	}
 
 	if (Input::wasKeyPressed(SDL_SCANCODE_TAB)) {
