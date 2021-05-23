@@ -40,13 +40,21 @@ void Block::render()
 }
 void Block::vibrate(float et) {
 	Vector3 pos = this->model.getTranslation();
-	if (pos.y >= 1) { this->dir = DOWN; this->vel += 1; }
-	else if (pos.y <= -2) { this->dir = UP; }
-	if (this->dir == DOWN) {
+	if ((this->vel >= 10) && (pos.y >= 1)) {
+		this->vel = 2;
+	}
+	else if (this->vel == 2) {
 		pos.y -= (this->vel) * et;
 	}
-	else if (this->dir == UP) {
-		pos.y += (this->vel) * et;
+	else {
+		if (pos.y >= 1) { this->dir = DOWN; this->vel += 0.2; }
+		else if (pos.y <= -2) { this->dir = UP; }
+		if (this->dir == DOWN) {
+			pos.y -= (this->vel) * et;
+		}
+		else if (this->dir == UP) {
+			pos.y += (this->vel) * et;
+		}
 	}
 	this->model.setTranslation(pos.x, pos.y, pos.z);
 }
