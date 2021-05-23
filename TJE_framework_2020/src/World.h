@@ -26,14 +26,18 @@ public:
 	int pingu_counter;
 	int max_penguins;
 	int max_blocks;
+	Mesh* sky_mesh;
+	Texture* sky_tex;
+	Matrix44 sky_model;
 
 	World(int x);
 	void inicializePenguins();
-	void renderPenguins();
+	void renderPenguins(bool renderBoundings);
 	void inicializeBlocks();
-	void renderBlocks();
+	void renderBlocks(bool renderBoundings);
 	void inicializePlayer();
 	void renderPlayer();
+	void renderSky();
 	bool isPlayeronaBlock(Vector3 playerpos);
 	void BlockVibration(int block, float et);
 };

@@ -27,6 +27,7 @@ FBO* fbo = NULL;
 bool free_camera = true;
 World world(2);
 Player& player = world.player;
+bool renderBoundings;
 Game* Game::instance = NULL;
 
 Game::Game(int window_width, int window_height, SDL_Window* window)
@@ -67,9 +68,10 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	world.inicializePenguins();
 	world.inicializeBlocks();
 	world.inicializePlayer();
+	renderBoundings = true;
 
 	//grass = Mesh::Get("data/GiantGeneralPack/Grass_T/grass-long_orange_8.obj");
-	textureMesh = Texture::Get("data/initialShadingGroup_Base_Color3.png"); //JOAN CALLATE LA BOCA
+	textureMesh = Texture::Get("data/initialShadingGroup_Base_Color3.png");
 
 	// example of shader loading using the shaders manager
 	shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
@@ -90,7 +92,7 @@ void Game::render(void)
 	//set the camera as default
 	camera->enable();
 
-	
+	world.renderSky();
 
 	if (!free_camera) {
 		player.model.translate(player.pos.x, player.pos.y, player.pos.z);
@@ -123,8 +125,8 @@ void Game::render(void)
 	//mesh->render( GL_TRIANGLES );
 	//mesh2->render(GL_TRIANGLES);
 	//player.render();
-	world.renderPenguins();
-	world.renderBlocks();
+	world.renderPenguins(renderBoundings);
+	world.renderBlocks(renderBoundings);
 	world.renderPlayer();
 
 	//disable shader
