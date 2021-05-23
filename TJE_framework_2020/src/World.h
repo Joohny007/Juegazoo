@@ -35,5 +35,5 @@ public:
 	void inicializePlayer();
 	void renderPlayer();
 	bool isPlayeronaBlock(Vector3 playerpos);
-	void BlockVibration(int block, int dir, float ep);
+	void BlockVibration(int block, float et);
 };

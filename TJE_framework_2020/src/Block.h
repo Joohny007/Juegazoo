@@ -17,8 +17,14 @@ public:
     Texture* texture;
     Shader* shader;
     Vector4 color;
+    enum {
+        UP,
+        DOWN
+    } dir;
+    float vel;
 
     Block(int x, Vector3 pos); //constructor
     void inicialize();
     void render();
+    void vibrate(float et);
 };

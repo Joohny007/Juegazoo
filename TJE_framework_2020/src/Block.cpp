@@ -5,6 +5,8 @@ Block::Block(int id, Vector3 pos)
 	//this->model.setIdentity();
 	this->id = id;
 	this->model.setTranslation(pos.x, pos.y, pos.z);
+	this->dir = DOWN;
+	this->vel = 5.0f;
 
 }
 
@@ -35,4 +37,16 @@ void Block::render()
 
 	//disable the shader after finishing rendering
 	shader->disable();
+}
+void Block::vibrate(float et) {
+	Vector3 pos = this->model.getTranslation();
+	if (pos.y >= 1) { this->dir = DOWN; this->vel += 1; }
+	else if (pos.y <= -2) { this->dir = UP; }
+	if (this->dir == DOWN) {
+		pos.y -= (this->vel) * et;
+	}
+	else if (this->dir == UP) {
+		pos.y += (this->vel) * et;
+	}
+	this->model.setTranslation(pos.x, pos.y, pos.z);
 }
