@@ -6,8 +6,6 @@ World::World(int x)
 	this->max_penguins = 15;
 	this->max_blocks = 56;
 	this->player = Player();
-	this->sky_mesh = Mesh::Get("data/cielo.ASE");
-	this->sky_tex = Texture::Get("data/cielo.tga");
 }
 
 void World::inicializePenguins()
@@ -67,25 +65,33 @@ void World::renderPlayer()
 
 }
 
+void World::inicializeSky()
+{
+	this->sky_mesh = Mesh::Get("data/cielo.ASE");
+	this->sky_tex = Texture::Get("data/cielo.tga");
+	this->sky_shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+}
+
 void World::renderSky()
 {
 	//get the last camera that was activated
 	Camera* camera = Camera::current;
-	this->sky_model.translate(camera->eye.x, camera->eye.y, camera->eye.z);
+	Matrix44 model = this->sky_model;
+	model.translate(camera->eye.x, camera->eye.y, camera->eye.z);
 
 	//enable shader and pass uniforms
-	//if (shader) {
-	//	shader->enable();
-	//	shader->setUniform("u_model", sky_model);
-	//	shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
-	//	shader->setTexture("u_texture", sky_tex->texture_id);
-	//}
+
+	sky_shader->enable();
+	sky_shader->setUniform("u_model", model);
+	sky_shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
+	sky_shader->setTexture("u_texture", sky_tex->texture_id);
+
 
 	//render the mesh using the shader
 	sky_mesh->render(GL_TRIANGLES);
 
 	//disable the shader after finishing rendering
-	//shader->disable();
+	sky_shader->disable();
 }
 
 bool World::isPlayeronaBlock(Vector3 playerpos) {

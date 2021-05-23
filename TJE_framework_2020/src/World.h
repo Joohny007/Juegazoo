@@ -29,6 +29,7 @@ public:
 	Mesh* sky_mesh;
 	Texture* sky_tex;
 	Matrix44 sky_model;
+	Shader* sky_shader;
 
 	World(int x);
 	void inicializePenguins();
@@ -37,6 +38,7 @@ public:
 	void renderBlocks(bool renderBoundings);
 	void inicializePlayer();
 	void renderPlayer();
+	void inicializeSky();
 	void renderSky();
 	bool isPlayeronaBlock(Vector3 playerpos);
 	void BlockVibration(int block, float et);
