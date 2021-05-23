@@ -64,7 +64,7 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	//texture = Texture::Get("data/texture.tga");
 	//mesh = Mesh::Get("data/GiantGeneralPack/Animals_T/penguin_20.obj");
 	//mesh2 = Mesh::Get("data/bloquePrueba4.obj");
-
+	world.inicializeSky();
 	world.inicializePenguins();
 	world.inicializeBlocks();
 	world.inicializePlayer();
