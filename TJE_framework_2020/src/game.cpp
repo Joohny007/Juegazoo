@@ -211,7 +211,7 @@ void Game::update(double seconds_elapsed)
 		else if (checker > player.pos.y){ 
 			if (checker+2 - player.pos.y > 1) {
 				float checker2 = world.isPlayeronaBlock(player.pos);
-				if (checker2 == -5) {
+				if (checker2 - player.pos.y > 2) {
 					player.pos.y -= player.speed * elapsed_time;
 				}
 				else {
