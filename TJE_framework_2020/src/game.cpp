@@ -65,6 +65,7 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	//mesh = Mesh::Get("data/GiantGeneralPack/Animals_T/penguin_20.obj");
 	//mesh2 = Mesh::Get("data/bloquePrueba4.obj");
 	world.inicializeSky();
+	world.inicializeSea();
 	world.inicializePenguins();
 	world.inicializeBlocks();
 	world.inicializePlayer();
@@ -93,7 +94,7 @@ void Game::render(void)
 	camera->enable();
 
 	world.renderSky();
-
+	world.renderSea();
 	if (!free_camera) {
 		player.model.translate(player.pos.x, player.pos.y, player.pos.z);
 		Vector3 eye = player.model * Vector3(0.0f, 8.0f, -5.5f);
@@ -183,14 +184,43 @@ void Game::update(double seconds_elapsed)
 
 		if (Input::isKeyPressed(SDL_SCANCODE_Q)) player.yaw -= rot_speed;
 		if (Input::isKeyPressed(SDL_SCANCODE_E)) player.yaw += rot_speed;
-
+		
 		Vector3 targetPos = player.pos + playerSpeed;
-		player.pos = targetPos;
-		if (world.isPlayeronaBlock(player.pos) == true) {
-			player.pos.y = 1;
+		float checker = world.isPlayeronaBlock(targetPos);
+		if ( checker == -5) {
+			targetPos.y -= player.speed * elapsed_time;
+			player.pos = targetPos;
 		}
-		else { player.pos.y = 0;}
-		world.BlockVibration( 1, elapsed_time);
+		else if (checker > player.pos.y){ 
+			if (checker+2 - player.pos.y > 1) {
+				float checker2 = world.isPlayeronaBlock(player.pos);
+				if (checker2 == -5) {
+					player.pos.y -= player.speed * elapsed_time;
+				}
+				else {
+					player.pos.y = checker2 + 2;
+				}
+
+			}
+			else {
+				targetPos.y = checker + 2;
+				player.pos = targetPos;
+			}
+		}
+		else {
+			if (player.pos.y - player.speed * elapsed_time > checker+2) {
+				targetPos.y -= player.speed * elapsed_time;
+				player.pos = targetPos;
+			}
+			else {
+				targetPos.y = checker+2;
+				player.pos = targetPos;
+			}
+		}
+
+		world.BlockVibration(1, elapsed_time);
+		
+		
 	}
 
 

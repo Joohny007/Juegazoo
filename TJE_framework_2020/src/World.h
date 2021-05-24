@@ -30,6 +30,10 @@ public:
 	Texture* sky_tex;
 	Matrix44 sky_model;
 	Shader* sky_shader;
+	Mesh* sea_mesh;
+	Texture* sea_tex;
+	Matrix44 sea_model;
+	Shader* sea_shader;
 
 	World(int x);
 	void inicializePenguins();
@@ -40,6 +44,8 @@ public:
 	void renderPlayer();
 	void inicializeSky();
 	void renderSky();
-	bool isPlayeronaBlock(Vector3 playerpos);
+	void inicializeSea();
+	void renderSea();
+	float isPlayeronaBlock(Vector3 playerpos);
 	void BlockVibration(int block, float et);
 };

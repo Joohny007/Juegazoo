@@ -13,7 +13,7 @@ Block::Block(int id, Vector3 pos)
 void Block::inicialize()
 {
 	//enable shader and pass uniforms
-	this->mesh = Mesh::Get("data/bloquePrueba4.obj");
+	this->mesh = Mesh::Get("data/bloquePrueba5.obj");
 	this->texture = Texture::Get("data/initialShadingGroup_Base_Color3.png");
 	// example of shader loading using the shaders manager
 	this->shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
