@@ -46,3 +46,10 @@ void Player::render()
 	//disable the shader after finishing rendering
 	shader->disable();
 }
+
+bool Player::penguinCollision()
+{
+	/*if (abs(center.x - bullet.center.x) > (width / 2) + (bullet.width / 2)) return false;
+	if (abs(center.y - bullet.center.y) > (height / 2) + (bullet.height / 2)) return false;*/
+	return true;
+}

@@ -26,4 +26,5 @@ public:
     void setPos(Vector3 pos);
     void inicialize();
     void render();
+    bool penguinCollision();
 };

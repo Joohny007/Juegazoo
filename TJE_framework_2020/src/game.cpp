@@ -170,7 +170,7 @@ void Game::update(double seconds_elapsed)
 		float rot_speed = player.rot_speed * elapsed_time;
 		float character_radius = 0.5;
 
-		player.model.setRotation(player.yaw * DEG2RAD, Vector3(1, 0, 0));
+		player.model.setRotation(player.yaw * DEG2RAD, Vector3(0, 1, 0));
 
 		Vector3 playerFront = player.model.rotateVector(Vector3(0.0f, 0.0f, -1.0f));
 		Vector3 playerRight = player.model.rotateVector(Vector3(1.0f, 0.0f, 0.0f));
@@ -186,6 +186,23 @@ void Game::update(double seconds_elapsed)
 		if (Input::isKeyPressed(SDL_SCANCODE_E)) player.yaw += rot_speed;
 		
 		Vector3 targetPos = player.pos + playerSpeed;
+
+		Vector3 characterTargetCenter = targetPos + Vector3(0, 1, 0);
+		for (int i = 0; i < world.penguins.size(); i++) {
+			Penguin* currentPingu = &world.penguins[i];
+
+			Vector3 coll;
+			Vector3 collmore;
+			if (!currentPingu->mesh->testSphereCollision(currentPingu->model, characterTargetCenter, 0.5, coll, collmore)) {
+				continue; //si no hay collision, pasamos a la siguiente iteracion
+			}
+
+			Vector3 push_away = normalize(coll - characterTargetCenter) * elapsed_time;
+			targetPos = player.pos - push_away;
+
+			targetPos.y = player.pos.y;
+		}
+
 		float checker = world.isPlayeronaBlock(targetPos);
 		if ( checker == -5) {
 			targetPos.y -= player.speed * elapsed_time;
