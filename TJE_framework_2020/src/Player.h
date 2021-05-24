@@ -17,6 +17,7 @@ public:
     float yaw;
     Vector3 pos;
     Matrix44 model;
+    Matrix44 rot;
     Mesh* mesh;
     Texture* texture;
     Shader* shader;
