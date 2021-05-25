@@ -24,7 +24,7 @@ float angle = 0;
 float mouse_speed = 10.0f;
 FBO* fbo = NULL;
 
-bool free_camera = true;
+bool free_camera = false;
 World world(2);
 Player& player = world.player;
 bool renderBoundings;
