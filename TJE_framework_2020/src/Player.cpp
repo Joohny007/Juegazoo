@@ -15,7 +15,7 @@ Player::Player()
 
 void Player::setPos(Vector3 pos)
 {
-	this->model.setTranslation(pos.x, pos.y, pos.z);
+	this->model.translate(pos.x, pos.y, pos.z);
 	this->pos = pos;
 }
 

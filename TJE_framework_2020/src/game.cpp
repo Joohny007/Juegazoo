@@ -96,7 +96,7 @@ void Game::render(void)
 	world.renderSky();
 	world.renderSea();
 	if (!free_camera) {
-		player.model.translate(player.pos.x, player.pos.y, player.pos.z);
+		player.model.setTranslation(player.pos.x, player.pos.y, player.pos.z);
 		Vector3 eye = player.model * Vector3(0.0f, 8.0f, -5.5f);
 		Vector3 center = player.model * Vector3(0.0f, 0.0f, 10.0f);
 		Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
@@ -170,10 +170,10 @@ void Game::update(double seconds_elapsed)
 		float rot_speed = player.rot_speed * elapsed_time;
 		float character_radius = 0.5;
 
-		player.rot.setRotation(player.yaw * DEG2RAD, Vector3(0, 1, 0));
+		player.model.rotate(player.yaw * DEG2RAD, Vector3(0, 1, 0));
 
-		Vector3 playerFront = player.rot.rotateVector(Vector3(0.0f, 0.0f, -1.0f));
-		Vector3 playerRight = player.rot.rotateVector(Vector3(1.0f, 0.0f, 0.0f));
+		Vector3 playerFront = player.model.rotateVector(Vector3(0.0f, 0.0f, -1.0f));
+		Vector3 playerRight = player.model.rotateVector(Vector3(1.0f, 0.0f, 0.0f));
 
 		Vector3 playerSpeed;
 		if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT)) speed *= 10; //move faster with left shift

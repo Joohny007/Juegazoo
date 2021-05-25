@@ -3,7 +3,7 @@
 Penguin::Penguin(int id, Vector3 pos)
 {
 	this->id = id;
-	this->model.setTranslation(pos.x, pos.y, pos.z);
+	this->model.translate(pos.x, pos.y, pos.z);
 }
 
 void Penguin::inicialize()
