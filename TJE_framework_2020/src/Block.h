@@ -17,6 +17,7 @@ public:
     Texture* texture;
     Shader* shader;
     Vector4 color;
+    bool fallen;
     enum {
         UP,
         DOWN

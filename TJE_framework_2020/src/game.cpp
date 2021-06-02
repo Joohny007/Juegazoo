@@ -8,11 +8,12 @@
 #include "animation.h"
 #include "Player.h"
 #include "World.h"
-
+#include <iostream>
 #include <cmath>
+#include <chrono>
+#include <ctime>
 
-
-//some globals JOAN PUTO MARICON DE LOS COJONES DEJAME EN PAZ TODO EL PUTO DIA DANDO POR CULO CON EL GITHUB DE LOS COJONES NO PUEDO NI IRME A POR UN DURUM SIN QUE ESTES SOPLANDOME EN LA NUCA PEDAZO MARICA
+//some globals JOAN ERES UNA BELLISIMA PERSONA ESPERO QUE TE VAYA TODO BIEN EN LA VIDA PRECIOSO
 Mesh* mesh = NULL;
 Mesh* mesh2 = NULL;
 Mesh* mesh3 = NULL;
@@ -21,8 +22,11 @@ Texture* texture = NULL;
 Texture* textureMesh = NULL;
 Shader* shader = NULL;
 Animation* anim = NULL;
+float counter = 0.0f;
 float angle = 0;
 float mouse_speed = 10.0f;
+
+std::vector<int> bloques;
 FBO* fbo = NULL;
 
 bool free_camera = false;
@@ -67,8 +71,9 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	//mesh2 = Mesh::Get("data/bloquePrueba4.obj");
 	world.inicializeSky();
 	world.inicializeSea();
-	world.inicializePenguins();
+	
 	world.inicializeBlocks();
+	world.inicializePenguins();
 	world.inicializePlayer();
 	renderBoundings = true;
 
@@ -80,6 +85,7 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 
 	//hide the cursor
 	SDL_ShowCursor(!mouse_locked); //hide or show the mouse
+	auto start_time = std::chrono::system_clock::now();
 }
 
 //what to do when the image has to be draw
@@ -127,8 +133,9 @@ void Game::render(void)
 	//mesh->render( GL_TRIANGLES );
 	//mesh2->render(GL_TRIANGLES);
 	//player.render();
-	world.renderPenguins(renderBoundings);
 	world.renderBlocks(renderBoundings);
+	world.renderPenguins(renderBoundings);
+	
 	world.renderPlayer();
 
 	//disable shader
@@ -178,38 +185,40 @@ void Game::update(double seconds_elapsed)
 
 		Vector3 playerSpeed;
 		if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT)) speed *= 10; //move faster with left shift
-		if (Input::isKeyPressed(SDL_SCANCODE_W)) playerSpeed = playerSpeed + (playerFront * -speed);
-		if (Input::isKeyPressed(SDL_SCANCODE_S)) playerSpeed = playerSpeed + (playerFront * speed);
-		if (Input::isKeyPressed(SDL_SCANCODE_A)) playerSpeed = playerSpeed + (playerRight * speed);
-		if (Input::isKeyPressed(SDL_SCANCODE_D)) playerSpeed = playerSpeed + (playerRight * -speed);
+		if (Input::isKeyPressed(SDL_SCANCODE_W)) {
+			playerSpeed = playerSpeed + (playerFront * -speed);
+			world.player.dir = Player::type::FORWARD;
+			/*world.player.model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));*/
+		}
+		if (Input::isKeyPressed(SDL_SCANCODE_S)) {
+			playerSpeed = playerSpeed + (playerFront * speed);
+			world.player.dir = Player::type::BACKWARD;
+			/*world.player.model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));*/
+		}
+		if (Input::isKeyPressed(SDL_SCANCODE_A)) {
+			playerSpeed = playerSpeed + (playerRight * speed);
+			world.player.dir = Player::type::LEFT;
+			/*world.player.model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));*/
+		}
+		if (Input::isKeyPressed(SDL_SCANCODE_D)) {
+			playerSpeed = playerSpeed + (playerRight * -speed);
+			world.player.dir = Player::type::RIGHT;
+			/*world.player.model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));*/
+		}
 
 		if (Input::isKeyPressed(SDL_SCANCODE_Q)) player.yaw -= rot_speed;
 		if (Input::isKeyPressed(SDL_SCANCODE_E)) player.yaw += rot_speed;
 		
 		Vector3 targetPos = player.pos + playerSpeed;
 
-		Vector3 characterTargetCenter = targetPos + Vector3(0, 1, 0);
-		for (int i = 0; i < world.penguins.size(); i++) {
-			Penguin* currentPingu = &world.penguins[i];
-
-			Vector3 coll;
-			Vector3 collmore;
-			if (!currentPingu->mesh->testSphereCollision(currentPingu->model, characterTargetCenter, 0.5, coll, collmore)) {
-				continue; //si no hay collision, pasamos a la siguiente iteracion
-			}
-
-			Vector3 push_away = normalize(coll - characterTargetCenter) * elapsed_time;
-			targetPos = player.pos - push_away;
-
-			targetPos.y = player.pos.y;
-		}
-
+		
+		world.penguinCollision(targetPos, elapsed_time);
 		float checker = world.isPlayeronaBlock(targetPos);
 		if ( checker == -5) {
 			targetPos.y -= player.speed * elapsed_time;
 			player.pos = targetPos;
 		}
-		else if (checker > player.pos.y){ 
+		else if (checker+2 > player.pos.y){ 
 			if (checker+2 - player.pos.y > 1) {
 				float checker2 = world.isPlayeronaBlock(player.pos);
 				if (checker2 - player.pos.y > 2) {
@@ -236,9 +245,7 @@ void Game::update(double seconds_elapsed)
 			}
 		}
 
-		world.BlockVibration(1, elapsed_time);
-		
-		
+		world.BlockVibration(elapsed_time);
 	}
 
 

@@ -8,13 +8,20 @@
 class Penguin
 {
 public:
-
+    enum type {
+        LEFT,
+        RIGHT,
+        FORWARD,
+        BACKWARD
+    };
 	int id;
+    float dir;
     Matrix44 model;
     Mesh* mesh;
     Texture* texture;
     Shader* shader;
     Vector4 color;
+    Vector3 pos;
 
 	Penguin(int id, Vector3 pos);
 

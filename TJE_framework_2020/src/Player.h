@@ -10,11 +10,17 @@ class Player
 {
 public:
     //virtual ~Player(); //DESTRUCTOR MASIVO
-
+    enum type {
+        LEFT,
+        RIGHT,
+        FORWARD,
+        BACKWARD
+    };
     //some attributes 
     float speed;
     float rot_speed;
     float yaw;
+    float dir;
     Vector3 pos;
     Matrix44 model;
     Matrix44 rot;

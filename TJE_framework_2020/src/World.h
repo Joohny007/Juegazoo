@@ -23,6 +23,7 @@ public:
 	std::vector<Block> blocks;
 	std::vector<Penguin> penguins;
 	Player player;
+	float game_time;
 	int pingu_counter;
 	int max_penguins;
 	int max_blocks;
@@ -47,5 +48,7 @@ public:
 	void inicializeSea();
 	void renderSea();
 	float isPlayeronaBlock(Vector3 playerpos);
-	void BlockVibration(int block, float et);
+	void BlockVibration( float et);
+	void penguinCollision(Vector3 targetPos, float elapsed_time);
+	float easeOutQuint(float x);
 };

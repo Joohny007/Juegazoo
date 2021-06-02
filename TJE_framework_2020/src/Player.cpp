@@ -10,7 +10,7 @@ Player::Player()
 	this->mesh = NULL;
 	this->shader = NULL;
 	this->texture = NULL;
-	
+	this->dir = FORWARD;
 }
 
 void Player::setPos(Vector3 pos)

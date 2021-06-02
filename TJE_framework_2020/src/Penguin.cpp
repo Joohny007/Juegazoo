@@ -4,6 +4,8 @@ Penguin::Penguin(int id, Vector3 pos)
 {
 	this->id = id;
 	this->model.translate(pos.x, pos.y, pos.z);
+	this->dir = BACKWARD;
+	this->pos = pos;
 }
 
 void Penguin::inicialize()
