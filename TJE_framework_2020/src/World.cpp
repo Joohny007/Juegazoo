@@ -25,7 +25,7 @@ void World::renderPenguins(bool renderBoundings)
 	for (int id = 0; id < max_blocks; id++) {
 		this->penguins[id].render();
 		this->penguins[id].pos = this->penguins[id].model.getTranslation();
-		this->penguins[id].model.setTranslation(this->penguins[id].pos.x, this->penguins[id].pos.y, this->penguins[id].pos.z);
+		//this->penguins[id].model.translate(this->penguins[id].pos.x, this->penguins[id].pos.y, this->penguins[id].pos.z);
 		if (renderBoundings) {
 			this->penguins[id].mesh->renderBounding(this->penguins[id].model);
 		}

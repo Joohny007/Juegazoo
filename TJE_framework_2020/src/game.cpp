@@ -71,7 +71,6 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	//mesh2 = Mesh::Get("data/bloquePrueba4.obj");
 	world.inicializeSky();
 	world.inicializeSea();
-	
 	world.inicializeBlocks();
 	world.inicializePenguins();
 	world.inicializePlayer();
@@ -178,7 +177,7 @@ void Game::update(double seconds_elapsed)
 		float rot_speed = player.rot_speed * elapsed_time;
 		float character_radius = 0.5;
 
-		player.model.rotate(player.yaw * DEG2RAD, Vector3(0, 1, 0));
+		//player.model.rotate(player.yaw * DEG2RAD, Vector3(0, 1, 0));
 
 		Vector3 playerFront = player.model.rotateVector(Vector3(0.0f, 0.0f, -1.0f));
 		Vector3 playerRight = player.model.rotateVector(Vector3(1.0f, 0.0f, 0.0f));
