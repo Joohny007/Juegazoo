@@ -22,6 +22,7 @@ public:
 	std::vector<Entity> entities;
 	std::vector<Block> blocks;
 	std::vector<Penguin> penguins;
+	std::vector<Player> players;
 	Player player;
 	float game_time;
 	int pingu_counter;
