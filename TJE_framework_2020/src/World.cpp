@@ -23,9 +23,11 @@ void World::inicializePenguins()
 void World::renderPenguins(bool renderBoundings)
 {
 	for (int id = 0; id < max_blocks; id++) {
+		Penguin* currentPingu = &this->penguins[id];
 		this->penguins[id].render();
 		this->penguins[id].pos = this->penguins[id].model.getTranslation();
 		//this->penguins[id].model.translate(this->penguins[id].pos.x, this->penguins[id].pos.y, this->penguins[id].pos.z);
+
 		if (renderBoundings) {
 			this->penguins[id].mesh->renderBounding(this->penguins[id].model);
 		}
@@ -186,23 +188,23 @@ void World::penguinCollision(Vector3 targetPos, float elapsed_time)
 
 			if (player.dir == Player::type::LEFT) {
 				currentPingu->dir = Penguin::type::LEFT;
+				//currentPingu->model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));
 				currentPingu->model.translate(-easeOutQuint(4 * elapsed_time), 0, 0);
-				currentPingu->model.rotate(-90 * DEG2RAD, Vector3(0, 87, 0));
 			}
 			else if (player.dir == Player::type::RIGHT) {
 				currentPingu->dir = Penguin::type::RIGHT;
+				//currentPingu->model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));
 				currentPingu->model.translate(easeOutQuint(4 * elapsed_time), 0, 0);
-				currentPingu->model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));
 			}
 			else if (player.dir == Player::type::FORWARD) {
 				currentPingu->dir = Penguin::type::FORWARD;
+				//currentPingu->model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));
 				currentPingu->model.translate(0, 0, -easeOutQuint(4 * elapsed_time));
-				currentPingu->model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));
 			}
 			else if (player.dir == Player::type::BACKWARD) {
 				currentPingu->dir = Penguin::type::BACKWARD;
+				//currentPingu->model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));
 				currentPingu->model.translate(0, 0, easeOutQuint(4 * elapsed_time));
-				currentPingu->model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));
 			}
 			targetPos = player.pos - push_away;
 
