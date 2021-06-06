@@ -26,6 +26,6 @@ public:
 
     Block(int x, Vector3 pos); //constructor
     void inicialize();
-    void render();
+    void render(Camera* camera);
     void vibrate(float et);
 };

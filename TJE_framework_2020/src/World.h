@@ -39,15 +39,15 @@ public:
 
 	World(int x);
 	void inicializePenguins();
-	void renderPenguins(bool renderBoundings);
+	void renderPenguins(bool renderBoundings, Camera* camera);
 	void inicializeBlocks();
-	void renderBlocks(bool renderBoundings);
+	void renderBlocks(bool renderBoundings, Camera* camera);
 	void inicializePlayer();
 	void renderPlayer(Camera* camera);
 	void inicializeSky();
-	void renderSky();
+	void renderSky(Camera* camera);
 	void inicializeSea();
-	void renderSea();
+	void renderSea(Camera* camera);
 	float isPlayeronaBlock(Vector3 playerpos);
 	void BlockVibration( float et);
 	void penguinCollision(Vector3 targetPos, float elapsed_time);

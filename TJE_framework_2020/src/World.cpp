@@ -20,11 +20,11 @@ void World::inicializePenguins()
 	}
 }
 
-void World::renderPenguins(bool renderBoundings)
+void World::renderPenguins(bool renderBoundings, Camera* camera)
 {
 	for (int id = 0; id < max_blocks; id++) {
 		Penguin* currentPingu = &this->penguins[id];
-		this->penguins[id].render();
+		this->penguins[id].render(camera);
 		this->penguins[id].pos = this->penguins[id].model.getTranslation();
 		//this->penguins[id].model.translate(this->penguins[id].pos.x, this->penguins[id].pos.y, this->penguins[id].pos.z);
 
@@ -49,10 +49,10 @@ void World::inicializeBlocks()
 	}
 }
 
-void World::renderBlocks(bool renderBoundings)
+void World::renderBlocks(bool renderBoundings, Camera* camera)
 {
 	for (int id = 0; id < max_blocks; id++) {
-		this->blocks[id].render();
+		this->blocks[id].render(camera);
 		if (renderBoundings) {
 			this->blocks[id].mesh->renderBounding(this->blocks[id].model);
 		}
@@ -78,10 +78,9 @@ void World::inicializeSky()
 	this->sky_shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
 }
 
-void World::renderSky()
+void World::renderSky(Camera* camera)
 {
 	//get the last camera that was activated
-	Camera* camera = Camera::current;
 	Matrix44 model = this->sky_model;
 	model.translate(camera->eye.x, camera->eye.y, camera->eye.z);
 
@@ -106,10 +105,9 @@ void World::inicializeSea()
 	this->sea_shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
 }
 
-void World::renderSea()
+void World::renderSea(Camera* camera)
 {
 	//get the last camera that was activated
-	Camera* camera = Camera::current;
 	Matrix44 model = this->sea_model;
 	
 

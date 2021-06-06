@@ -60,6 +60,10 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	camera->lookAt(Vector3(0.f,100.f, 100.f),Vector3(0.f,0.f,0.f), Vector3(0.f,1.f,0.f)); //position the camera and point to 0,0,0
 	camera->setPerspective(70.f,window_width/(float)window_height,0.1f,10000.f); //set the projection, we want to be perspective
 
+	player2Cam = new Camera();
+	player2Cam->lookAt(Vector3(0.f, 100.f, 100.f), Vector3(0.f, 0.f, 0.f), Vector3(0.f, 1.f, 0.f)); //position the camera and point to 0,0,0
+	player2Cam->setPerspective(70.f, window_width / (float)window_height, 0.1f, 10000.f); //set the projection, we want to be perspective
+
 	//load one texture without using the Texture Manager (Texture::Get would use the manager)
 	//texture = new Texture();
  	//texture->load("data/WesternPack/PolygonWestern_Texture_01_A.png");
@@ -106,16 +110,16 @@ void RenderFirstCam(Camera* camera)
 	shader->setUniform("u_time", time);
 
 	world.renderPlayer(camera);
-	world.renderBlocks(renderBoundings);
-	world.renderPenguins(renderBoundings);
+	world.renderBlocks(renderBoundings, camera);
+	world.renderPenguins(renderBoundings, camera);
 
 	glViewport(0, 0, Game::instance->window_width / 2, Game::instance->window_height);
 	shader->disable();
 }
 
-void RenderSecondCam()
+void RenderSecondCam(Camera* player2Cam)
 {
-	Camera player2Cam;
+	/*Camera player2Cam;*/
 
 	/*Vector3 pos = model.getTranslation();*/
 	/*Vector3 eye = pos + Vector3(0.0f, 8.0f, -5.5f);
@@ -125,21 +129,21 @@ void RenderSecondCam()
 	Vector3 center = player.model * Vector3(0.0f, 0.0f, 10.0f);
 	Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
 
-	player2Cam.lookAt(eye, center, up);
-	player2Cam.enable();
+	player2Cam->lookAt(eye, center, up);
+	/*player2Cam.enable();*/
 
 	shader->enable();
 
 	//upload uniforms
 	shader->setUniform("u_color", Vector4(1, 1, 1, 1));
-	shader->setUniform("u_viewprojection", player2Cam.viewprojection_matrix);
+	shader->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
 	shader->setUniform("u_texture", textureMesh, 0);
 	shader->setUniform("u_model", Matrix44());
 	shader->setUniform("u_time", time);
 
-	world.renderPlayer(&player2Cam);
-	world.renderBlocks(renderBoundings);
-	world.renderPenguins(renderBoundings);
+	world.renderPlayer(player2Cam);
+	world.renderBlocks(renderBoundings, player2Cam);
+	world.renderPenguins(renderBoundings, player2Cam);
 
 	glViewport(Game::instance->window_width / 2, 0, Game::instance->window_width / 2, Game::instance->window_height);
 	shader->disable();
@@ -155,9 +159,12 @@ void Game::render(void)
 
 	//set the camera as default
 	camera->enable();
+	player2Cam->enable();
 
-	world.renderSky();
-	world.renderSea();
+	world.renderSky(camera);
+	world.renderSea(camera);
+	world.renderSky(player2Cam);
+	world.renderSea(player2Cam);
 	if (!free_camera) {
 		player.model.setTranslation(player.pos.x, player.pos.y, player.pos.z);
 		Vector3 eye = player.model * Vector3(0.0f, 8.0f, -5.5f);
@@ -192,7 +199,7 @@ void Game::render(void)
 	world.renderBlocks(renderBoundings);
 	world.renderPenguins(renderBoundings);*/
 
-	RenderSecondCam();
+	RenderSecondCam(player2Cam);
 	RenderFirstCam(camera);
 
 	//disable shader

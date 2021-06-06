@@ -17,10 +17,9 @@ void Penguin::inicialize()
 	this->shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
 }
 
-void Penguin::render()
+void Penguin::render(Camera* camera)
 {
 	//get the last camera that was activated
-	Camera* camera = Camera::current;
 	Matrix44 model = this->model;
 
 	//enable shader and pass uniforms

@@ -22,11 +22,10 @@ void Block::inicialize()
 	}
 }
 
-void Block::render()
+void Block::render(Camera* camera)
 {
 	//get the last camera that was activated
 	if (this->fallen == false) {
-		Camera* camera = Camera::current;
 		Matrix44 model = this->model;
 
 

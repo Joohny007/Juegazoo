@@ -26,6 +26,6 @@ public:
 	Penguin(int id, Vector3 pos);
 
     void inicialize();
-    void render();
+    void render(Camera* camera);
 
 };
