@@ -43,7 +43,7 @@ public:
 	void inicializeBlocks();
 	void renderBlocks(bool renderBoundings);
 	void inicializePlayer();
-	void renderPlayer();
+	void renderPlayer(Camera* camera);
 	void inicializeSky();
 	void renderSky();
 	void inicializeSea();

@@ -32,6 +32,6 @@ public:
     Player(); //constructor
     void setPos(Vector3 pos);
     void inicialize();
-    void render();
+    void render(Camera* camera);
     bool penguinCollision();
 };

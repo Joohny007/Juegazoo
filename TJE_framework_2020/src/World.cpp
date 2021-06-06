@@ -65,9 +65,9 @@ void World::inicializePlayer()
 
 }
 
-void World::renderPlayer()
+void World::renderPlayer(Camera* camera)
 {
-	this->player.render();
+	this->player.render(camera);
 	this->player.model.setTranslation(10, 2, 5);
 }
 

@@ -28,10 +28,10 @@ void Player::inicialize()
 	this->shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
 }
 
-void Player::render()
+void Player::render(Camera* camera)
 {
 	//get the last camera that was activated
-	Camera* camera = Camera::current;
+	//Camera* camera = Camera::current;
 	Matrix44 model = this->model;
 
 	//enable shader and pass uniforms

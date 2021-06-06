@@ -87,6 +87,31 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	auto start_time = std::chrono::system_clock::now();
 }
 
+void RenderFirstCam()
+{
+	glViewport(0, 0, Game::instance->window_width / 2, Game::instance->window_height);
+}
+
+void RenderSecondCam()
+{
+	Camera player2Cam;
+
+	Matrix44 model = player.model;
+	Vector3 pos = model.getTranslation();
+	/*Vector3 eye = pos + Vector3(0.0f, 8.0f, -5.5f);
+	Vector3 center = pos;
+	Vector3 up = Vector3(0.0f, 1.0f, 0.0f);*/
+	Vector3 eye = player.model * Vector3(0.0f, 8.0f, -5.5f);
+	Vector3 center = player.model * Vector3(0.0f, 0.0f, 10.0f);
+	Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
+
+	player2Cam.lookAt(eye, center, up);
+	player2Cam.enable();
+
+	world.renderPlayer(&player2Cam);
+
+	glViewport(Game::instance->window_width / 2, 0, Game::instance->window_width / 2, Game::instance->window_height);
+}
 //what to do when the image has to be draw
 void Game::render(void)
 {
@@ -114,7 +139,6 @@ void Game::render(void)
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
    
-	//create model matrix for cube
 
 	if (!shader) return;
 	
@@ -135,7 +159,10 @@ void Game::render(void)
 	world.renderBlocks(renderBoundings);
 	world.renderPenguins(renderBoundings);
 	
-	world.renderPlayer();
+	world.renderPlayer(camera);
+
+	RenderFirstCam();
+	RenderSecondCam();
 
 	//disable shader
 	shader->disable();
