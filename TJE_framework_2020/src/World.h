@@ -42,8 +42,8 @@ public:
 	void renderPenguins(bool renderBoundings, Camera* camera);
 	void inicializeBlocks();
 	void renderBlocks(bool renderBoundings, Camera* camera);
-	void inicializePlayer();
-	void renderPlayer(Camera* camera);
+	void inicializePlayers();
+	void renderPlayers(Camera* camera);
 	void inicializeSky();
 	void renderSky(Camera* camera);
 	void inicializeSea();

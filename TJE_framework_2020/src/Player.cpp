@@ -2,7 +2,19 @@
 
 Player::Player()
 {
+	this->speed = 10.0f;
+	this->rot_speed = 120.0f;
+	this->yaw = 3;
+	this->pos = model.getTranslation();
+	this->mesh = NULL;
+	this->shader = NULL;
+	this->texture = NULL;
+	this->dir = FORWARD;
+}
+Player::Player(int id)
+{
 	//this->model.setIdentity();
+	this->id = id;
 	this->speed = 10.0f;
 	this->rot_speed = 120.0f;
 	this->yaw = 3;
@@ -23,6 +35,15 @@ void Player::inicialize()
 {
 	//enable shader and pass uniforms
 	this->mesh = Mesh::Get("data/GiantGeneralPack/People_T/man-samurai-black_25.obj");
+	this->texture = Texture::Get("data/GiantGeneralPack/color-atlas-new.png"); //JOAN CALLATE LA BOCA
+	// example of shader loading using the shaders manager
+	this->shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+}
+
+void Player::inicialize2()
+{
+	//enable shader and pass uniforms
+	this->mesh = Mesh::Get("data/GiantGeneralPack/People_T/man-viking_33.obj");
 	this->texture = Texture::Get("data/GiantGeneralPack/color-atlas-new.png"); //JOAN CALLATE LA BOCA
 	// example of shader loading using the shaders manager
 	this->shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");

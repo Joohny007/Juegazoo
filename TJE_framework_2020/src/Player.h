@@ -17,6 +17,7 @@ public:
         BACKWARD
     };
     //some attributes 
+    int id;
     float speed;
     float rot_speed;
     float yaw;
@@ -29,9 +30,11 @@ public:
     Shader* shader;
     Vector4 color;
 ;
-    Player(); //constructor
+    Player();
+    Player(int id); //constructor
     void setPos(Vector3 pos);
     void inicialize();
+    void inicialize2();
     void render(Camera* camera);
     bool penguinCollision();
 };

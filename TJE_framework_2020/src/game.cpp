@@ -77,7 +77,7 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	world.inicializeSea();
 	world.inicializeBlocks();
 	world.inicializePenguins();
-	world.inicializePlayer();
+	world.inicializePlayers();
 	renderBoundings = true;
 
 	//grass = Mesh::Get("data/GiantGeneralPack/Grass_T/grass-long_orange_8.obj");
@@ -109,7 +109,7 @@ void RenderFirstCam(Camera* camera)
 	shader->setUniform("u_model", Matrix44());
 	shader->setUniform("u_time", time);
 
-	world.renderPlayer(camera);
+	world.renderPlayers(camera);
 	world.renderBlocks(renderBoundings, camera);
 	world.renderPenguins(renderBoundings, camera);
 
@@ -141,7 +141,7 @@ void RenderSecondCam(Camera* player2Cam)
 	shader->setUniform("u_model", Matrix44());
 	shader->setUniform("u_time", time);
 
-	world.renderPlayer(player2Cam);
+	world.renderPlayers(player2Cam);
 	world.renderBlocks(renderBoundings, player2Cam);
 	world.renderPenguins(renderBoundings, player2Cam);
 

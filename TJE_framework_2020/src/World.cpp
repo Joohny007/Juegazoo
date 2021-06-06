@@ -5,7 +5,8 @@ World::World(int x)
 	this->pingu_counter = 0;
 	this->max_penguins = 15;
 	this->max_blocks = 56;
-	this->player = Player();
+	this->players = { Player(0), Player(1) };
+	this->player = Player(0);
 	this->game_time = 0.0f;
 }
 
@@ -59,16 +60,19 @@ void World::renderBlocks(bool renderBoundings, Camera* camera)
 	}
 }
 
-void World::inicializePlayer()
+void World::inicializePlayers()
 {
-	this->player.inicialize();
+	this->players[0].inicialize();
+	this->players[1].inicialize2();
 
 }
 
-void World::renderPlayer(Camera* camera)
+void World::renderPlayers(Camera* camera)
 {
-	this->player.render(camera);
-	this->player.model.setTranslation(10, 2, 5);
+	for (int i = 0; i < players.size(); i++) {
+		this->players[i].render(camera);
+		this->players[i].model.setTranslation(10, 2, 5);
+	}
 }
 
 void World::inicializeSky()
