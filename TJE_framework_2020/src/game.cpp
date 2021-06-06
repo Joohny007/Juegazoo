@@ -87,17 +87,37 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	auto start_time = std::chrono::system_clock::now();
 }
 
-void RenderFirstCam()
+void RenderFirstCam(Camera* camera)
 {
+	Vector3 eye = player.model * Vector3(0.0f, 8.0f, -5.5f);
+	Vector3 center = player.model * Vector3(0.0f, 0.0f, 10.0f);
+	Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
+
+	camera->lookAt(eye, center, up);
+	camera->enable();
+
+	shader->enable();
+
+	//upload uniforms
+	shader->setUniform("u_color", Vector4(1, 1, 1, 1));
+	shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
+	shader->setUniform("u_texture", textureMesh, 0);
+	shader->setUniform("u_model", Matrix44());
+	shader->setUniform("u_time", time);
+
+	world.renderPlayer(camera);
+	world.renderBlocks(renderBoundings);
+	world.renderPenguins(renderBoundings);
+
 	glViewport(0, 0, Game::instance->window_width / 2, Game::instance->window_height);
+	shader->disable();
 }
 
 void RenderSecondCam()
 {
 	Camera player2Cam;
 
-	Matrix44 model = player.model;
-	Vector3 pos = model.getTranslation();
+	/*Vector3 pos = model.getTranslation();*/
 	/*Vector3 eye = pos + Vector3(0.0f, 8.0f, -5.5f);
 	Vector3 center = pos;
 	Vector3 up = Vector3(0.0f, 1.0f, 0.0f);*/
@@ -108,9 +128,21 @@ void RenderSecondCam()
 	player2Cam.lookAt(eye, center, up);
 	player2Cam.enable();
 
+	shader->enable();
+
+	//upload uniforms
+	shader->setUniform("u_color", Vector4(1, 1, 1, 1));
+	shader->setUniform("u_viewprojection", player2Cam.viewprojection_matrix);
+	shader->setUniform("u_texture", textureMesh, 0);
+	shader->setUniform("u_model", Matrix44());
+	shader->setUniform("u_time", time);
+
 	world.renderPlayer(&player2Cam);
+	world.renderBlocks(renderBoundings);
+	world.renderPenguins(renderBoundings);
 
 	glViewport(Game::instance->window_width / 2, 0, Game::instance->window_width / 2, Game::instance->window_height);
+	shader->disable();
 }
 //what to do when the image has to be draw
 void Game::render(void)
@@ -143,29 +175,28 @@ void Game::render(void)
 	if (!shader) return;
 	
 	//enable shader
-	shader->enable();
+	//shader->enable();
 
-	//upload uniforms
-	shader->setUniform("u_color", Vector4(1,1,1,1));
-	shader->setUniform("u_viewprojection", camera->viewprojection_matrix );
-	shader->setUniform("u_texture", textureMesh, 0);
-	shader->setUniform("u_model", Matrix44());
-	shader->setUniform("u_time", time);
+	////upload uniforms
+	//shader->setUniform("u_color", Vector4(1,1,1,1));
+	//shader->setUniform("u_viewprojection", camera->viewprojection_matrix );
+	//shader->setUniform("u_texture", textureMesh, 0);
+	//shader->setUniform("u_model", Matrix44());
+	//shader->setUniform("u_time", time);
 
 	//do the draw call
 	//mesh->render( GL_TRIANGLES );
 	//mesh2->render(GL_TRIANGLES);
 	//player.render();
+	/*world.renderPlayer(camera);
 	world.renderBlocks(renderBoundings);
-	world.renderPenguins(renderBoundings);
-	
-	world.renderPlayer(camera);
+	world.renderPenguins(renderBoundings);*/
 
-	RenderFirstCam();
 	RenderSecondCam();
+	RenderFirstCam(camera);
 
 	//disable shader
-	shader->disable();
+	//shader->disable();
 
 	//Draw the floor grid
 	drawGrid();
