@@ -21,6 +21,7 @@ Mesh* grass = NULL;
 Texture* texture = NULL;
 Texture* textureMesh = NULL;
 Shader* shader = NULL;
+Shader* skinning = NULL;
 Animation* anim = NULL;
 float counter = 0.0f;
 float angle = 0;
@@ -65,15 +66,6 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	player2Cam->lookAt(Vector3(0.f, 100.f, 100.f), Vector3(0.f, 0.f, 0.f), Vector3(0.f, 1.f, 0.f)); //position the camera and point to 0,0,0
 	player2Cam->setPerspective(70.f, window_width / (float)window_height, 0.1f, 10000.f); //set the projection, we want to be perspective
 
-	//load one texture without using the Texture Manager (Texture::Get would use the manager)
-	//texture = new Texture();
- 	//texture->load("data/WesternPack/PolygonWestern_Texture_01_A.png");
-
-	// example of loading Mesh from Mesh Manager
-
-	//texture = Texture::Get("data/texture.tga");
-	//mesh = Mesh::Get("data/GiantGeneralPack/Animals_T/penguin_20.obj");
-	//mesh2 = Mesh::Get("data/bloquePrueba4.obj");
 	world.inicializeSky();
 	world.inicializeSea();
 	world.inicializeBlocks();
@@ -86,6 +78,7 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 
 	// example of shader loading using the shaders manager
 	shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+	skinning = Shader::Get("data/shaders/skinning.vs", "data/shaders/texture.fs");
 
 	//hide the cursor
 	SDL_ShowCursor(!mouse_locked); //hide or show the mouse
@@ -101,6 +94,13 @@ void RenderFirstCam(Camera* camera)
 	camera->lookAt(eye, center, up);*/
 	//camera->enable();
 
+	if (!free_camera) {
+		player1.model.setTranslation(player1.pos.x, player1.pos.y, player1.pos.z);
+		Vector3 eye1 = player1.model * Vector3(0.0f, 8.0f, -5.5f);
+		Vector3 center1 = player1.model * Vector3(0.0f, 0.0f, 10.0f);
+		Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
+		camera->lookAt(eye1, center1, up);
+	}
 	shader->enable();
 
 	//upload uniforms
@@ -114,7 +114,7 @@ void RenderFirstCam(Camera* camera)
 	world.renderBlocks(renderBoundings, camera);
 	world.renderPenguins(renderBoundings, camera);
 
-	glViewport(0, 0, Game::instance->window_width / 2, Game::instance->window_height);
+	glViewport(Game::instance->window_width / 2, 0, Game::instance->window_width / 2, Game::instance->window_height);
 	shader->disable();
 }
 
@@ -133,6 +133,13 @@ void RenderSecondCam(Camera* player2Cam)
 	player2Cam->lookAt(eye, center, up);*/
 	/*player2Cam.enable();*/
 
+	if (!free_camera) {
+		player2.model.setTranslation(player2.pos.x, player2.pos.y, player2.pos.z);
+		Vector3 eye2 = player2.model * Vector3(0.0f, 8.0f, -5.5f);
+		Vector3 center2 = player2.model * Vector3(0.0f, 0.0f, 10.0f);
+		Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
+		player2Cam->lookAt(eye2, center2, up);
+	}
 	shader->enable();
 
 	//upload uniforms
@@ -146,7 +153,7 @@ void RenderSecondCam(Camera* player2Cam)
 	world.renderBlocks(renderBoundings, player2Cam);
 	world.renderPenguins(renderBoundings, player2Cam);
 
-	glViewport(Game::instance->window_width / 2, 0, Game::instance->window_width / 2, Game::instance->window_height);
+	glViewport(0, 0, Game::instance->window_width / 2, Game::instance->window_height);
 	shader->disable();
 }
 //what to do when the image has to be draw
@@ -166,7 +173,7 @@ void Game::render(void)
 	world.renderSea(camera);
 	world.renderSky(player2Cam);
 	world.renderSea(player2Cam);
-	if (!free_camera) {
+	/*if (!free_camera) {
 		player1.model.setTranslation(player1.pos.x, player1.pos.y, player1.pos.z);
 		Vector3 eye1 = player1.model * Vector3(0.0f, 8.0f, -5.5f);
 		Vector3 center1 = player1.model * Vector3(0.0f, 0.0f, 10.0f);
@@ -176,7 +183,7 @@ void Game::render(void)
 		Vector3 eye2 = player2.model * Vector3(0.0f, 8.0f, -5.5f);
 		Vector3 center2 = player2.model * Vector3(0.0f, 0.0f, 10.0f);
 		player2Cam->lookAt(eye2, center2, up);
-	}
+	}*/
 
 	//set flags
 	/*glDisable(GL_BLEND);
@@ -209,6 +216,20 @@ void Game::render(void)
 
 	//disable shader
 	//shader->disable();
+
+	Animation* anim = Animation::Get("data/Animaciones/Flying.obj");
+	anim->assignTime(time);
+
+	skinning->enable();
+
+	skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
+	skinning->setUniform("u_viewprojection", camera->viewprojection_matrix);
+	skinning->setUniform("u_texture", player1.texture, 0);
+	skinning->setUniform("u_time", time);
+	skinning->setUniform("u_model", player1.model);
+	skinning->setUniform("u_texture_tiling", 1.0f);
+	player1.mesh->renderAnimated(GL_TRIANGLES, &anim->skeleton);
+	skinning->disable();
 
 	//Draw the floor grid
 	drawGrid();

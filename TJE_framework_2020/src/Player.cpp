@@ -2,7 +2,7 @@
 
 Player::Player()
 {
-	this->speed = 10.0f;
+	this->speed = 1.0f;
 	this->rot_speed = 120.0f;
 	this->yaw = 3;
 	this->pos = model.getTranslation();
