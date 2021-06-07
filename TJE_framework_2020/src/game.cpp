@@ -31,7 +31,8 @@ FBO* fbo = NULL;
 
 bool free_camera = false;
 World world(2);
-Player& player = world.player;
+Player& player1 = world.players[0];
+Player& player2 = world.players[1];
 bool renderBoundings;
 Game* Game::instance = NULL;
 
@@ -93,12 +94,12 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 
 void RenderFirstCam(Camera* camera)
 {
-	Vector3 eye = player.model * Vector3(0.0f, 8.0f, -5.5f);
-	Vector3 center = player.model * Vector3(0.0f, 0.0f, 10.0f);
+	Vector3 eye = player1.model * Vector3(0.0f, 8.0f, -5.5f);
+	Vector3 center = player1.model * Vector3(0.0f, 0.0f, 10.0f);
 	Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
 
 	camera->lookAt(eye, center, up);
-	camera->enable();
+	//camera->enable();
 
 	shader->enable();
 
@@ -125,8 +126,8 @@ void RenderSecondCam(Camera* player2Cam)
 	/*Vector3 eye = pos + Vector3(0.0f, 8.0f, -5.5f);
 	Vector3 center = pos;
 	Vector3 up = Vector3(0.0f, 1.0f, 0.0f);*/
-	Vector3 eye = player.model * Vector3(0.0f, 8.0f, -5.5f);
-	Vector3 center = player.model * Vector3(0.0f, 0.0f, 10.0f);
+	Vector3 eye = player2.model * Vector3(0.0f, 8.0f, -5.5f);
+	Vector3 center = player2.model * Vector3(0.0f, 0.0f, 10.0f);
 	Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
 
 	player2Cam->lookAt(eye, center, up);
@@ -166,11 +167,15 @@ void Game::render(void)
 	world.renderSky(player2Cam);
 	world.renderSea(player2Cam);
 	if (!free_camera) {
-		player.model.setTranslation(player.pos.x, player.pos.y, player.pos.z);
-		Vector3 eye = player.model * Vector3(0.0f, 8.0f, -5.5f);
-		Vector3 center = player.model * Vector3(0.0f, 0.0f, 10.0f);
+		player1.model.setTranslation(player1.pos.x, player1.pos.y, player1.pos.z);
+		Vector3 eye1 = player1.model * Vector3(0.0f, 8.0f, -5.5f);
+		Vector3 center1 = player1.model * Vector3(0.0f, 0.0f, 10.0f);
 		Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
-		camera->lookAt(eye, center, up);
+		camera->lookAt(eye1, center1, up);
+		player2.model.setTranslation(player2.pos.x, player2.pos.y, player2.pos.z);
+		Vector3 eye2 = player2.model * Vector3(0.0f, 8.0f, -5.5f);
+		Vector3 center2 = player2.model * Vector3(0.0f, 0.0f, 10.0f);
+		player2Cam->lookAt(eye2, center2, up);
 	}
 
 	//set flags
@@ -217,8 +222,6 @@ void Game::render(void)
 
 void Game::update(double seconds_elapsed)
 {
-	float speed = seconds_elapsed * mouse_speed; //the speed is defined by the seconds_elapsed so it goes constant
-
 	//example
 	angle += (float)seconds_elapsed * 10.0f;
 
@@ -230,6 +233,7 @@ void Game::update(double seconds_elapsed)
 	}
 
 	if (free_camera) {
+		float speed = seconds_elapsed * mouse_speed; //the speed is defined by the seconds_elapsed so it goes constant
 		//async input to move the camera around
 		if(Input::isKeyPressed(SDL_SCANCODE_LSHIFT) ) speed *= 10; //move faster with left shift
 		if (Input::isKeyPressed(SDL_SCANCODE_W) || Input::isKeyPressed(SDL_SCANCODE_UP)) camera->move(Vector3(0.0f, 0.0f, 1.0f) * speed);
@@ -238,74 +242,116 @@ void Game::update(double seconds_elapsed)
 		if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) camera->move(Vector3(-1.0f,0.0f, 0.0f) * speed);
 	}
 	else {
-		float speed = player.speed * elapsed_time;
-		float rot_speed = player.rot_speed * elapsed_time;
-		float character_radius = 0.5;
+			float speed1 = player1.speed * elapsed_time;
+			float rot_speed1 = player1.rot_speed * elapsed_time;
+			float character_radius1 = 0.5;
 
-		//player.model.rotate(player.yaw * DEG2RAD, Vector3(0, 1, 0));
+			//player.model.rotate(player.yaw * DEG2RAD, Vector3(0, 1, 0));
 
-		Vector3 playerFront = player.model.rotateVector(Vector3(0.0f, 0.0f, -1.0f));
-		Vector3 playerRight = player.model.rotateVector(Vector3(1.0f, 0.0f, 0.0f));
+			Vector3 player1Front = player1.model.rotateVector(Vector3(0.0f, 0.0f, -1.0f));
+			Vector3 player1Right = player1.model.rotateVector(Vector3(1.0f, 0.0f, 0.0f));
 
-		Vector3 playerSpeed;
-		if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT)) speed *= 10; //move faster with left shift
-		if (Input::isKeyPressed(SDL_SCANCODE_W)) {
-			playerSpeed = playerSpeed + (playerFront * -speed);
-			world.player.dir = Player::type::FORWARD;
-			/*world.player.model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));*/
-		}
-		if (Input::isKeyPressed(SDL_SCANCODE_S)) {
-			playerSpeed = playerSpeed + (playerFront * speed);
-			world.player.dir = Player::type::BACKWARD;
-			/*world.player.model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));*/
-		}
-		if (Input::isKeyPressed(SDL_SCANCODE_A)) {
-			playerSpeed = playerSpeed + (playerRight * speed);
-			world.player.dir = Player::type::LEFT;
-			/*world.player.model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));*/
-		}
-		if (Input::isKeyPressed(SDL_SCANCODE_D)) {
-			playerSpeed = playerSpeed + (playerRight * -speed);
-			world.player.dir = Player::type::RIGHT;
-			/*world.player.model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));*/
-		}
-
-		if (Input::isKeyPressed(SDL_SCANCODE_Q)) player.yaw -= rot_speed;
-		if (Input::isKeyPressed(SDL_SCANCODE_E)) player.yaw += rot_speed;
-		
-		Vector3 targetPos = player.pos + playerSpeed;
-
-		
-		world.penguinCollision(targetPos, elapsed_time);
-		float checker = world.isPlayeronaBlock(targetPos);
-		if ( checker == -5) {
-			targetPos.y -= player.speed * elapsed_time;
-			player.pos = targetPos;
-		}
-		else if (checker+2 > player.pos.y){ 
-			if (checker+2 - player.pos.y > 1) {
-				float checker2 = world.isPlayeronaBlock(player.pos);
-				if (checker2 - player.pos.y > 2) {
-					player.pos.y -= player.speed * elapsed_time;
-				}
-				else {
-					player.pos.y = checker2 + 2;
-				}
-
+			//Vector3 playerSpeed;
+			if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT)) speed1 *= 10; //move faster with left shift
+			if (Input::isKeyPressed(SDL_SCANCODE_W)) {
+				player1.playerSpeed = player1.playerSpeed + (player1Front * -speed1);
+				player1.dir = Player::type::FORWARD;
+				/*world.player.model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));*/
 			}
-			else {
-				targetPos.y = checker + 2;
-				player.pos = targetPos;
+			if (Input::isKeyPressed(SDL_SCANCODE_S)) {
+				player1.playerSpeed = player1.playerSpeed + (player1Front * speed1);
+				player1.dir = Player::type::BACKWARD;
+				/*world.player.model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));*/
 			}
-		}
-		else {
-			if (player.pos.y - player.speed * elapsed_time > checker+2) {
+			if (Input::isKeyPressed(SDL_SCANCODE_A)) {
+				player1.playerSpeed = player1.playerSpeed + (player1Right * speed1);
+				player1.dir = Player::type::LEFT;
+				/*world.player.model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));*/
+			}
+			if (Input::isKeyPressed(SDL_SCANCODE_D)) {
+				player1.playerSpeed = player1.playerSpeed + (player1Right * -speed1);
+				player1.dir = Player::type::RIGHT;
+				/*world.player.model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));*/
+			}
+
+			if (Input::isKeyPressed(SDL_SCANCODE_Q)) player1.yaw -= rot_speed1;
+			if (Input::isKeyPressed(SDL_SCANCODE_E)) player1.yaw += rot_speed1;
+
+
+			//---------------------------------------------------------------------------------------------------------
+			float speed2 = player2.speed * elapsed_time;
+			float rot_speed2 = player2.rot_speed * elapsed_time;
+			float character_radius2 = 0.5;
+
+			//player.model.rotate(player.yaw * DEG2RAD, Vector3(0, 1, 0));
+
+			Vector3 player2Front = player2.model.rotateVector(Vector3(0.0f, 0.0f, -1.0f));
+			Vector3 player2Right = player2.model.rotateVector(Vector3(1.0f, 0.0f, 0.0f));
+
+			//Vector3 playerSpeed2;
+			if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT)) speed2 *= 10; //move faster with left shift
+			if (Input::isKeyPressed(SDL_SCANCODE_UP)) {
+				player2.playerSpeed = player2.playerSpeed + (player2Front * -speed2);
+				player2.dir = Player::type::FORWARD;
+				/*world.player.model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));*/
+			}
+			if (Input::isKeyPressed(SDL_SCANCODE_DOWN)) {
+				player2.playerSpeed = player2.playerSpeed + (player2Front * speed2);
+				player2.dir = Player::type::BACKWARD;
+				/*world.player.model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));*/
+			}
+			if (Input::isKeyPressed(SDL_SCANCODE_LEFT)) {
+				player2.playerSpeed = player2.playerSpeed + (player2Right * speed2);
+				player2.dir = Player::type::LEFT;
+				/*world.player.model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));*/
+			}
+			if (Input::isKeyPressed(SDL_SCANCODE_RIGHT)) {
+				player2.playerSpeed = player2.playerSpeed + (player2Right * -speed2);
+				player2.dir = Player::type::RIGHT;
+				/*world.player.model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));*/
+			}
+
+			if (Input::isKeyPressed(SDL_SCANCODE_O)) player2.yaw -= rot_speed2;
+			if (Input::isKeyPressed(SDL_SCANCODE_P)) player2.yaw += rot_speed2;
+
+
+
+		for (int i = 0; i < world.players.size(); i++) {
+			Player& player = world.players[i];
+			Vector3& playerSpeed = world.players[i].playerSpeed;
+			Vector3& targetPos = world.players[i].pos + playerSpeed;
+
+			world.penguinCollision(targetPos, elapsed_time);
+			float checker = world.isPlayeronaBlock(targetPos);
+			if (checker == -5) {
 				targetPos.y -= player.speed * elapsed_time;
 				player.pos = targetPos;
 			}
+			else if (checker + 2 > player.pos.y) {
+				if (checker + 2 - player.pos.y > 1) {
+					float checker2 = world.isPlayeronaBlock(player.pos);
+					if (checker2 - player.pos.y > 2) {
+						player.pos.y -= player.speed * elapsed_time;
+					}
+					else {
+						player.pos.y = checker2 + 2;
+					}
+
+				}
+				else {
+					targetPos.y = checker + 2;
+					player.pos = targetPos;
+				}
+			}
 			else {
-				targetPos.y = checker+2;
-				player.pos = targetPos;
+				if (player.pos.y - player.speed * elapsed_time > checker + 2) {
+					targetPos.y -= player.speed * elapsed_time;
+					player.pos = targetPos;
+				}
+				else {
+					targetPos.y = checker + 2;
+					player.pos = targetPos;
+				}
 			}
 		}
 

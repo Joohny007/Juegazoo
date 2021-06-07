@@ -19,6 +19,7 @@ public:
     //some attributes 
     int id;
     float speed;
+    Vector3 playerSpeed;
     float rot_speed;
     float yaw;
     float dir;

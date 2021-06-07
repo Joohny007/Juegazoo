@@ -71,8 +71,9 @@ void World::renderPlayers(Camera* camera)
 {
 	for (int i = 0; i < players.size(); i++) {
 		this->players[i].render(camera);
-		this->players[i].model.setTranslation(10, 2, 5);
 	}
+	this->players[0].model.setTranslation(10, 2, 5);
+	this->players[1].model.setTranslation(40, 2, 5);
 }
 
 void World::inicializeSky()
