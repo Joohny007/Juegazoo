@@ -217,7 +217,7 @@ void Game::render(void)
 	//disable shader
 	//shader->disable();
 
-	Animation* anim = Animation::Get("data/Animaciones/Flying.obj");
+	Animation* anim = Animation::Get("data/Animaciones/Flying.skanim");
 	anim->assignTime(time);
 
 	skinning->enable();
