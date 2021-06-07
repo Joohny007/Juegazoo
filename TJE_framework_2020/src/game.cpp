@@ -94,11 +94,11 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 
 void RenderFirstCam(Camera* camera)
 {
-	Vector3 eye = player1.model * Vector3(0.0f, 8.0f, -5.5f);
+	/*Vector3 eye = player1.model * Vector3(0.0f, 8.0f, -5.5f);
 	Vector3 center = player1.model * Vector3(0.0f, 0.0f, 10.0f);
 	Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
 
-	camera->lookAt(eye, center, up);
+	camera->lookAt(eye, center, up);*/
 	//camera->enable();
 
 	shader->enable();
@@ -126,11 +126,11 @@ void RenderSecondCam(Camera* player2Cam)
 	/*Vector3 eye = pos + Vector3(0.0f, 8.0f, -5.5f);
 	Vector3 center = pos;
 	Vector3 up = Vector3(0.0f, 1.0f, 0.0f);*/
-	Vector3 eye = player2.model * Vector3(0.0f, 8.0f, -5.5f);
+	/*Vector3 eye = player2.model * Vector3(0.0f, 8.0f, -5.5f);
 	Vector3 center = player2.model * Vector3(0.0f, 0.0f, 10.0f);
 	Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
 
-	player2Cam->lookAt(eye, center, up);
+	player2Cam->lookAt(eye, center, up);*/
 	/*player2Cam.enable();*/
 
 	shader->enable();
@@ -179,10 +179,10 @@ void Game::render(void)
 	}
 
 	//set flags
-	glDisable(GL_BLEND);
+	/*glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
-   
+   */
 
 	if (!shader) return;
 	
