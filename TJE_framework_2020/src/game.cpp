@@ -93,6 +93,9 @@ void RenderFirstCam(Camera* camera)
 
 	camera->lookAt(eye, center, up);*/
 	//camera->enable();
+	glViewport(Game::instance->window_width / 2, 0, Game::instance->window_width / 2, Game::instance->window_height);
+	world.renderSky(camera);
+	world.renderSea(camera);
 
 	if (!free_camera) {
 		player1.model.setTranslation(player1.pos.x, player1.pos.y, player1.pos.z);
@@ -114,7 +117,6 @@ void RenderFirstCam(Camera* camera)
 	world.renderBlocks(renderBoundings, camera);
 	world.renderPenguins(renderBoundings, camera);
 
-	glViewport(Game::instance->window_width / 2, 0, Game::instance->window_width / 2, Game::instance->window_height);
 	shader->disable();
 }
 
@@ -132,6 +134,10 @@ void RenderSecondCam(Camera* player2Cam)
 
 	player2Cam->lookAt(eye, center, up);*/
 	/*player2Cam.enable();*/
+	glViewport(0, 0, Game::instance->window_width / 2, Game::instance->window_height);
+
+	world.renderSky(player2Cam);
+	world.renderSea(player2Cam);
 
 	if (!free_camera) {
 		player2.model.setTranslation(player2.pos.x, player2.pos.y, player2.pos.z);
@@ -153,7 +159,6 @@ void RenderSecondCam(Camera* player2Cam)
 	world.renderBlocks(renderBoundings, player2Cam);
 	world.renderPenguins(renderBoundings, player2Cam);
 
-	glViewport(0, 0, Game::instance->window_width / 2, Game::instance->window_height);
 	shader->disable();
 }
 //what to do when the image has to be draw
@@ -169,10 +174,7 @@ void Game::render(void)
 	camera->enable();
 	player2Cam->enable();
 
-	world.renderSky(camera);
-	world.renderSea(camera);
-	world.renderSky(player2Cam);
-	world.renderSea(player2Cam);
+	
 	/*if (!free_camera) {
 		player1.model.setTranslation(player1.pos.x, player1.pos.y, player1.pos.z);
 		Vector3 eye1 = player1.model * Vector3(0.0f, 8.0f, -5.5f);
@@ -186,10 +188,10 @@ void Game::render(void)
 	}*/
 
 	//set flags
-	/*glDisable(GL_BLEND);
+	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
-   */
+   
 
 	if (!shader) return;
 	
@@ -217,7 +219,7 @@ void Game::render(void)
 	//disable shader
 	//shader->disable();
 
-	Animation* anim = Animation::Get("data/Animaciones/Flying.skanim");
+	/*Animation* anim = Animation::Get("data/Animaciones/Flying");
 	anim->assignTime(time);
 
 	skinning->enable();
@@ -229,7 +231,7 @@ void Game::render(void)
 	skinning->setUniform("u_model", player1.model);
 	skinning->setUniform("u_texture_tiling", 1.0f);
 	player1.mesh->renderAnimated(GL_TRIANGLES, &anim->skeleton);
-	skinning->disable();
+	skinning->disable();*/
 
 	//Draw the floor grid
 	drawGrid();
