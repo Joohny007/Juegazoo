@@ -67,14 +67,20 @@ void World::inicializePlayers()
 
 }
 
-void World::renderPlayers(Camera* camera)
+void World::renderPlayer1(Camera* camera)
 {
-	for (int i = 0; i < players.size(); i++) {
-		this->players[i].render(camera);
-	}
+
+	this->players[0].render(camera);
 	this->players[0].model.setTranslation(10, 2, 5);
+}
+
+void World::renderPlayer2(Camera* camera)
+{
+
+	this->players[1].render(camera);
 	this->players[1].model.setTranslation(40, 2, 5);
 }
+
 
 void World::inicializeSky()
 {
@@ -191,22 +197,22 @@ void World::penguinCollision(Vector3 targetPos, float elapsed_time)
 
 			if (player.dir == Player::type::LEFT) {
 				currentPingu->dir = Penguin::type::LEFT;
-				currentPingu->model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));
+				//currentPingu->model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));
 				currentPingu->model.translate(-easeOutQuint(4 * elapsed_time), 0, 0);
 			}
 			else if (player.dir == Player::type::RIGHT) {
 				currentPingu->dir = Penguin::type::RIGHT;
-				currentPingu->model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));
+				//currentPingu->model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));
 				currentPingu->model.translate(easeOutQuint(4 * elapsed_time), 0, 0);
 			}
 			else if (player.dir == Player::type::FORWARD) {
 				currentPingu->dir = Penguin::type::FORWARD;
-				currentPingu->model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));
+				//currentPingu->model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));
 				currentPingu->model.translate(0, 0, -easeOutQuint(4 * elapsed_time));
 			}
 			else if (player.dir == Player::type::BACKWARD) {
 				currentPingu->dir = Penguin::type::BACKWARD;
-				currentPingu->model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));
+				//currentPingu->model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));
 				currentPingu->model.translate(0, 0, easeOutQuint(4 * elapsed_time));
 			}
 			targetPos = player.pos - push_away;

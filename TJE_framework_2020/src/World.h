@@ -43,7 +43,8 @@ public:
 	void inicializeBlocks();
 	void renderBlocks(bool renderBoundings, Camera* camera);
 	void inicializePlayers();
-	void renderPlayers(Camera* camera);
+	void renderPlayer1(Camera* camera);
+	void renderPlayer2(Camera* camera);
 	void inicializeSky();
 	void renderSky(Camera* camera);
 	void inicializeSea();
