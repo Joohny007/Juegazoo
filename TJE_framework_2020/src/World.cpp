@@ -185,55 +185,58 @@ float World::easeOutQuint(float x) {
 
 void World::penguinCollision(Vector3 targetPos, float elapsed_time)
 {
-	for (int i = 0; i < penguins.size(); i++) {
-		Penguin* currentPingu = &penguins[i];
+	for (int m = 0; m < players.size(); m++) {
+		Player& player = players[m];
+		for (int i = 0; i < penguins.size(); i++) {
+			Penguin* currentPingu = &penguins[i];
 
-		Vector3 characterTargetCenter = targetPos + Vector3(0, 1, 0);
-		Vector3 coll;
-		Vector3 collmore;
+			Vector3 characterTargetCenter = targetPos + Vector3(0, 1, 0);
+			Vector3 coll;
+			Vector3 collmore;
 
-		if (currentPingu->mesh->testSphereCollision(currentPingu->model, characterTargetCenter, 0.5, coll, collmore)) {
-			Vector3 push_away = normalize(coll - characterTargetCenter) * elapsed_time;
+			if (currentPingu->mesh->testSphereCollision(currentPingu->model, characterTargetCenter, 0.5, coll, collmore)) {
+				Vector3 push_away = normalize(coll - characterTargetCenter) * elapsed_time;
 
-			if (player.dir == Player::type::LEFT) {
-				currentPingu->dir = Penguin::type::LEFT;
-				//currentPingu->model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));
-				currentPingu->model.translate(-easeOutQuint(4 * elapsed_time), 0, 0);
-			}
-			else if (player.dir == Player::type::RIGHT) {
-				currentPingu->dir = Penguin::type::RIGHT;
-				//currentPingu->model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));
-				currentPingu->model.translate(easeOutQuint(4 * elapsed_time), 0, 0);
-			}
-			else if (player.dir == Player::type::FORWARD) {
-				currentPingu->dir = Penguin::type::FORWARD;
-				//currentPingu->model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));
-				currentPingu->model.translate(0, 0, -easeOutQuint(4 * elapsed_time));
-			}
-			else if (player.dir == Player::type::BACKWARD) {
-				currentPingu->dir = Penguin::type::BACKWARD;
-				//currentPingu->model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));
-				currentPingu->model.translate(0, 0, easeOutQuint(4 * elapsed_time));
-			}
-			targetPos = player.pos - push_away;
+				if (player.dir == Player::type::LEFT) {
+					currentPingu->dir = Penguin::type::LEFT;
+					//currentPingu->model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));
+					currentPingu->model.translate(-easeOutQuint(4 * elapsed_time), 0, 0);
+				}
+				else if (player.dir == Player::type::RIGHT) {
+					currentPingu->dir = Penguin::type::RIGHT;
+					//currentPingu->model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));
+					currentPingu->model.translate(easeOutQuint(4 * elapsed_time), 0, 0);
+				}
+				else if (player.dir == Player::type::FORWARD) {
+					currentPingu->dir = Penguin::type::FORWARD;
+					//currentPingu->model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));
+					currentPingu->model.translate(0, 0, -easeOutQuint(4 * elapsed_time));
+				}
+				else if (player.dir == Player::type::BACKWARD) {
+					currentPingu->dir = Penguin::type::BACKWARD;
+					//currentPingu->model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));
+					currentPingu->model.translate(0, 0, easeOutQuint(4 * elapsed_time));
+				}
+				targetPos = player.pos - push_away;
 
-			targetPos.y = currentPingu->model.getTranslation().y;
+				targetPos.y = currentPingu->model.getTranslation().y;
+			}
+
+			for (int j = i + 1; j < penguins.size(); j++) {
+				Penguin* currentPingu2 = &penguins[j];
+
+				Vector3 penguinTargetCenter = currentPingu->pos + Vector3(0, 1, 0);
+				Vector3 coll2;
+				Vector3 collmore2;
+
+				if (currentPingu2->mesh->testSphereCollision(currentPingu2->model, penguinTargetCenter, 0.5, coll2, collmore2)) {
+					Vector3 push_away = normalize(coll2 - penguinTargetCenter) * elapsed_time;
+
+					currentPingu->pos = currentPingu->pos - push_away;
+
+					currentPingu->pos.y = currentPingu2->model.getTranslation().y;
+				}
+			}
 		}
-
-		/*for (int j = 0; j < penguins.size(); j++) {
-			Penguin* currentPingu2 = &penguins[j];
-
-			Vector3 penguinTargetCenter = currentPingu->pos + Vector3(0, 1, 0);
-			Vector3 coll2;
-			Vector3 collmore2;
-
-			if (currentPingu2->mesh->testSphereCollision(currentPingu2->model, penguinTargetCenter, 0.5, coll2, collmore2)) {
-				Vector3 push_away = normalize(coll2 - penguinTargetCenter) * elapsed_time;
-
-				currentPingu->pos = currentPingu->pos - push_away;
-
-				currentPingu->pos.y = currentPingu2->model.getTranslation().y;
-			}
-		}*/
 	}
 }

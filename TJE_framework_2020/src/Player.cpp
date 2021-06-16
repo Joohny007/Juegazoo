@@ -10,6 +10,7 @@ Player::Player()
 	this->shader = NULL;
 	this->texture = NULL;
 	this->dir = FORWARD;
+	this->kick = false;
 }
 Player::Player(int id)
 {
@@ -23,6 +24,7 @@ Player::Player(int id)
 	this->shader = NULL;
 	this->texture = NULL;
 	this->dir = FORWARD;
+	this->kick = false;
 }
 
 void Player::setPos(Vector3 pos)

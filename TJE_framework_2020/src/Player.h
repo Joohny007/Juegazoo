@@ -23,6 +23,7 @@ public:
     float rot_speed;
     float yaw;
     float dir;
+    bool kick;
     Vector3 pos;
     Matrix44 model;
     Matrix44 rot;

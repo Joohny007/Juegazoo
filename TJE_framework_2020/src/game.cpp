@@ -87,12 +87,6 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 
 void RenderFirstCam(Camera* camera, float time_float)
 {
-	/*Vector3 eye = player1.model * Vector3(0.0f, 8.0f, -5.5f);
-	Vector3 center = player1.model * Vector3(0.0f, 0.0f, 10.0f);
-	Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
-
-	camera->lookAt(eye, center, up);*/
-	//camera->enable();
 	glViewport(0, 0, Game::instance->window_width / 2, Game::instance->window_height);
 	
 	world.renderSky(camera);
@@ -113,28 +107,16 @@ void RenderFirstCam(Camera* camera, float time_float)
 	shader->setUniform("u_texture", textureMesh, 0);
 	shader->setUniform("u_model", Matrix44());
 	shader->setUniform("u_time", time);
+	shader->disable();
 
 	world.renderPlayer1(camera);
 	world.renderBlocks(renderBoundings, camera);
 	world.renderPenguins(renderBoundings, camera);
 
-	shader->disable();
 }
 
 void RenderSecondCam(Camera* player2Cam, float time_float)
 {
-	/*Camera player2Cam;*/
-
-	/*Vector3 pos = model.getTranslation();*/
-	/*Vector3 eye = pos + Vector3(0.0f, 8.0f, -5.5f);
-	Vector3 center = pos;
-	Vector3 up = Vector3(0.0f, 1.0f, 0.0f);*/
-	/*Vector3 eye = player2.model * Vector3(0.0f, 8.0f, -5.5f);
-	Vector3 center = player2.model * Vector3(0.0f, 0.0f, 10.0f);
-	Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
-
-	player2Cam->lookAt(eye, center, up);*/
-	/*player2Cam.enable();*/
 	glViewport(Game::instance->window_width / 2, 0, Game::instance->window_width / 2, Game::instance->window_height);
 
 	world.renderSky(player2Cam);
@@ -147,34 +129,40 @@ void RenderSecondCam(Camera* player2Cam, float time_float)
 		Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
 		player2Cam->lookAt(eye2, center2, up);
 	}
-	/*shader->enable();*/
+
 	Animation* anim = Animation::Get("data/Animaciones/mma_kick.skanim");
 	anim->assignTime(time_float);
 
-	skinning->enable();
+	if (player2.kick) {
+		skinning->enable();
 
-	skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
-	skinning->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
-	skinning->setUniform("u_texture", player2.texture, 0);
-	skinning->setUniform("u_time", time);
-	skinning->setUniform("u_model", player2.model);
-	skinning->setUniform("u_texture_tiling", 1.0f);
-	player2.mesh->renderAnimated(GL_TRIANGLES, &anim->skeleton);
+		skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
+		skinning->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
+		skinning->setUniform("u_texture", player2.texture, 0);
+		float a = world.easeOutQuint(20);
+		skinning->setUniform("u_time", a);
+		skinning->setUniform("u_model", player2.model);
+		skinning->setUniform("u_texture_tiling", 1.0f);
+		player2.mesh->renderAnimated(GL_TRIANGLES, &anim->skeleton);
 
+		skinning->disable();
+		player2.kick = false;
+	}
+	else {
+		shader->enable();
 
-	//upload uniforms
-	/*shader->setUniform("u_color", Vector4(1, 1, 1, 1));
-	shader->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
-	shader->setUniform("u_texture", textureMesh, 0);
-	shader->setUniform("u_model", Matrix44());
-	shader->setUniform("u_time", time);*/
+		shader->setUniform("u_color", Vector4(1, 1, 1, 1));
+		shader->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
+		shader->setUniform("u_texture", textureMesh, 0);
+		shader->setUniform("u_model", Matrix44());
+		shader->setUniform("u_time", time);
 
-	//world.renderPlayer2(player2Cam);
+		world.renderPlayer2(player2Cam);
+		shader->disable();
+	}
 	world.renderBlocks(renderBoundings, player2Cam);
 	world.renderPenguins(renderBoundings, player2Cam);
 
-	//shader->disable();
-	skinning->disable();
 }
 //what to do when the image has to be draw
 void Game::render(void)
@@ -189,19 +177,6 @@ void Game::render(void)
 	camera->enable();
 	player2Cam->enable();
 
-	
-	/*if (!free_camera) {
-		player1.model.setTranslation(player1.pos.x, player1.pos.y, player1.pos.z);
-		Vector3 eye1 = player1.model * Vector3(0.0f, 8.0f, -5.5f);
-		Vector3 center1 = player1.model * Vector3(0.0f, 0.0f, 10.0f);
-		Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
-		camera->lookAt(eye1, center1, up);
-		player2.model.setTranslation(player2.pos.x, player2.pos.y, player2.pos.z);
-		Vector3 eye2 = player2.model * Vector3(0.0f, 8.0f, -5.5f);
-		Vector3 center2 = player2.model * Vector3(0.0f, 0.0f, 10.0f);
-		player2Cam->lookAt(eye2, center2, up);
-	}*/
-
 	//set flags
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
@@ -209,16 +184,6 @@ void Game::render(void)
    
 
 	if (!shader) return;
-	
-	//enable shader
-	//shader->enable();
-
-	////upload uniforms
-	//shader->setUniform("u_color", Vector4(1,1,1,1));
-	//shader->setUniform("u_viewprojection", camera->viewprojection_matrix );
-	//shader->setUniform("u_texture", textureMesh, 0);
-	//shader->setUniform("u_model", Matrix44());
-	//shader->setUniform("u_time", time);
 
 	//do the draw call
 	//mesh->render( GL_TRIANGLES );
@@ -300,6 +265,9 @@ void Game::update(double seconds_elapsed)
 				player1.dir = Player::type::RIGHT;
 				/*world.player.model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));*/
 			}
+			if (Input::isKeyPressed(SDL_SCANCODE_F)) {
+				player1.kick = true;
+			}
 
 			if (Input::isKeyPressed(SDL_SCANCODE_Q)) player1.yaw -= rot_speed1;
 			if (Input::isKeyPressed(SDL_SCANCODE_E)) player1.yaw += rot_speed1;
@@ -337,6 +305,9 @@ void Game::update(double seconds_elapsed)
 				player2.playerSpeed = player2.playerSpeed + (player2Right * -speed2);
 				player2.dir = Player::type::RIGHT;
 				/*world.player.model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));*/
+			}
+			if (Input::isKeyPressed(SDL_SCANCODE_P)) {
+				player2.kick = true;
 			}
 
 			if (Input::isKeyPressed(SDL_SCANCODE_O)) player2.yaw -= rot_speed2;
