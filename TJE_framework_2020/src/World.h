@@ -51,6 +51,7 @@ public:
 	void renderSea(Camera* camera);
 	float isPlayeronaBlock(Vector3 playerpos);
 	void BlockVibration( float et);
-	void penguinCollision(Vector3 targetPos, float elapsed_time);
+	void penguinCollision(Player& player, Vector3& targetPos, float elapsed_time);
 	float easeOutQuint(float x);
+	void kickAnimation(Player& player, Camera* camera, Shader* skinning, Shader* shader, Texture* textureMesh);
 };

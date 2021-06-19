@@ -16,6 +16,8 @@ public:
     };
 	int id;
     float dir;
+    float speed;
+    Vector3 penguinSpeed;
     Matrix44 model;
     Mesh* mesh;
     Texture* texture;

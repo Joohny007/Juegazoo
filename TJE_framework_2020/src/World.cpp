@@ -1,4 +1,5 @@
 #include "World.h"
+#include "animation.h"
 
 World::World(int x)
 {
@@ -183,60 +184,110 @@ float World::easeOutQuint(float x) {
 	return 1 - pow(1 - x, 5);
 }
 
-void World::penguinCollision(Vector3 targetPos, float elapsed_time)
+void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_time)
 {
-	for (int m = 0; m < players.size(); m++) {
-		Player& player = players[m];
-		for (int i = 0; i < penguins.size(); i++) {
-			Penguin* currentPingu = &penguins[i];
+	for (int i = 0; i < penguins.size(); i++) {
+		Penguin* currentPingu = &penguins[i];
+		float speed_peng = currentPingu->speed * elapsed_time;
 
-			Vector3 characterTargetCenter = targetPos + Vector3(0, 1, 0);
-			Vector3 coll;
-			Vector3 collmore;
+		Vector3& penguinFront = currentPingu->model.rotateVector(Vector3(0.0f, 0.0f, -1.0f));
+		Vector3& penguinRight = currentPingu->model.rotateVector(Vector3(1.0f, 0.0f, 0.0f));
 
-			if (currentPingu->mesh->testSphereCollision(currentPingu->model, characterTargetCenter, 0.5, coll, collmore)) {
-				Vector3 push_away = normalize(coll - characterTargetCenter) * elapsed_time;
+		Vector3 characterTargetCenter = targetPos + Vector3(0, 1, 0);
+		Vector3 coll;
+		Vector3 collmore;
 
-				if (player.dir == Player::type::LEFT) {
-					currentPingu->dir = Penguin::type::LEFT;
-					//currentPingu->model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));
-					currentPingu->model.translate(-easeOutQuint(4 * elapsed_time), 0, 0);
-				}
-				else if (player.dir == Player::type::RIGHT) {
-					currentPingu->dir = Penguin::type::RIGHT;
-					//currentPingu->model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));
-					currentPingu->model.translate(easeOutQuint(4 * elapsed_time), 0, 0);
-				}
-				else if (player.dir == Player::type::FORWARD) {
-					currentPingu->dir = Penguin::type::FORWARD;
-					//currentPingu->model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));
-					currentPingu->model.translate(0, 0, -easeOutQuint(4 * elapsed_time));
-				}
-				else if (player.dir == Player::type::BACKWARD) {
-					currentPingu->dir = Penguin::type::BACKWARD;
-					//currentPingu->model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));
-					currentPingu->model.translate(0, 0, easeOutQuint(4 * elapsed_time));
-				}
-				targetPos = player.pos - push_away;
+		if (currentPingu->mesh->testSphereCollision(currentPingu->model, characterTargetCenter, 0.5, coll, collmore)) {
+			Vector3 push_away = normalize(coll - characterTargetCenter) * elapsed_time;
 
-				targetPos.y = currentPingu->model.getTranslation().y;
+			currentPingu->penguinSpeed = Vector3(0, 0, 0);
+			if (player.dir == Player::type::LEFT) {
+				currentPingu->dir = Penguin::type::LEFT;
+				//currentPingu->model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));
+				currentPingu->model.translate(-easeOutQuint(4 * elapsed_time), 0, 0);
+				currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinFront * -speed_peng);
 			}
+			else if (player.dir == Player::type::RIGHT) {
+				currentPingu->dir = Penguin::type::RIGHT;
+				//currentPingu->model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));
+				currentPingu->model.translate(easeOutQuint(4 * elapsed_time), 0, 0);
+				currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinFront * speed_peng);
+			}
+			else if (player.dir == Player::type::FORWARD) {
+				currentPingu->dir = Penguin::type::FORWARD;
+				//currentPingu->model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));
+				currentPingu->model.translate(0, 0, -easeOutQuint(4 * elapsed_time));
+				currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinRight * speed_peng);
+			}
+			else if (player.dir == Player::type::BACKWARD) {
+				currentPingu->dir = Penguin::type::BACKWARD;
+				//currentPingu->model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));
+				currentPingu->model.translate(0, 0, easeOutQuint(4 * elapsed_time));
+				currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinRight * -speed_peng);
+			}
+			targetPos = player.pos - push_away;
 
-			for (int j = i + 1; j < penguins.size(); j++) {
-				Penguin* currentPingu2 = &penguins[j];
+			targetPos.y = currentPingu->model.getTranslation().y;
+		}
 
-				Vector3 penguinTargetCenter = currentPingu->pos + Vector3(0, 1, 0);
-				Vector3 coll2;
-				Vector3 collmore2;
+		Vector3& pengTargetPos = currentPingu->pos + currentPingu->penguinSpeed;
 
-				if (currentPingu2->mesh->testSphereCollision(currentPingu2->model, penguinTargetCenter, 0.5, coll2, collmore2)) {
-					Vector3 push_away = normalize(coll2 - penguinTargetCenter) * elapsed_time;
+		for (int j = i + 1; j < penguins.size(); j++) {
+			Penguin* penguin2 = &penguins[j];
+			float penguin_radius2 = 0.5;
 
-					currentPingu->pos = currentPingu->pos - push_away;
+			Vector3& penguin2Front = penguin2->model.rotateVector(Vector3(0.0f, 0.0f, -1.0f));
+			Vector3& penguin2Right = penguin2->model.rotateVector(Vector3(1.0f, 0.0f, 0.0f));
 
-					currentPingu->pos.y = currentPingu2->model.getTranslation().y;
-				}
+
+			Vector3 penguinTargetCenter = pengTargetPos + Vector3(0, 1, 0);
+			Vector3 coll2;
+			Vector3 collmore2;
+			if (penguin2->mesh->testSphereCollision(penguin2->model, penguinTargetCenter, 2, coll2, collmore2)) {
+				Vector3 push_away = normalize(coll2 - penguinTargetCenter) * elapsed_time;
+
+				pengTargetPos = currentPingu->pos - push_away;
+
+				pengTargetPos.y = penguin2->model.getTranslation().y;
+
+				currentPingu->pos = pengTargetPos;
 			}
 		}
 	}
+}
+
+void World::kickAnimation(Player& player, Camera* camera, Shader* skinning, Shader* shader, Texture* textureMesh)
+{
+	Animation* anim = Animation::Get("data/Animaciones/mma_kick.skanim");
+	anim->duration = 20;
+
+	if (player.kick) {
+		anim->assignTime(anim->duration, false);
+		skinning->enable();
+
+		skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
+		skinning->setUniform("u_viewprojection", camera->viewprojection_matrix);
+		skinning->setUniform("u_texture", player.texture, 0);
+		float a = easeOutQuint(20);
+		skinning->setUniform("u_time", a);
+		skinning->setUniform("u_model", player.model);
+		skinning->setUniform("u_texture_tiling", 1.0f);
+		player.mesh->renderAnimated(GL_TRIANGLES, &anim->skeleton);
+
+		skinning->disable();
+	}
+	else {
+		shader->enable();
+
+		shader->setUniform("u_color", Vector4(1, 1, 1, 1));
+		shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
+		shader->setUniform("u_texture", textureMesh, 0);
+		shader->setUniform("u_model", Matrix44());
+		shader->setUniform("u_time", time);
+
+		renderPlayer2(camera);
+		renderPlayer1(camera);
+		shader->disable();
+	}
+	player.kick = false;
 }
