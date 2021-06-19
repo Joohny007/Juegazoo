@@ -249,9 +249,40 @@ void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_t
 				pengTargetPos = currentPingu->pos - push_away;
 
 				pengTargetPos.y = penguin2->model.getTranslation().y;
-
 				currentPingu->pos = pengTargetPos;
+
 			}
+			//float checker = isPlayeronaBlock(pengTargetPos);
+			//if (checker == -5) {
+			//	pengTargetPos.y -= currentPingu->speed * elapsed_time;
+			//	
+			//}
+			//else if (checker + 2 > currentPingu->pos.y) {
+			//	if (checker + 2 - currentPingu->pos.y > 1) {
+			//		float checker2 = isPlayeronaBlock(currentPingu->pos);
+			//		if (checker2 - currentPingu->pos.y > 2) {
+			//			currentPingu->pos.y -= currentPingu->speed * elapsed_time;
+			//		}
+			//		else {
+			//			currentPingu->pos.y = checker2 + 2;
+			//		}
+
+			//	}
+			//	else {
+			//		pengTargetPos.y = checker + 2;
+			//		currentPingu->pos = pengTargetPos;
+			//	}
+			//}
+			//else {
+			//	if (currentPingu->pos.y - currentPingu->speed * elapsed_time > checker + 2) {
+			//		pengTargetPos.y -= currentPingu->speed * elapsed_time;
+			//		currentPingu->pos = pengTargetPos;
+			//	}
+			//	else {
+			//		pengTargetPos.y = checker + 2;
+			//		currentPingu->pos = pengTargetPos;
+			//	}
+			//}
 		}
 	}
 }

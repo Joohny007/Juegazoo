@@ -327,6 +327,16 @@ void Game::update(double seconds_elapsed)
 				}
 			}
 		}
+		for (int i = 0; i < world.penguins.size(); i++) {
+			Penguin& penguin = world.penguins[i];
+			float checker = world.isPlayeronaBlock(penguin.pos);
+			if (checker == -5) {
+				penguin.pos.y -= penguin.speed * elapsed_time;
+			}
+			else {
+				penguin.pos.y = checker;
+			}
+		}
 
 		world.BlockVibration(elapsed_time);
 	}
