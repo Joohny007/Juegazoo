@@ -100,15 +100,6 @@ void RenderFirstCam(Camera* camera, float time_float)
 		Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
 		camera->lookAt(eye1, center1, up);
 	}
-	shader->enable();
-
-	//upload uniforms
-	shader->setUniform("u_color", Vector4(1, 1, 1, 1));
-	shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
-	shader->setUniform("u_texture", textureMesh, 0);
-	shader->setUniform("u_model", Matrix44());
-	shader->setUniform("u_time", time);
-	shader->disable();
 
 	world.kickAnimation(player1, camera, skinning, shader, textureMesh);
 
