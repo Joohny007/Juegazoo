@@ -100,8 +100,9 @@ void RenderFirstCam(Camera* camera, float time_float)
 		Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
 		camera->lookAt(eye1, center1, up);
 	}
+	Animation* anim = Animation::Get("data/Animaciones/Skanim/mma_kick_woman.skanim");
 
-	world.kickAnimation(player1, camera, skinning, shader, textureMesh);
+	world.kickAnimation(player1, camera, skinning, shader, textureMesh, anim);
 
 	world.renderBlocks(renderBoundings, camera);
 	world.renderPenguins(renderBoundings, camera);
@@ -123,8 +124,9 @@ void RenderSecondCam(Camera* player2Cam, float time_float)
 		Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
 		player2Cam->lookAt(eye2, center2, up);
 	}
+	Animation* anim = Animation::Get("data/Animaciones/Skanim/mma_kick.skanim");
 
-	world.kickAnimation(player2, player2Cam, skinning, shader, textureMesh);
+	world.kickAnimation(player2, player2Cam, skinning, shader, textureMesh, anim);
 
 	world.renderBlocks(renderBoundings, player2Cam);
 	world.renderPenguins(renderBoundings, player2Cam);

@@ -287,9 +287,8 @@ void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_t
 	}
 }
 
-void World::kickAnimation(Player& player, Camera* camera, Shader* skinning, Shader* shader, Texture* textureMesh)
+void World::kickAnimation(Player& player, Camera* camera, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* anim)
 {
-	Animation* anim = Animation::Get("data/Animaciones/mma_kick.skanim");
 	anim->duration = 20;
 
 	if (player.kick) {

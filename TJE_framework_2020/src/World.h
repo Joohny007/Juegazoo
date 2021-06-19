@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "Block.h"
 #include "Penguin.h"
+#include "animation.h"
 
 class World 
 {
@@ -53,5 +54,5 @@ public:
 	void BlockVibration( float et);
 	void penguinCollision(Player& player, Vector3& targetPos, float elapsed_time);
 	float easeOutQuint(float x);
-	void kickAnimation(Player& player, Camera* camera, Shader* skinning, Shader* shader, Texture* textureMesh);
+	void kickAnimation(Player& player, Camera* camera, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* anim);
 };
