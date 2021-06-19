@@ -2,7 +2,7 @@
 
 Player::Player()
 {
-	this->speed = 1.0f;
+	this->speed = 10.0f;
 	this->rot_speed = 120.0f;
 	this->yaw = 3;
 	this->pos = model.getTranslation();
@@ -10,12 +10,13 @@ Player::Player()
 	this->shader = NULL;
 	this->texture = NULL;
 	this->dir = FORWARD;
+	this->kick = false;
 }
 Player::Player(int id)
 {
 	//this->model.setIdentity();
 	this->id = id;
-	this->speed = 1.0f;
+	this->speed = 10.0f;
 	this->rot_speed = 120.0f;
 	this->yaw = 3;
 	this->pos = model.getTranslation();
@@ -23,6 +24,7 @@ Player::Player(int id)
 	this->shader = NULL;
 	this->texture = NULL;
 	this->dir = FORWARD;
+	this->kick = false;
 }
 
 void Player::setPos(Vector3 pos)
@@ -43,7 +45,7 @@ void Player::inicialize()
 void Player::inicialize2()
 {
 	//enable shader and pass uniforms
-	this->mesh = Mesh::Get("data/GiantGeneralPack/People_T/man-viking_33.obj");
+	this->mesh = Mesh::Get("data/GiantGeneralPack/People_T/Viking_nice.mesh");
 	this->texture = Texture::Get("data/GiantGeneralPack/color-atlas-new.png"); 
 	// example of shader loading using the shaders manager
 	this->shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");

@@ -3,6 +3,7 @@
 Penguin::Penguin(int id, Vector3 pos)
 {
 	this->id = id;
+	this->speed = 10.0f;
 	this->model.translate(pos.x, pos.y, pos.z);
 	this->dir = BACKWARD;
 	this->pos = pos;
@@ -11,7 +12,7 @@ Penguin::Penguin(int id, Vector3 pos)
 void Penguin::inicialize()
 {
 	//enable shader and pass uniforms
-	this->mesh = Mesh::Get("data/GiantGeneralPack/Animals_T/penguin_20.obj");
+	this->mesh = Mesh::Get("data/GiantGeneralPack/Animals_T/penguin.mesh");
 	this->texture = Texture::Get("data/GiantGeneralPack/color-atlas-new.png"); //JOAN CALLATE LA BOCA
 	// example of shader loading using the shaders manager
 	this->shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");

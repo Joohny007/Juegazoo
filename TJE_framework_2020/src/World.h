@@ -43,13 +43,15 @@ public:
 	void inicializeBlocks();
 	void renderBlocks(bool renderBoundings, Camera* camera);
 	void inicializePlayers();
-	void renderPlayers(Camera* camera);
+	void renderPlayer1(Camera* camera);
+	void renderPlayer2(Camera* camera);
 	void inicializeSky();
 	void renderSky(Camera* camera);
 	void inicializeSea();
 	void renderSea(Camera* camera);
 	float isPlayeronaBlock(Vector3 playerpos);
 	void BlockVibration( float et);
-	void penguinCollision(Vector3 targetPos, float elapsed_time);
+	void penguinCollision(Player& player, Vector3& targetPos, float elapsed_time);
 	float easeOutQuint(float x);
+	void kickAnimation(Player& player, Camera* camera, Shader* skinning, Shader* shader, Texture* textureMesh);
 };
