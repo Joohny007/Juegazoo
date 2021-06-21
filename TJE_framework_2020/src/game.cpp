@@ -23,7 +23,9 @@ Texture* textureMesh = NULL;
 Shader* shader = NULL;
 Shader* skinning = NULL;
 Animation* anim = NULL;
+Animation* anim_woman = NULL;
 Animation* walk_anim = NULL;
+Animation* walk_anim_woman = NULL;
 float counter = 0.0f;
 float angle = 0;
 float mouse_speed = 10.0f;
@@ -86,7 +88,7 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	auto start_time = std::chrono::system_clock::now();
 }
 
-void RenderFirstCam(Camera* camera, float time_float)
+void RenderFirstCam(Camera* camera, Camera* player2Cam, float time_float)
 {
 	glViewport(0, 0, Game::instance->window_width / 2, Game::instance->window_height);
 	
@@ -104,18 +106,21 @@ void RenderFirstCam(Camera* camera, float time_float)
 		Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
 		camera->lookAt(eye1, center1, up);
 	}
-	Animation* anim = Animation::Get("data/Animaciones/Skanim/mma_kick_woman.skanim");
-	Animation* walk_anim = Animation::Get("data/Animaciones/Skanim/walking_woman.skanim");
+	Animation* anim_woman = Animation::Get("data/Animaciones/Skanim/mma_kick_woman.skanim");
+	Animation* walk_anim_woman = Animation::Get("data/Animaciones/Skanim/walking_woman.skanim");
 
-	world.kickAnimation(player1, camera, skinning, shader, textureMesh, anim);
-	world.moving(player1, camera, skinning, textureMesh, walk_anim);
+
+	world.moving(player1, camera, player2Cam, skinning, shader, textureMesh, walk_anim_woman, time_float);
+
+
+	world.kickAnimation(player1, camera, player2Cam, skinning, anim_woman, time_float);
 
 	world.renderBlocks(renderBoundings, camera);
 	world.renderPenguins(renderBoundings, camera);
 
 }
 
-void RenderSecondCam(Camera* player2Cam, float time_float)
+void RenderSecondCam(Camera* camera, Camera* player2Cam, float time_float)
 {
 	glViewport(Game::instance->window_width / 2, 0, Game::instance->window_width / 2, Game::instance->window_height);
 
@@ -135,9 +140,10 @@ void RenderSecondCam(Camera* player2Cam, float time_float)
 	}
 	Animation* anim = Animation::Get("data/Animaciones/Skanim/mma_kick.skanim");
 	Animation* walk_anim = Animation::Get("data/Animaciones/Skanim/walking.skanim");
-
-	world.kickAnimation(player2, player2Cam, skinning, shader, textureMesh, anim);
-	world.moving(player2, player2Cam, skinning, textureMesh, walk_anim);
+	walk_anim->duration = 1.03;
+	
+	world.moving(player2, camera, player2Cam, skinning, shader, textureMesh, walk_anim, time_float);
+	world.kickAnimation(player2, camera, player2Cam, skinning, anim, time_float);
 
 	world.renderBlocks(renderBoundings, player2Cam);
 	world.renderPenguins(renderBoundings, player2Cam);
@@ -172,8 +178,8 @@ void Game::render(void)
 	world.renderBlocks(renderBoundings);
 	world.renderPenguins(renderBoundings);*/
 
-	RenderFirstCam(camera, time);
-	RenderSecondCam(player2Cam, time);
+	RenderFirstCam(camera, player2Cam, time);
+	RenderSecondCam(camera, player2Cam, time);
 
 	//disable shader
 	//shader->disable();
@@ -228,28 +234,33 @@ void Game::update(double seconds_elapsed)
 			player1.playerSpeed = player1.playerSpeed + (player1Front * -speed1);
 			player1.dir = Player::type::FORWARD;
 			player1.moving = true;
+			time = 0;
 			/*world.player.model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));*/
 		}
 		if (Input::isKeyPressed(SDL_SCANCODE_S)) {
 			player1.playerSpeed = player1.playerSpeed + (player1Front * speed1);
 			player1.dir = Player::type::BACKWARD;
 			player1.moving = true;
+			time = 0;
 			/*world.player.model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));*/
 		}
 		if (Input::isKeyPressed(SDL_SCANCODE_A)) {
 			player1.playerSpeed = player1.playerSpeed + (player1Right * speed1);
 			player1.dir = Player::type::LEFT;
 			player1.moving = true;
+			time = 0;
 			/*world.player.model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));*/
 		}
 		if (Input::isKeyPressed(SDL_SCANCODE_D)) {
 			player1.playerSpeed = player1.playerSpeed + (player1Right * -speed1);
 			player1.dir = Player::type::RIGHT;
 			player1.moving = true;
+			time = 0;
 			/*world.player.model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));*/
 		}
 		if (Input::wasKeyPressed(SDL_SCANCODE_F)) {
 			player1.kick = true;
+			time = 0;
 		}
 
 		if (Input::isKeyPressed(SDL_SCANCODE_Q)) player1.yaw -= rot_speed1;
