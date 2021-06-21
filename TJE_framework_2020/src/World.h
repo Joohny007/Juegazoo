@@ -9,6 +9,7 @@
 #include "Block.h"
 #include "Penguin.h"
 #include "animation.h"
+#include "game.h"
 
 class World 
 {

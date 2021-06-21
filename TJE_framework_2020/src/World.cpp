@@ -26,12 +26,14 @@ void World::renderPenguins(bool renderBoundings, Camera* camera)
 {
 	for (int id = 0; id < max_blocks; id++) {
 		Penguin* currentPingu = &this->penguins[id];
-		this->penguins[id].render(camera);
-		this->penguins[id].pos = this->penguins[id].model.getTranslation();
+		currentPingu->render(camera);
+		//currentPingu->pos = currentPingu->model.getTranslation();
+		currentPingu->model.setTranslation(currentPingu->pos.x, currentPingu->pos.y, currentPingu->pos.z);
+		currentPingu->model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));
 		//this->penguins[id].model.translate(this->penguins[id].pos.x, this->penguins[id].pos.y, this->penguins[id].pos.z);
 
 		if (renderBoundings) {
-			this->penguins[id].mesh->renderBounding(this->penguins[id].model);
+			currentPingu->mesh->renderBounding(this->penguins[id].model);
 		}
 	}
 }
@@ -124,11 +126,17 @@ void World::renderSea(Camera* camera)
 	
 
 	//enable shader and pass uniforms
-
 	sea_shader->enable();
-	sea_shader->setUniform("u_model", model);
+	sea_shader->setUniform("u_color", Vector4(1.0, 1.0, 1.0, 1.0));
 	sea_shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
-	sea_shader->setTexture("u_texture", sea_tex->texture_id);
+	sea_shader->setUniform("u_texture", sea_tex, 0);
+	sea_shader->setUniform("u_detail_texture", Texture::Get("data/water_normalmap.tga"), 1);
+	sea_shader->setUniform("u_time", Game::instance->time);
+	sea_shader->setUniform("u_camera_position", camera->eye);
+	sea_shader->setUniform("u_model", model);
+	sea_shader->setUniform("u_texture_tiling", 1.0f);
+	sea_shader->setUniform("u_fog_settings", Vector2(0.0f, 2000.0f));
+
 
 
 	//render the mesh using the shader

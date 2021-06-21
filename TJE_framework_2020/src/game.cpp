@@ -90,7 +90,10 @@ void RenderFirstCam(Camera* camera, float time_float)
 	glViewport(0, 0, Game::instance->window_width / 2, Game::instance->window_height);
 	
 	world.renderSky(camera);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	world.renderSea(camera);
+	glDisable(GL_BLEND);
 
 	if (!free_camera) {
 		player1.model.setTranslation(player1.pos.x, player1.pos.y, player1.pos.z);
@@ -114,7 +117,10 @@ void RenderSecondCam(Camera* player2Cam, float time_float)
 	glViewport(Game::instance->window_width / 2, 0, Game::instance->window_width / 2, Game::instance->window_height);
 
 	world.renderSky(player2Cam);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	world.renderSea(player2Cam);
+	glDisable(GL_BLEND);
 
 	if (!free_camera) {
 		player1.model.setTranslation(player1.pos.x, player1.pos.y, player1.pos.z);
@@ -320,18 +326,21 @@ void Game::update(double seconds_elapsed)
 				}
 			}
 		}
+		world.BlockVibration(elapsed_time);
 		for (int i = 0; i < world.penguins.size(); i++) {
 			Penguin& penguin = world.penguins[i];
+			Vector3 trans = penguin.pos;
 			float checker = world.isPlayeronaBlock(penguin.pos);
 			if (checker == -5) {
 				penguin.pos.y -= penguin.speed * elapsed_time;
 			}
 			else {
-				penguin.pos.y = checker;
+				penguin.pos.y = checker + 2;
+				
 			}
 		}
 
-		world.BlockVibration(elapsed_time);
+		
 	}
 
 
