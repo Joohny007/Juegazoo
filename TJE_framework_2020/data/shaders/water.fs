@@ -27,6 +27,7 @@ void main()
 	vec3 textureNormal = mix(normal1, normal2, 0.5);
 
     vec3 N = normalize(vec3(0.0, 1.0, 0.0)); // normal
+	float dist = normalize(u_camera_position - v_world_position);
     vec3 E = -normalize(u_camera_position - v_world_position); // eye
 
     vec3 R = reflect(E,N);

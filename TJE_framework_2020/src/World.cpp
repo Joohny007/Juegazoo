@@ -115,7 +115,7 @@ void World::renderSky(Camera* camera)
 void World::inicializeSea()
 {
 	this->sea_mesh = Mesh::Get("data/agua.ASE");
-	this->sea_tex = Texture::Get("data/agua.tga");
+	this->sea_tex = Texture::Get("data/cielo.tga");
 	this->sea_shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
 }
 
@@ -126,6 +126,9 @@ void World::renderSea(Camera* camera)
 	
 
 	//enable shader and pass uniforms
+	sea_mesh->createSubdividedPlane(100000, 40, true);
+	sea_model.translate(camera->eye.x * 0.01, 0.0f, camera->eye.z * 0.01);
+
 	sea_shader->enable();
 	sea_shader->setUniform("u_color", Vector4(1.0, 1.0, 1.0, 1.0));
 	sea_shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
@@ -213,24 +216,28 @@ void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_t
 				currentPingu->dir = Penguin::type::LEFT;
 				//currentPingu->model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));
 				currentPingu->model.translate(-easeOutQuint(4 * elapsed_time), 0, 0);
+				currentPingu->pos = currentPingu->model.getTranslation();
 				currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinFront * -speed_peng);
 			}
 			else if (player.dir == Player::type::RIGHT) {
 				currentPingu->dir = Penguin::type::RIGHT;
 				//currentPingu->model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));
 				currentPingu->model.translate(easeOutQuint(4 * elapsed_time), 0, 0);
+				currentPingu->pos = currentPingu->model.getTranslation();
 				currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinFront * speed_peng);
 			}
 			else if (player.dir == Player::type::FORWARD) {
 				currentPingu->dir = Penguin::type::FORWARD;
 				//currentPingu->model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));
 				currentPingu->model.translate(0, 0, -easeOutQuint(4 * elapsed_time));
+				currentPingu->pos = currentPingu->model.getTranslation();
 				currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinRight * speed_peng);
 			}
 			else if (player.dir == Player::type::BACKWARD) {
 				currentPingu->dir = Penguin::type::BACKWARD;
 				//currentPingu->model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));
 				currentPingu->model.translate(0, 0, easeOutQuint(4 * elapsed_time));
+				currentPingu->pos = currentPingu->model.getTranslation();
 				currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinRight * -speed_peng);
 			}
 			targetPos = player.pos - push_away;
