@@ -24,6 +24,7 @@ public:
     float yaw;
     float dir;
     bool kick;
+    bool moving;
     Vector3 pos;
     Matrix44 model;
     Matrix44 rot;

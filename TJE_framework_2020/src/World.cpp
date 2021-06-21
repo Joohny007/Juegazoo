@@ -127,7 +127,7 @@ void World::renderSea(Camera* camera)
 
 	//enable shader and pass uniforms
 	sea_mesh->createSubdividedPlane(100000, 40, true);
-	sea_model.translate(camera->eye.x * 0.01, 0.0f, camera->eye.z * 0.01);
+	//sea_model.translate(camera->eye.x * 0.01, 0.0f, camera->eye.z * 0.01);
 
 	sea_shader->enable();
 	sea_shader->setUniform("u_color", Vector4(1.0, 1.0, 1.0, 1.0));
@@ -335,4 +335,47 @@ void World::kickAnimation(Player& player, Camera* camera, Shader* skinning, Shad
 		shader->disable();
 	}
 	player.kick = false;
+}
+
+void World::moving(Player& player, Camera* camera, Shader* skinning, Texture* textureMesh, Animation* anim)
+{
+	anim->duration = 20;
+
+	if(player.moving){
+		if (player.id == players[0].id) {
+			renderPlayer2(camera);
+
+			anim->assignTime(anim->duration);
+			skinning->enable();
+
+			skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
+			skinning->setUniform("u_viewprojection", camera->viewprojection_matrix);
+			skinning->setUniform("u_texture", player.texture, 0);
+			float a = easeOutQuint(20);
+			skinning->setUniform("u_time", time);
+			skinning->setUniform("u_model", player.model);
+			skinning->setUniform("u_texture_tiling", 1.0f);
+			player.mesh->renderAnimated(GL_TRIANGLES, &anim->skeleton);
+
+			skinning->disable();
+		}
+		else {
+			renderPlayer1(camera);
+
+			anim->assignTime(anim->duration);
+			skinning->enable();
+
+			skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
+			skinning->setUniform("u_viewprojection", camera->viewprojection_matrix);
+			skinning->setUniform("u_texture", player.texture, 0);
+			float a = easeOutQuint(20);
+			skinning->setUniform("u_time", time);
+			skinning->setUniform("u_model", player.model);
+			skinning->setUniform("u_texture_tiling", 1.0f);
+			player.mesh->renderAnimated(GL_TRIANGLES, &anim->skeleton);
+
+			skinning->disable();
+		}
+	}
+	player.moving = false;
 }

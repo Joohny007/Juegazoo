@@ -11,6 +11,7 @@ Player::Player()
 	this->texture = NULL;
 	this->dir = FORWARD;
 	this->kick = false;
+	this->moving = false;
 }
 Player::Player(int id)
 {

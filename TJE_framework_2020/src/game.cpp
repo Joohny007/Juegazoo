@@ -23,6 +23,7 @@ Texture* textureMesh = NULL;
 Shader* shader = NULL;
 Shader* skinning = NULL;
 Animation* anim = NULL;
+Animation* walk_anim = NULL;
 float counter = 0.0f;
 float angle = 0;
 float mouse_speed = 10.0f;
@@ -104,8 +105,10 @@ void RenderFirstCam(Camera* camera, float time_float)
 		camera->lookAt(eye1, center1, up);
 	}
 	Animation* anim = Animation::Get("data/Animaciones/Skanim/mma_kick_woman.skanim");
+	Animation* walk_anim = Animation::Get("data/Animaciones/Skanim/walking_woman.skanim");
 
 	world.kickAnimation(player1, camera, skinning, shader, textureMesh, anim);
+	world.moving(player1, camera, skinning, textureMesh, walk_anim);
 
 	world.renderBlocks(renderBoundings, camera);
 	world.renderPenguins(renderBoundings, camera);
@@ -131,8 +134,10 @@ void RenderSecondCam(Camera* player2Cam, float time_float)
 		player2Cam->lookAt(eye2, center2, up);
 	}
 	Animation* anim = Animation::Get("data/Animaciones/Skanim/mma_kick.skanim");
+	Animation* walk_anim = Animation::Get("data/Animaciones/Skanim/walking.skanim");
 
 	world.kickAnimation(player2, player2Cam, skinning, shader, textureMesh, anim);
+	world.moving(player2, player2Cam, skinning, textureMesh, walk_anim);
 
 	world.renderBlocks(renderBoundings, player2Cam);
 	world.renderPenguins(renderBoundings, player2Cam);
@@ -222,21 +227,25 @@ void Game::update(double seconds_elapsed)
 		if (Input::isKeyPressed(SDL_SCANCODE_W)) {
 			player1.playerSpeed = player1.playerSpeed + (player1Front * -speed1);
 			player1.dir = Player::type::FORWARD;
+			player1.moving = true;
 			/*world.player.model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));*/
 		}
 		if (Input::isKeyPressed(SDL_SCANCODE_S)) {
 			player1.playerSpeed = player1.playerSpeed + (player1Front * speed1);
 			player1.dir = Player::type::BACKWARD;
+			player1.moving = true;
 			/*world.player.model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));*/
 		}
 		if (Input::isKeyPressed(SDL_SCANCODE_A)) {
 			player1.playerSpeed = player1.playerSpeed + (player1Right * speed1);
 			player1.dir = Player::type::LEFT;
+			player1.moving = true;
 			/*world.player.model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));*/
 		}
 		if (Input::isKeyPressed(SDL_SCANCODE_D)) {
 			player1.playerSpeed = player1.playerSpeed + (player1Right * -speed1);
 			player1.dir = Player::type::RIGHT;
+			player1.moving = true;
 			/*world.player.model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));*/
 		}
 		if (Input::wasKeyPressed(SDL_SCANCODE_F)) {
@@ -263,21 +272,25 @@ void Game::update(double seconds_elapsed)
 		if (Input::isKeyPressed(SDL_SCANCODE_UP)) {
 			player2.playerSpeed = player2.playerSpeed + (player2Front * -speed2);
 			player2.dir = Player::type::FORWARD;
+			player2.moving = true;
 			/*world.player.model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));*/
 		}
 		if (Input::isKeyPressed(SDL_SCANCODE_DOWN)) {
 			player2.playerSpeed = player2.playerSpeed + (player2Front * speed2);
 			player2.dir = Player::type::BACKWARD;
+			player2.moving = true;
 			/*world.player.model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));*/
 		}
 		if (Input::isKeyPressed(SDL_SCANCODE_LEFT)) {
 			player2.playerSpeed = player2.playerSpeed + (player2Right * speed2);
 			player2.dir = Player::type::LEFT;
+			player2.moving = true;
 			/*world.player.model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));*/
 		}
 		if (Input::isKeyPressed(SDL_SCANCODE_RIGHT)) {
 			player2.playerSpeed = player2.playerSpeed + (player2Right * -speed2);
 			player2.dir = Player::type::RIGHT;
+			player2.moving = true;
 			/*world.player.model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));*/
 		}
 		if (Input::wasKeyPressed(SDL_SCANCODE_P)) {
