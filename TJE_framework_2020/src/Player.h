@@ -25,6 +25,7 @@ public:
     float dir;
     bool kick;
     bool moving;
+    bool stunned;
     Vector3 pos;
     Matrix44 model;
     Matrix44 rot;

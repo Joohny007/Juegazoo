@@ -100,7 +100,14 @@ void RenderFirstCam(Camera* camera, Camera* player2Cam, float time_float)
 
 	if (!free_camera) {
 		player1.model.setTranslation(player1.pos.x, player1.pos.y, player1.pos.z);
+		Matrix44 rotation_matrix;
+		rotation_matrix.setRotation(player1.yaw * DEG2RAD, Vector3(0, 1, 0));
+		player1.model = rotation_matrix * player1.model;
+		
 		player2.model.setTranslation(player2.pos.x, player2.pos.y, player2.pos.z);
+		Matrix44 rotation_matrix2;
+		rotation_matrix2.setRotation(player2.yaw * DEG2RAD, Vector3(0, 1, 0));
+		player2.model = rotation_matrix2 * player2.model;
 		Vector3 eye1 = player1.model * Vector3(0.0f, 8.0f, -5.5f);
 		Vector3 center1 = player1.model * Vector3(0.0f, 0.0f, 10.0f);
 		Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
@@ -235,7 +242,7 @@ void Game::update(double seconds_elapsed)
 			player1.dir = Player::type::FORWARD;
 			player1.moving = true;
 			time = 0;
-			/*world.player.model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));*/
+			//world.player.model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));
 		}
 		if (Input::isKeyPressed(SDL_SCANCODE_S)) {
 			player1.playerSpeed = player1.playerSpeed + (player1Front * speed1);
@@ -249,13 +256,15 @@ void Game::update(double seconds_elapsed)
 			player1.dir = Player::type::LEFT;
 			player1.moving = true;
 			time = 0;
-			/*world.player.model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));*/
+			//world.player.model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));
+			player1.yaw -= rot_speed1;
 		}
 		if (Input::isKeyPressed(SDL_SCANCODE_D)) {
 			player1.playerSpeed = player1.playerSpeed + (player1Right * -speed1);
 			player1.dir = Player::type::RIGHT;
 			player1.moving = true;
 			time = 0;
+			player1.yaw += rot_speed1;
 			/*world.player.model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));*/
 		}
 		if (Input::wasKeyPressed(SDL_SCANCODE_F)) {
@@ -389,6 +398,10 @@ void Game::onKeyDown( SDL_KeyboardEvent event )
 
 void Game::onKeyUp(SDL_KeyboardEvent event)
 {
+	if (event.keysym.sym == SDL_SCANCODE_W) //left mouse unpressed
+	{
+		
+	}
 }
 
 void Game::onGamepadButtonDown(SDL_JoyButtonEvent event)

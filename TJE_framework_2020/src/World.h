@@ -57,4 +57,5 @@ public:
 	float easeOutQuint(float x);
 	void kickAnimation(Player& player, Camera* camera, Camera* player2Cam, Shader* skinning, Animation* anim, float time_float);
 	void moving(Player& player, Camera* camera, Camera* player2Cam, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* anim, float time_float);
+	void stunPlayer(Player& attacker, Player& victim, Vector3& targetPos, float elapsed_time);
 };

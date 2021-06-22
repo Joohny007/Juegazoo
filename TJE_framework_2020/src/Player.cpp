@@ -4,7 +4,7 @@ Player::Player()
 {
 	this->speed = 10.0f;
 	this->rot_speed = 120.0f;
-	this->yaw = 3;
+	this->yaw = 0;
 	this->pos = model.getTranslation();
 	this->mesh = NULL;
 	this->shader = NULL;
@@ -12,20 +12,23 @@ Player::Player()
 	this->dir = FORWARD;
 	this->kick = false;
 	this->moving = false;
+	this->stunned = false;
 }
 Player::Player(int id)
 {
 	//this->model.setIdentity();
 	this->id = id;
 	this->speed = 10.0f;
-	this->rot_speed = 120.0f;
-	this->yaw = 3;
+	this->rot_speed = 8.0f;
+	this->yaw = 0;
 	this->pos = model.getTranslation();
 	this->mesh = NULL;
 	this->shader = NULL;
 	this->texture = NULL;
 	this->dir = FORWARD;
 	this->kick = false;
+	this->moving = false;
+	this->stunned = false;
 }
 
 void Player::setPos(Vector3 pos)

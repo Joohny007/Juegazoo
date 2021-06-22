@@ -116,7 +116,7 @@ void World::inicializeSea()
 {
 	this->sea_mesh = Mesh::Get("data/agua.ASE");
 	this->sea_tex = Texture::Get("data/cielo.tga");
-	this->sea_shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+	this->sea_shader = Shader::Get("data/shaders/basic.vs", "data/shaders/water.fs");
 }
 
 void World::renderSea(Camera* camera)
@@ -258,7 +258,7 @@ void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_t
 			Vector3 penguinTargetCenter = pengTargetPos + Vector3(0, 1, 0);
 			Vector3 coll2;
 			Vector3 collmore2;
-			if (penguin2->mesh->testSphereCollision(penguin2->model, penguinTargetCenter, 2, coll2, collmore2)) {
+			if (penguin2->mesh->testSphereCollision(penguin2->model, penguinTargetCenter, 0.5, coll2, collmore2)) {
 				Vector3 push_away = normalize(coll2 - penguinTargetCenter) * elapsed_time;
 
 				pengTargetPos = currentPingu->pos - push_away;
@@ -304,10 +304,9 @@ void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_t
 
 void World::kickAnimation(Player& player, Camera* camera, Camera* player2Cam, Shader* skinning, Animation* anim, float time_float)
 {
-	anim->duration = 20;
-
 	if (player.kick) {
-		anim->assignTime(time_float, false);
+		//if(counter <= anim->duration)
+		anim->assignTime(time_float);
 		skinning->enable();
 
 		skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
@@ -317,20 +316,18 @@ void World::kickAnimation(Player& player, Camera* camera, Camera* player2Cam, Sh
 		else { skinning->setUniform("u_viewprojection", player2Cam->viewprojection_matrix); }
 		skinning->setUniform("u_texture", player.texture, 0);
 		float a = easeOutQuint(time_float);
-		skinning->setUniform("u_time", a);
+		skinning->setUniform("u_time", time_float);
 		skinning->setUniform("u_model", player.model);
 		skinning->setUniform("u_texture_tiling", 1.0f);
 		player.mesh->renderAnimated(GL_TRIANGLES, &anim->skeleton);
 
 		skinning->disable();
 	}
-	player.kick = false;
+	//player.kick = false;
 }
 
 void World::moving(Player& player, Camera* camera, Camera* player2Cam, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* anim, float time_float)
 {
-	anim->duration = 1.03;
-
 	if (player.moving) {
 		anim->assignTime(time_float);
 		skinning->enable();
@@ -367,4 +364,24 @@ void World::moving(Player& player, Camera* camera, Camera* player2Cam, Shader* s
 	}
 		
 	//player.moving = false;
+}
+
+void World::stunPlayer(Player& attacker, Player& victim, Vector3& targetPos, float elapsed_time)
+{
+	float start = 0.0f;
+	float counter = 0.0f;
+	if (victim.stunned) {
+
+		counter += elapsed_time;
+	}
+	else if (attacker.kick) {
+		Vector3 characterTargetCenter = targetPos + Vector3(0, 1, 0);
+		Vector3 coll;
+		Vector3 collmore;
+
+		if (victim.mesh->testSphereCollision(victim.model, characterTargetCenter, 1, coll, collmore)) {
+			victim.stunned = true;
+			start = elapsed_time;
+		}
+	}
 }
