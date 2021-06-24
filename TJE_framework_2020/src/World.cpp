@@ -192,7 +192,7 @@ void World::BlockVibration(float et) {
 	}
 }
 float World::easeOutQuint(float x) {
-	return 1 - pow(1 - x, 5);
+	return 1 - pow(1 - x, 1);
 }
 
 void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_time)
@@ -208,41 +208,86 @@ void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_t
 		Vector3 coll;
 		Vector3 collmore;
 
-		if (currentPingu->mesh->testSphereCollision(currentPingu->model, characterTargetCenter, 0.5, coll, collmore)) {
-			Vector3 push_away = normalize(coll - characterTargetCenter) * elapsed_time;
+		if (!player.kick) {
+			if (currentPingu->mesh->testSphereCollision(currentPingu->model, characterTargetCenter, 0.5, coll, collmore)) {
+				Vector3 push_away = normalize(coll - characterTargetCenter) * elapsed_time;
 
-			currentPingu->penguinSpeed = Vector3(0, 0, 0);
-			if (player.dir == Player::type::LEFT) {
-				currentPingu->dir = Penguin::type::LEFT;
-				//currentPingu->model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));
-				currentPingu->model.translate(-easeOutQuint(30 * elapsed_time), 0, 0);
-				currentPingu->pos = currentPingu->model.getTranslation();
-				currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinFront * -speed_peng);
-			}
-			else if (player.dir == Player::type::RIGHT) {
-				currentPingu->dir = Penguin::type::RIGHT;
-				//currentPingu->model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));
-				currentPingu->model.translate(easeOutQuint(30 * elapsed_time), 0, 0);
-				currentPingu->pos = currentPingu->model.getTranslation();
-				currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinFront * speed_peng);
-			}
-			else if (player.dir == Player::type::FORWARD) {
-				currentPingu->dir = Penguin::type::FORWARD;
-				//currentPingu->model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));
-				currentPingu->model.translate(0, 0, -easeOutQuint(30 * elapsed_time));
-				currentPingu->pos = currentPingu->model.getTranslation();
-				currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinRight * speed_peng);
-			}
-			else if (player.dir == Player::type::BACKWARD) {
-				currentPingu->dir = Penguin::type::BACKWARD;
-				//currentPingu->model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));
-				currentPingu->model.translate(0, 0, easeOutQuint(30 * elapsed_time));
-				currentPingu->pos = currentPingu->model.getTranslation();
-				currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinRight * -speed_peng);
-			}
-			targetPos = player.pos - push_away;
+				currentPingu->penguinSpeed = Vector3(0, 0, 0);
+				if (player.dir == Player::type::LEFT) {
+					currentPingu->dir = Penguin::type::LEFT;
+					//currentPingu->model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));
+					currentPingu->model.translate(-easeOutQuint(30 * elapsed_time), 0, 0);
+					currentPingu->pos = currentPingu->model.getTranslation();
+					currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinFront * -speed_peng);
+				}
+				else if (player.dir == Player::type::RIGHT) {
+					currentPingu->dir = Penguin::type::RIGHT;
+					//currentPingu->model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));
+					currentPingu->model.translate(easeOutQuint(30 * elapsed_time), 0, 0);
+					currentPingu->pos = currentPingu->model.getTranslation();
+					currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinFront * speed_peng);
+				}
+				else if (player.dir == Player::type::FORWARD) {
+					currentPingu->dir = Penguin::type::FORWARD;
+					//currentPingu->model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));
+					currentPingu->model.translate(0, 0, -easeOutQuint(30 * elapsed_time));
+					currentPingu->pos = currentPingu->model.getTranslation();
+					currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinRight * speed_peng);
+				}
+				else if (player.dir == Player::type::BACKWARD) {
+					currentPingu->dir = Penguin::type::BACKWARD;
+					//currentPingu->model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));
+					currentPingu->model.translate(0, 0, easeOutQuint(30 * elapsed_time));
+					currentPingu->pos = currentPingu->model.getTranslation();
+					currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinRight * -speed_peng);
+				}
+				targetPos = player.pos - push_away;
 
-			targetPos.y = currentPingu->model.getTranslation().y;
+				targetPos.y = currentPingu->model.getTranslation().y;
+			}
+		}
+		else {
+			if (currentPingu->mesh->testSphereCollision(currentPingu->model, characterTargetCenter, 1.5, coll, collmore)) {
+				Vector3 push_away = normalize(coll - characterTargetCenter) * elapsed_time;
+
+				currentPingu->penguinSpeed = Vector3(0, 0, 0);
+				Vector3 position = currentPingu->model.getTranslation();
+				if (player.dir == Player::type::LEFT) {
+					currentPingu->dir = Penguin::type::LEFT;
+					/*currentPingu->model.setRotation(-90 * DEG2RAD, Vector3(0, 1, 0));
+					currentPingu->model.translate(position.z, position.y, position.x);*/
+					currentPingu->model.translate(-easeOutQuint(20 * elapsed_time), 0, 0);
+					currentPingu->pos = currentPingu->model.getTranslation();
+					currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinFront * -speed_peng);
+				}
+				else if (player.dir == Player::type::RIGHT) {
+					currentPingu->dir = Penguin::type::RIGHT;
+					/*currentPingu->model.setRotation(90 * DEG2RAD, Vector3(0, 1, 0));
+					currentPingu->model.translate(position.z, position.y, position.x);*/
+					currentPingu->model.translate(easeOutQuint(20 * elapsed_time), 0, 0);
+					currentPingu->pos = currentPingu->model.getTranslation();
+					currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinFront * speed_peng);
+				}
+				else if (player.dir == Player::type::FORWARD) {
+					currentPingu->dir = Penguin::type::FORWARD;
+					/*currentPingu->model.setRotation(0 * DEG2RAD, Vector3(0, 1, 0));
+					currentPingu->model.translate(position.z, position.y, position.x);*/
+					currentPingu->model.translate(0, 0, -easeOutQuint(20 * elapsed_time));
+					currentPingu->pos = currentPingu->model.getTranslation();
+					currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinRight * speed_peng);
+				}
+				else if (player.dir == Player::type::BACKWARD) {
+					currentPingu->dir = Penguin::type::BACKWARD;
+					/*currentPingu->model.setRotation(180 * DEG2RAD, Vector3(0, 1, 0));
+					currentPingu->model.translate(position.z, position.y, position.x);*/
+					currentPingu->model.translate(0, 0, easeOutQuint(20 * elapsed_time));
+					currentPingu->pos = currentPingu->model.getTranslation();
+					currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinRight * -speed_peng);
+				}
+				targetPos = player.pos - push_away;
+
+				targetPos.y = currentPingu->model.getTranslation().y;
+			}
 		}
 
 		Vector3& pengTargetPos = currentPingu->pos + currentPingu->penguinSpeed;
@@ -302,7 +347,7 @@ void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_t
 	}
 }
 
-void World::kickAnimation1(Camera* camera, Shader* skinning, Animation* anim, float time_float)
+void World::kickAnimation1(Camera* camera, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* anim, float time_float)
 {
 	Player& player1 = players[0];
 	if (player1.kick) {
@@ -311,9 +356,7 @@ void World::kickAnimation1(Camera* camera, Shader* skinning, Animation* anim, fl
 			skinning->enable();
 
 			skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
-
 			skinning->setUniform("u_viewprojection", camera->viewprojection_matrix);
-
 			skinning->setUniform("u_texture", player1.texture, 0);
 			float a = easeOutQuint(time_float);
 			skinning->setUniform("u_time", time_float);
@@ -326,6 +369,18 @@ void World::kickAnimation1(Camera* camera, Shader* skinning, Animation* anim, fl
 		else {
 			player1.kick = false;
 		}
+	}
+	else {
+		shader->enable();
+
+		shader->setUniform("u_color", Vector4(1, 1, 1, 1));
+		shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
+		shader->setUniform("u_texture", textureMesh, 0);
+		shader->setUniform("u_model", Matrix44());
+		shader->setUniform("u_time", time_float);
+
+		renderPlayer1(camera);
+		shader->disable();
 	}
 	//-----------------------------------------------------------------------------------------------------------------------------------------------
 	Player& player2 = players[1];
@@ -335,9 +390,7 @@ void World::kickAnimation1(Camera* camera, Shader* skinning, Animation* anim, fl
 			skinning->enable();
 
 			skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
-
 			skinning->setUniform("u_viewprojection", camera->viewprojection_matrix);
-
 			skinning->setUniform("u_texture", player2.texture, 0);
 			float a = easeOutQuint(time_float);
 			skinning->setUniform("u_time", time_float);
@@ -351,9 +404,21 @@ void World::kickAnimation1(Camera* camera, Shader* skinning, Animation* anim, fl
 			player2.kick = false;
 		}
 	}
+	else {
+		shader->enable();
+
+		shader->setUniform("u_color", Vector4(1, 1, 1, 1));
+		shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
+		shader->setUniform("u_texture", textureMesh, 0);
+		shader->setUniform("u_model", Matrix44());
+		shader->setUniform("u_time", time_float);
+
+		renderPlayer2(camera);
+		shader->disable();
+	}
 }
 
-void World::kickAnimation2(Camera* player2Cam, Shader* skinning, Animation* anim, float time_float)
+void World::kickAnimation2(Camera* player2Cam, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* anim, float time_float)
 {
 	Player& player2 = players[1];
 	if (player2.kick) {
@@ -362,9 +427,7 @@ void World::kickAnimation2(Camera* player2Cam, Shader* skinning, Animation* anim
 			skinning->enable();
 
 			skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
-
 			skinning->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
-
 			skinning->setUniform("u_texture", player2.texture, 0);
 			float a = easeOutQuint(time_float);
 			skinning->setUniform("u_time", time_float);
@@ -377,6 +440,18 @@ void World::kickAnimation2(Camera* player2Cam, Shader* skinning, Animation* anim
 		else {
 			player2.kick = false;
 		}
+	}
+	else {
+		shader->enable();
+
+		shader->setUniform("u_color", Vector4(1, 1, 1, 1));
+		shader->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
+		shader->setUniform("u_texture", textureMesh, 0);
+		shader->setUniform("u_model", Matrix44());
+		shader->setUniform("u_time", time_float);
+
+		renderPlayer2(player2Cam);
+		shader->disable();
 	}
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	Player& player1 = players[0];
@@ -386,9 +461,7 @@ void World::kickAnimation2(Camera* player2Cam, Shader* skinning, Animation* anim
 			skinning->enable();
 
 			skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
-
 			skinning->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
-
 			skinning->setUniform("u_texture", player1.texture, 0);
 			float a = easeOutQuint(time_float);
 			skinning->setUniform("u_time", time_float);
@@ -401,6 +474,18 @@ void World::kickAnimation2(Camera* player2Cam, Shader* skinning, Animation* anim
 		else {
 			player1.kick = false;
 		}
+	}
+	else {
+		shader->enable();
+
+		shader->setUniform("u_color", Vector4(1, 1, 1, 1));
+		shader->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
+		shader->setUniform("u_texture", textureMesh, 0);
+		shader->setUniform("u_model", Matrix44());
+		shader->setUniform("u_time", time_float);
+
+		renderPlayer1(player2Cam);
+		shader->disable();
 	}
 
 }

@@ -119,19 +119,8 @@ void RenderFirstCam(Camera* camera, Camera* player2Cam, float time_float)
 
 
 	//world.moving1(camera, skinning, shader, textureMesh, walk_anim_woman, time_float);
-	shader->enable();
 
-	shader->setUniform("u_color", Vector4(1, 1, 1, 1));
-	shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
-	shader->setUniform("u_texture", textureMesh, 0);
-	shader->setUniform("u_model", Matrix44());
-	shader->setUniform("u_time", time_float);
-
-	world.renderPlayer1(camera);
-	world.renderPlayer2(camera);
-	shader->disable();
-
-	world.kickAnimation1(camera, skinning, anim_woman, time_float);
+	world.kickAnimation1(camera, skinning, shader, textureMesh, anim_woman, time_float);
 
 	world.renderBlocks(renderBoundings, camera);
 	world.renderPenguins(renderBoundings, camera);
@@ -168,18 +157,8 @@ void RenderSecondCam(Camera* camera, Camera* player2Cam, float time_float)
 	Animation* walk_anim = Animation::Get("data/Animaciones/Skanim/walking.skanim");
 	
 	//world.moving2(player2Cam, skinning, shader, textureMesh, walk_anim, time_float);
-	shader->enable();
 
-	shader->setUniform("u_color", Vector4(1, 1, 1, 1));
-	shader->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
-	shader->setUniform("u_texture", textureMesh, 0);
-	shader->setUniform("u_model", Matrix44());
-	shader->setUniform("u_time", time_float);
-
-	world.renderPlayer1(player2Cam);
-	world.renderPlayer2(player2Cam);
-	shader->disable();
-	world.kickAnimation2(player2Cam, skinning, anim, time_float);
+	world.kickAnimation2(player2Cam, skinning, shader, textureMesh, anim, time_float);
 
 	world.renderBlocks(renderBoundings, player2Cam);
 	world.renderPenguins(renderBoundings, player2Cam);

@@ -55,8 +55,8 @@ public:
 	void BlockVibration( float et);
 	void penguinCollision(Player& player, Vector3& targetPos, float elapsed_time);
 	float easeOutQuint(float x);
-	void kickAnimation1(Camera* camera, Shader* skinning, Animation* anim, float time_float);
-	void kickAnimation2(Camera* player2Cam, Shader* skinning, Animation* anim, float time_float);
+	void kickAnimation1(Camera* camera, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* anim, float time_float);
+	void kickAnimation2(Camera* player2Cam, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* anim, float time_float);
 	void moving1(Camera* camera, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* anim, float time_float);
 	void moving2(Camera* player2Cam, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* anim, float time_float);
 	void stunPlayer1(Vector3& targetPos, float time);
