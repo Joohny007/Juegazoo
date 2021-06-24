@@ -195,7 +195,7 @@ float World::easeOutQuint(float x) {
 	return 1 - pow(1 - x, 5);
 }
 
-void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_time)
+void World::penguinCollision(Player& player, Vector3& targetPos, Vector3& targetPos2, float elapsed_time, Camera* camera)
 {
 	for (int i = 0; i < penguins.size(); i++) {
 		Penguin* currentPingu = &penguins[i];
@@ -214,8 +214,10 @@ void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_t
 			currentPingu->penguinSpeed = Vector3(0, 0, 0);
 			if (player.dir == Player::type::LEFT) {
 				currentPingu->dir = Penguin::type::LEFT;
+				Vector3 rotated = camera->center * -90 * DEG2RAD;
+				//Vector3 direction = currentPingu->model.rotateVector(rotated);
 				//currentPingu->model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));
-				currentPingu->model.translate(-easeOutQuint(4 * elapsed_time), 0, 0);
+				currentPingu->model.setTranslation(targetPos2.x, 2, targetPos2.z);
 				currentPingu->pos = currentPingu->model.getTranslation();
 				currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinFront * -speed_peng);
 			}
@@ -302,85 +304,276 @@ void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_t
 	}
 }
 
-void World::kickAnimation(Player& player, Camera* camera, Camera* player2Cam, Shader* skinning, Animation* anim, float time_float)
+void World::kickAnimation1(Camera* camera, Shader* skinning, Animation* anim, float time_float)
 {
-	if (player.kick) {
-		//if(counter <= anim->duration)
-		anim->assignTime(time_float);
-		skinning->enable();
+	Player& player1 = players[0];
+	if (player1.kick) {
+		if (time_float - player1.kick_counter <= anim->duration) {
+			anim->assignTime(time_float);
+			skinning->enable();
 
-		skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
-		if (player.id == players[0].id) {
+			skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
+
 			skinning->setUniform("u_viewprojection", camera->viewprojection_matrix);
-		}
-		else { skinning->setUniform("u_viewprojection", player2Cam->viewprojection_matrix); }
-		skinning->setUniform("u_texture", player.texture, 0);
-		float a = easeOutQuint(time_float);
-		skinning->setUniform("u_time", time_float);
-		skinning->setUniform("u_model", player.model);
-		skinning->setUniform("u_texture_tiling", 1.0f);
-		player.mesh->renderAnimated(GL_TRIANGLES, &anim->skeleton);
 
-		skinning->disable();
+			skinning->setUniform("u_texture", player1.texture, 0);
+			float a = easeOutQuint(time_float);
+			skinning->setUniform("u_time", time_float);
+			skinning->setUniform("u_model", player1.model);
+			skinning->setUniform("u_texture_tiling", 1.0f);
+			player1.mesh->renderAnimated(GL_TRIANGLES, &anim->skeleton);
+
+			skinning->disable();
+		}
+		else {
+			player1.kick = false;
+		}
 	}
-	//player.kick = false;
+	//-----------------------------------------------------------------------------------------------------------------------------------------------
+	Player& player2 = players[1];
+	if (player2.kick) {
+		if (time_float - player2.kick_counter <= anim->duration) {
+			anim->assignTime(time_float);
+			skinning->enable();
+
+			skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
+
+			skinning->setUniform("u_viewprojection", camera->viewprojection_matrix);
+
+			skinning->setUniform("u_texture", player2.texture, 0);
+			float a = easeOutQuint(time_float);
+			skinning->setUniform("u_time", time_float);
+			skinning->setUniform("u_model", player2.model);
+			skinning->setUniform("u_texture_tiling", 1.0f);
+			player2.mesh->renderAnimated(GL_TRIANGLES, &anim->skeleton);
+
+			skinning->disable();
+		}
+		else {
+			player2.kick = false;
+		}
+	}
 }
 
-void World::moving(Player& player, Camera* camera, Camera* player2Cam, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* anim, float time_float)
+void World::kickAnimation2(Camera* player2Cam, Shader* skinning, Animation* anim, float time_float)
 {
-	if (player.moving) {
-		anim->assignTime(time_float);
-		skinning->enable();
+	Player& player2 = players[1];
+	if (player2.kick) {
+		if (time_float - player2.kick_counter <= anim->duration) {
+			anim->assignTime(time_float);
+			skinning->enable();
 
-		skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
-		if (player.id == players[0].id) {
-			skinning->setUniform("u_viewprojection", camera->viewprojection_matrix);
+			skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
+
+			skinning->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
+
+			skinning->setUniform("u_texture", player2.texture, 0);
+			float a = easeOutQuint(time_float);
+			skinning->setUniform("u_time", time_float);
+			skinning->setUniform("u_model", player2.model);
+			skinning->setUniform("u_texture_tiling", 1.0f);
+			player2.mesh->renderAnimated(GL_TRIANGLES, &anim->skeleton);
+
+			skinning->disable();
 		}
-		else{ skinning->setUniform("u_viewprojection", player2Cam->viewprojection_matrix); }
-		skinning->setUniform("u_texture", player.texture, 0);
-		float a = easeOutQuint(20);
-		skinning->setUniform("u_time", time_float);
-		skinning->setUniform("u_model", player.model);
-		skinning->setUniform("u_texture_tiling", 1.0f);
-		player.mesh->renderAnimated(GL_TRIANGLES, &anim->skeleton);
+		else {
+			player2.kick = false;
+		}
+	}
+	//---------------------------------------------------------------------------------------------------------------------------------------------
+	Player& player1 = players[0];
+	if (player1.kick) {
+		if (time_float - player1.kick_counter <= anim->duration) {
+			anim->assignTime(time_float);
+			skinning->enable();
 
-		skinning->disable();
-		//renderPlayer2(camera);
+			skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
+
+			skinning->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
+
+			skinning->setUniform("u_texture", player1.texture, 0);
+			float a = easeOutQuint(time_float);
+			skinning->setUniform("u_time", time_float);
+			skinning->setUniform("u_model", player1.model);
+			skinning->setUniform("u_texture_tiling", 1.0f);
+			player1.mesh->renderAnimated(GL_TRIANGLES, &anim->skeleton);
+
+			skinning->disable();
+		}
+		else {
+			player1.kick = false;
+		}
+	}
+
+}
+
+void World::moving1(Camera* camera, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* anim, float time_float)
+{
+	Player& player1 = players[0];
+	if (player1.moving) {
+		if (time_float - player1.moving_counter <= anim->duration-0.5) {
+			anim->assignTime(time_float);
+			skinning->enable();
+
+			skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
+
+			skinning->setUniform("u_viewprojection", camera->viewprojection_matrix);
+			skinning->setUniform("u_texture", player1.texture, 0);
+			float a = easeOutQuint(20);
+			skinning->setUniform("u_time", time_float);
+			skinning->setUniform("u_model", player1.model);
+			skinning->setUniform("u_texture_tiling", 1.0f);
+			player1.mesh->renderAnimated(GL_TRIANGLES, &anim->skeleton);
+
+			skinning->disable();
+		}
+		else {
+			player1.moving = false;
+			player1.pos.z += 1.5;
+		}
 	}
 	else {
 		shader->enable();
 
 		shader->setUniform("u_color", Vector4(1, 1, 1, 1));
-		if (player.id == players[0].id) {
-			skinning->setUniform("u_viewprojection", camera->viewprojection_matrix);
-		}
-		else { skinning->setUniform("u_viewprojection", player2Cam->viewprojection_matrix); }
+		shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
 		shader->setUniform("u_texture", textureMesh, 0);
 		shader->setUniform("u_model", Matrix44());
 		shader->setUniform("u_time", time_float);
 
-
+		renderPlayer1(camera);
 		shader->disable();
 	}
-		
-	//player.moving = false;
+	//-------------------------------------------------------------------------------------------------------
+	Player& player2 = players[1];
+	if (player2.moving) {
+		if (time_float - player2.moving_counter <= anim->duration - 0.5) {
+			anim->assignTime(time_float);
+			skinning->enable();
+
+			skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
+
+			skinning->setUniform("u_viewprojection", camera->viewprojection_matrix);
+			skinning->setUniform("u_texture", player2.texture, 0);
+			float a = easeOutQuint(20);
+			skinning->setUniform("u_time", time_float);
+			skinning->setUniform("u_model", player2.model);
+			skinning->setUniform("u_texture_tiling", 1.0f);
+			player2.mesh->renderAnimated(GL_TRIANGLES, &anim->skeleton);
+
+			skinning->disable();
+		}
+		else { 
+			player2.moving = false;
+			player2.pos.z += 1.5;
+		}
+	}
+	else {
+		shader->enable();
+
+		shader->setUniform("u_color", Vector4(1, 1, 1, 1));
+		shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
+		shader->setUniform("u_texture", textureMesh, 0);
+		shader->setUniform("u_model", Matrix44());
+		shader->setUniform("u_time", time_float);
+
+		renderPlayer2(camera);
+		shader->disable();
+	}
 }
 
-void World::stunPlayer(Player& attacker, Player& victim, Vector3& targetPos, float elapsed_time)
+void World::moving2(Camera* player2Cam, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* anim, float time_float)
+{
+	Player& player2 = players[1];
+	if (player2.moving) {
+		if (time_float - player2.moving_counter <= anim->duration - 0.5) {
+			anim->assignTime(time_float);
+			skinning->enable();
+
+			skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
+
+			skinning->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
+			skinning->setUniform("u_texture", player2.texture, 0);
+			float a = easeOutQuint(20);
+			skinning->setUniform("u_time", time_float);
+			skinning->setUniform("u_model", player2.model);
+			skinning->setUniform("u_texture_tiling", 1.0f);
+			player2.mesh->renderAnimated(GL_TRIANGLES, &anim->skeleton);
+
+			skinning->disable();
+		}
+		else { 
+			player2.moving = false;
+			player2.pos.z += 1.5;
+		}
+	}
+	else {
+		shader->enable();
+
+		shader->setUniform("u_color", Vector4(1, 1, 1, 1));
+		shader->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
+		shader->setUniform("u_texture", textureMesh, 0);
+		shader->setUniform("u_model", Matrix44());
+		shader->setUniform("u_time", time_float);
+
+		renderPlayer2(player2Cam);
+		shader->disable();
+	}
+	//-------------------------------------------------------------------------------------------------------------------------
+	Player& player1 = players[0];
+	if (player1.moving) {
+		if (time_float - player1.moving_counter <= anim->duration - 0.5) {
+			anim->assignTime(time_float);
+			skinning->enable();
+
+			skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
+
+			skinning->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
+			skinning->setUniform("u_texture", player1.texture, 0);
+			float a = easeOutQuint(20);
+			skinning->setUniform("u_time", time_float);
+			skinning->setUniform("u_model", player1.model);
+			skinning->setUniform("u_texture_tiling", 1.0f);
+			player1.mesh->renderAnimated(GL_TRIANGLES, &anim->skeleton);
+
+			skinning->disable();
+		}
+		else { 
+			player1.moving = false;
+			player1.pos.z += 1.5;
+		}
+	}
+	else {
+		shader->enable();
+
+		shader->setUniform("u_color", Vector4(1, 1, 1, 1));
+		shader->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
+		shader->setUniform("u_texture", textureMesh, 0);
+		shader->setUniform("u_model", Matrix44());
+		shader->setUniform("u_time", time_float);
+
+		renderPlayer1(player2Cam);
+		shader->disable();
+	}
+}
+
+void World::stunPlayer1(Vector3& targetPos, float elapsed_time)
 {
 	float start = 0.0f;
 	float counter = 0.0f;
-	if (victim.stunned) {
+	Player& player1 = players[0];
+	Player& player2 = players[1];
+	if (player1.stunned) {
 
 		counter += elapsed_time;
 	}
-	else if (attacker.kick) {
+	else if (player2.kick) {
 		Vector3 characterTargetCenter = targetPos + Vector3(0, 1, 0);
 		Vector3 coll;
 		Vector3 collmore;
 
-		if (victim.mesh->testSphereCollision(victim.model, characterTargetCenter, 1, coll, collmore)) {
-			victim.stunned = true;
+		if (player2.mesh->testSphereCollision(player2.model, characterTargetCenter, 1, coll, collmore)) {
+			player2.stunned = true;
 			start = elapsed_time;
 		}
 	}

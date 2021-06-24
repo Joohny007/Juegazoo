@@ -53,9 +53,12 @@ public:
 	void renderSea(Camera* camera);
 	float isPlayeronaBlock(Vector3 playerpos);
 	void BlockVibration( float et);
-	void penguinCollision(Player& player, Vector3& targetPos, float elapsed_time);
+	void penguinCollision(Player& player, Vector3& targetPos, Vector3& targetPos2, float elapsed_time, Camera* camera);
 	float easeOutQuint(float x);
-	void kickAnimation(Player& player, Camera* camera, Camera* player2Cam, Shader* skinning, Animation* anim, float time_float);
-	void moving(Player& player, Camera* camera, Camera* player2Cam, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* anim, float time_float);
-	void stunPlayer(Player& attacker, Player& victim, Vector3& targetPos, float elapsed_time);
+	void kickAnimation1(Camera* camera, Shader* skinning, Animation* anim, float time_float);
+	void kickAnimation2(Camera* player2Cam, Shader* skinning, Animation* anim, float time_float);
+	void moving1(Camera* camera, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* anim, float time_float);
+	void moving2(Camera* player2Cam, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* anim, float time_float);
+	void stunPlayer1(Vector3& targetPos, float elapsed_time);
+	void stunPlayer2(Vector3& targetPos, float elapsed_time);
 };

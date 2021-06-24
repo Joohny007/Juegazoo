@@ -100,14 +100,15 @@ void RenderFirstCam(Camera* camera, Camera* player2Cam, float time_float)
 
 	if (!free_camera) {
 		player1.model.setTranslation(player1.pos.x, player1.pos.y, player1.pos.z);
-		Matrix44 rotation_matrix;
+		/*Matrix44 rotation_matrix;
 		rotation_matrix.setRotation(player1.yaw * DEG2RAD, Vector3(0, 1, 0));
 		player1.model = rotation_matrix * player1.model;
-		
+		*/
 		player2.model.setTranslation(player2.pos.x, player2.pos.y, player2.pos.z);
-		Matrix44 rotation_matrix2;
+		/*Matrix44 rotation_matrix2;
 		rotation_matrix2.setRotation(player2.yaw * DEG2RAD, Vector3(0, 1, 0));
-		player2.model = rotation_matrix2 * player2.model;
+		player2.model = rotation_matrix2 * player2.model;*/
+
 		Vector3 eye1 = player1.model * Vector3(0.0f, 8.0f, -5.5f);
 		Vector3 center1 = player1.model * Vector3(0.0f, 0.0f, 10.0f);
 		Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
@@ -117,10 +118,20 @@ void RenderFirstCam(Camera* camera, Camera* player2Cam, float time_float)
 	Animation* walk_anim_woman = Animation::Get("data/Animaciones/Skanim/walking_woman.skanim");
 
 
-	world.moving(player1, camera, player2Cam, skinning, shader, textureMesh, walk_anim_woman, time_float);
+	//world.moving1(camera, skinning, shader, textureMesh, walk_anim_woman, time_float);
+	shader->enable();
 
+	shader->setUniform("u_color", Vector4(1, 1, 1, 1));
+	shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
+	shader->setUniform("u_texture", textureMesh, 0);
+	shader->setUniform("u_model", Matrix44());
+	shader->setUniform("u_time", time_float);
 
-	world.kickAnimation(player1, camera, player2Cam, skinning, anim_woman, time_float);
+	world.renderPlayer1(camera);
+	world.renderPlayer2(camera);
+	shader->disable();
+
+	world.kickAnimation1(camera, skinning, anim_woman, time_float);
 
 	world.renderBlocks(renderBoundings, camera);
 	world.renderPenguins(renderBoundings, camera);
@@ -139,7 +150,15 @@ void RenderSecondCam(Camera* camera, Camera* player2Cam, float time_float)
 
 	if (!free_camera) {
 		player1.model.setTranslation(player1.pos.x, player1.pos.y, player1.pos.z);
+		/*Matrix44 rotation_matrix;
+		rotation_matrix.setRotation(player1.yaw * DEG2RAD, Vector3(0, 1, 0));
+		player1.model = rotation_matrix * player1.model;*/
+
 		player2.model.setTranslation(player2.pos.x, player2.pos.y, player2.pos.z);
+		/*Matrix44 rotation_matrix2;
+		rotation_matrix2.setRotation(player2.yaw * DEG2RAD, Vector3(0, 1, 0));
+		player2.model = rotation_matrix2 * player2.model;*/
+
 		Vector3 eye2 = player2.model * Vector3(0.0f, 8.0f, -5.5f);
 		Vector3 center2 = player2.model * Vector3(0.0f, 0.0f, 10.0f);
 		Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
@@ -147,10 +166,20 @@ void RenderSecondCam(Camera* camera, Camera* player2Cam, float time_float)
 	}
 	Animation* anim = Animation::Get("data/Animaciones/Skanim/mma_kick.skanim");
 	Animation* walk_anim = Animation::Get("data/Animaciones/Skanim/walking.skanim");
-	walk_anim->duration = 1.03;
 	
-	world.moving(player2, camera, player2Cam, skinning, shader, textureMesh, walk_anim, time_float);
-	world.kickAnimation(player2, camera, player2Cam, skinning, anim, time_float);
+	//world.moving2(player2Cam, skinning, shader, textureMesh, walk_anim, time_float);
+	shader->enable();
+
+	shader->setUniform("u_color", Vector4(1, 1, 1, 1));
+	shader->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
+	shader->setUniform("u_texture", textureMesh, 0);
+	shader->setUniform("u_model", Matrix44());
+	shader->setUniform("u_time", time_float);
+
+	world.renderPlayer1(player2Cam);
+	world.renderPlayer2(player2Cam);
+	shader->disable();
+	world.kickAnimation2(player2Cam, skinning, anim, time_float);
 
 	world.renderBlocks(renderBoundings, player2Cam);
 	world.renderPenguins(renderBoundings, player2Cam);
@@ -241,35 +270,34 @@ void Game::update(double seconds_elapsed)
 			player1.playerSpeed = player1.playerSpeed + (player1Front * -speed1);
 			player1.dir = Player::type::FORWARD;
 			player1.moving = true;
-			time = 0;
+			player1.moving_counter = time;
 			//world.player.model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));
 		}
 		if (Input::isKeyPressed(SDL_SCANCODE_S)) {
 			player1.playerSpeed = player1.playerSpeed + (player1Front * speed1);
 			player1.dir = Player::type::BACKWARD;
 			player1.moving = true;
-			time = 0;
+			player1.moving_counter = time;
 			/*world.player.model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));*/
 		}
 		if (Input::isKeyPressed(SDL_SCANCODE_A)) {
 			player1.playerSpeed = player1.playerSpeed + (player1Right * speed1);
 			player1.dir = Player::type::LEFT;
 			player1.moving = true;
-			time = 0;
+			player1.moving_counter = time;
 			//world.player.model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));
-			player1.yaw -= rot_speed1;
 		}
 		if (Input::isKeyPressed(SDL_SCANCODE_D)) {
 			player1.playerSpeed = player1.playerSpeed + (player1Right * -speed1);
 			player1.dir = Player::type::RIGHT;
 			player1.moving = true;
-			time = 0;
-			player1.yaw += rot_speed1;
+			player1.moving_counter = time;
 			/*world.player.model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));*/
 		}
 		if (Input::wasKeyPressed(SDL_SCANCODE_F)) {
 			player1.kick = true;
-			time = 0;
+			player1.kick_counter = time;
+			player1.moving = false;
 		}
 
 		if (Input::isKeyPressed(SDL_SCANCODE_Q)) player1.yaw -= rot_speed1;
@@ -293,28 +321,34 @@ void Game::update(double seconds_elapsed)
 			player2.playerSpeed = player2.playerSpeed + (player2Front * -speed2);
 			player2.dir = Player::type::FORWARD;
 			player2.moving = true;
+			player2.moving_counter = time;
 			/*world.player.model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));*/
 		}
 		if (Input::isKeyPressed(SDL_SCANCODE_DOWN)) {
 			player2.playerSpeed = player2.playerSpeed + (player2Front * speed2);
 			player2.dir = Player::type::BACKWARD;
 			player2.moving = true;
+			player2.moving_counter = time;
 			/*world.player.model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));*/
 		}
 		if (Input::isKeyPressed(SDL_SCANCODE_LEFT)) {
 			player2.playerSpeed = player2.playerSpeed + (player2Right * speed2);
 			player2.dir = Player::type::LEFT;
 			player2.moving = true;
+			player2.moving_counter = time;
 			/*world.player.model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));*/
 		}
 		if (Input::isKeyPressed(SDL_SCANCODE_RIGHT)) {
 			player2.playerSpeed = player2.playerSpeed + (player2Right * -speed2);
 			player2.dir = Player::type::RIGHT;
 			player2.moving = true;
+			player2.moving_counter = time;
 			/*world.player.model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));*/
 		}
-		if (Input::wasKeyPressed(SDL_SCANCODE_P)) {
+		if (Input::wasKeyPressed(SDL_SCANCODE_L)) {
 			player2.kick = true;
+			player2.kick_counter = time;
+			player2.moving = false;
 		}
 
 		if (Input::isKeyPressed(SDL_SCANCODE_I)) player2.yaw -= rot_speed2;
@@ -325,8 +359,10 @@ void Game::update(double seconds_elapsed)
 			Player& player = world.players[i];
 			Vector3& playerSpeed = world.players[i].playerSpeed;
 			Vector3& targetPos = world.players[i].pos + playerSpeed;
+			Vector3& targetPos2 = targetPos + playerSpeed;
 
-			world.penguinCollision(player, targetPos, elapsed_time);
+			world.penguinCollision(player, targetPos, targetPos2, elapsed_time, camera);
+			world.penguinCollision(player, targetPos, targetPos2, elapsed_time, player2Cam);
 			float checker = world.isPlayeronaBlock(targetPos);
 			if (checker == -5) {
 				targetPos.y -= player.speed * elapsed_time;

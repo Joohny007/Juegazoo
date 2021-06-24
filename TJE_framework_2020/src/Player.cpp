@@ -3,7 +3,7 @@
 Player::Player()
 {
 	this->speed = 10.0f;
-	this->rot_speed = 120.0f;
+	this->rot_speed = 50.0f;
 	this->yaw = 0;
 	this->pos = model.getTranslation();
 	this->mesh = NULL;
@@ -19,7 +19,7 @@ Player::Player(int id)
 	//this->model.setIdentity();
 	this->id = id;
 	this->speed = 10.0f;
-	this->rot_speed = 8.0f;
+	this->rot_speed = 50.0f;
 	this->yaw = 0;
 	this->pos = model.getTranslation();
 	this->mesh = NULL;
@@ -59,7 +59,7 @@ void Player::render(Camera* camera)
 {
 	//get the last camera that was activated
 	//Camera* camera = Camera::current;
-	Matrix44 model = this->model;
+	Matrix44& model = this->model;
 
 	//enable shader and pass uniforms
 	shader->enable();

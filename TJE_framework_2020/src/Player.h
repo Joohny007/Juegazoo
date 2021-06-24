@@ -25,6 +25,8 @@ public:
     float dir;
     bool kick;
     bool moving;
+    float moving_counter;
+    float kick_counter;
     bool stunned;
     Vector3 pos;
     Matrix44 model;
