@@ -195,7 +195,7 @@ float World::easeOutQuint(float x) {
 	return 1 - pow(1 - x, 5);
 }
 
-void World::penguinCollision(Player& player, Vector3& targetPos, Vector3& targetPos2, float elapsed_time, Camera* camera)
+void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_time)
 {
 	for (int i = 0; i < penguins.size(); i++) {
 		Penguin* currentPingu = &penguins[i];
@@ -214,31 +214,29 @@ void World::penguinCollision(Player& player, Vector3& targetPos, Vector3& target
 			currentPingu->penguinSpeed = Vector3(0, 0, 0);
 			if (player.dir == Player::type::LEFT) {
 				currentPingu->dir = Penguin::type::LEFT;
-				Vector3 rotated = camera->center * -90 * DEG2RAD;
-				//Vector3 direction = currentPingu->model.rotateVector(rotated);
 				//currentPingu->model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));
-				currentPingu->model.setTranslation(targetPos2.x, 2, targetPos2.z);
+				currentPingu->model.translate(-easeOutQuint(30 * elapsed_time), 0, 0);
 				currentPingu->pos = currentPingu->model.getTranslation();
 				currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinFront * -speed_peng);
 			}
 			else if (player.dir == Player::type::RIGHT) {
 				currentPingu->dir = Penguin::type::RIGHT;
 				//currentPingu->model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));
-				currentPingu->model.translate(easeOutQuint(4 * elapsed_time), 0, 0);
+				currentPingu->model.translate(easeOutQuint(30 * elapsed_time), 0, 0);
 				currentPingu->pos = currentPingu->model.getTranslation();
 				currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinFront * speed_peng);
 			}
 			else if (player.dir == Player::type::FORWARD) {
 				currentPingu->dir = Penguin::type::FORWARD;
 				//currentPingu->model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));
-				currentPingu->model.translate(0, 0, -easeOutQuint(4 * elapsed_time));
+				currentPingu->model.translate(0, 0, -easeOutQuint(30 * elapsed_time));
 				currentPingu->pos = currentPingu->model.getTranslation();
 				currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinRight * speed_peng);
 			}
 			else if (player.dir == Player::type::BACKWARD) {
 				currentPingu->dir = Penguin::type::BACKWARD;
 				//currentPingu->model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));
-				currentPingu->model.translate(0, 0, easeOutQuint(4 * elapsed_time));
+				currentPingu->model.translate(0, 0, easeOutQuint(30 * elapsed_time));
 				currentPingu->pos = currentPingu->model.getTranslation();
 				currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinRight * -speed_peng);
 			}
@@ -557,24 +555,44 @@ void World::moving2(Camera* player2Cam, Shader* skinning, Shader* shader, Textur
 	}
 }
 
-void World::stunPlayer1(Vector3& targetPos, float elapsed_time)
+void World::stunPlayer1(Vector3& player2_targetPos, float time)
 {
-	float start = 0.0f;
-	float counter = 0.0f;
 	Player& player1 = players[0];
 	Player& player2 = players[1];
 	if (player1.stunned) {
-
-		counter += elapsed_time;
+		if (time - player1.stun_counter >= 3.0f) {
+			player1.stunned = false;
+		}
 	}
 	else if (player2.kick) {
-		Vector3 characterTargetCenter = targetPos + Vector3(0, 1, 0);
+		Vector3 characterTargetCenter = player2_targetPos + Vector3(0, 1, 0);
 		Vector3 coll;
 		Vector3 collmore;
 
-		if (player2.mesh->testSphereCollision(player2.model, characterTargetCenter, 1, coll, collmore)) {
+		if (player1.mesh->testSphereCollision(player1.model, characterTargetCenter, 1.2, coll, collmore)) {
+			player1.stunned = true;
+			player1.stun_counter = time;
+		}
+	}
+}
+
+void World::stunPlayer2(Vector3& player1_targetPos, float time)
+{
+	Player& player1 = players[0];
+	Player& player2 = players[1];
+	if (player2.stunned) {
+		if (time - player2.stun_counter >= 3.0f) {
+			player2.stunned = false;
+		}
+	}
+	else if (player1.kick) {
+		Vector3 characterTargetCenter = player1_targetPos + Vector3(0, 1, 0);
+		Vector3 coll;
+		Vector3 collmore;
+
+		if (player2.mesh->testSphereCollision(player2.model, characterTargetCenter, 1.2, coll, collmore)) {
 			player2.stunned = true;
-			start = elapsed_time;
+			player2.stun_counter = time;
 		}
 	}
 }

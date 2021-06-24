@@ -264,46 +264,49 @@ void Game::update(double seconds_elapsed)
 		Vector3& player1Right = player1.model.rotateVector(Vector3(1.0f, 0.0f, 0.0f));
 
 		//Vector3 playerSpeed;
-		player1.playerSpeed = Vector3(0, 0, 0);
-		if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT)) speed1 *= 10; //move faster with left shift
-		if (Input::isKeyPressed(SDL_SCANCODE_W)) {
-			player1.playerSpeed = player1.playerSpeed + (player1Front * -speed1);
-			player1.dir = Player::type::FORWARD;
-			player1.moving = true;
-			player1.moving_counter = time;
-			//world.player.model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));
-		}
-		if (Input::isKeyPressed(SDL_SCANCODE_S)) {
-			player1.playerSpeed = player1.playerSpeed + (player1Front * speed1);
-			player1.dir = Player::type::BACKWARD;
-			player1.moving = true;
-			player1.moving_counter = time;
-			/*world.player.model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));*/
-		}
-		if (Input::isKeyPressed(SDL_SCANCODE_A)) {
-			player1.playerSpeed = player1.playerSpeed + (player1Right * speed1);
-			player1.dir = Player::type::LEFT;
-			player1.moving = true;
-			player1.moving_counter = time;
-			//world.player.model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));
-		}
-		if (Input::isKeyPressed(SDL_SCANCODE_D)) {
-			player1.playerSpeed = player1.playerSpeed + (player1Right * -speed1);
-			player1.dir = Player::type::RIGHT;
-			player1.moving = true;
-			player1.moving_counter = time;
-			/*world.player.model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));*/
-		}
-		if (Input::wasKeyPressed(SDL_SCANCODE_F)) {
-			player1.kick = true;
-			player1.kick_counter = time;
-			player1.moving = false;
-		}
+		if (!player1.stunned) {
+			player1.playerSpeed = Vector3(0, 0, 0);
+			if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT)) speed1 *= 10; //move faster with left shift
+			if (Input::isKeyPressed(SDL_SCANCODE_W)) {
+				player1.playerSpeed = player1.playerSpeed + (player1Front * -speed1);
+				player1.dir = Player::type::FORWARD;
+				player1.moving = true;
+				player1.moving_counter = time;
+				//world.player.model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));
+			}
+			if (Input::isKeyPressed(SDL_SCANCODE_S)) {
+				player1.playerSpeed = player1.playerSpeed + (player1Front * speed1);
+				player1.dir = Player::type::BACKWARD;
+				player1.moving = true;
+				player1.moving_counter = time;
+				/*world.player.model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));*/
+			}
+			if (Input::isKeyPressed(SDL_SCANCODE_A)) {
+				player1.playerSpeed = player1.playerSpeed + (player1Right * speed1);
+				player1.dir = Player::type::LEFT;
+				player1.moving = true;
+				player1.moving_counter = time;
+				//world.player.model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));
+			}
+			if (Input::isKeyPressed(SDL_SCANCODE_D)) {
+				player1.playerSpeed = player1.playerSpeed + (player1Right * -speed1);
+				player1.dir = Player::type::RIGHT;
+				player1.moving = true;
+				player1.moving_counter = time;
+				/*world.player.model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));*/
+			}
+			if (time - player1.kick_counter >= player1.kick_cooldown) {
+				if (Input::wasKeyPressed(SDL_SCANCODE_F)) {
+					player1.kick = true;
+					player1.kick_counter = time;
+					player1.moving = false;
+				}
+			}
 
-		if (Input::isKeyPressed(SDL_SCANCODE_Q)) player1.yaw -= rot_speed1;
-		if (Input::isKeyPressed(SDL_SCANCODE_E)) player1.yaw += rot_speed1;
+			if (Input::isKeyPressed(SDL_SCANCODE_Q)) player1.yaw -= rot_speed1;
+			if (Input::isKeyPressed(SDL_SCANCODE_E)) player1.yaw += rot_speed1;
 
-
+		}
 		//---------------------------------------------------------------------------------------------------------
 		float speed2 = player2.speed * elapsed_time;
 		float rot_speed2 = player2.rot_speed * elapsed_time;
@@ -315,54 +318,60 @@ void Game::update(double seconds_elapsed)
 		Vector3& player2Right = player2.model.rotateVector(Vector3(1.0f, 0.0f, 0.0f));
 
 		//Vector3 playerSpeed2;
-		player2.playerSpeed = Vector3(0, 0, 0);
-		if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT)) speed2 *= 10; //move faster with left shift
-		if (Input::isKeyPressed(SDL_SCANCODE_UP)) {
-			player2.playerSpeed = player2.playerSpeed + (player2Front * -speed2);
-			player2.dir = Player::type::FORWARD;
-			player2.moving = true;
-			player2.moving_counter = time;
-			/*world.player.model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));*/
-		}
-		if (Input::isKeyPressed(SDL_SCANCODE_DOWN)) {
-			player2.playerSpeed = player2.playerSpeed + (player2Front * speed2);
-			player2.dir = Player::type::BACKWARD;
-			player2.moving = true;
-			player2.moving_counter = time;
-			/*world.player.model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));*/
-		}
-		if (Input::isKeyPressed(SDL_SCANCODE_LEFT)) {
-			player2.playerSpeed = player2.playerSpeed + (player2Right * speed2);
-			player2.dir = Player::type::LEFT;
-			player2.moving = true;
-			player2.moving_counter = time;
-			/*world.player.model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));*/
-		}
-		if (Input::isKeyPressed(SDL_SCANCODE_RIGHT)) {
-			player2.playerSpeed = player2.playerSpeed + (player2Right * -speed2);
-			player2.dir = Player::type::RIGHT;
-			player2.moving = true;
-			player2.moving_counter = time;
-			/*world.player.model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));*/
-		}
-		if (Input::wasKeyPressed(SDL_SCANCODE_L)) {
-			player2.kick = true;
-			player2.kick_counter = time;
-			player2.moving = false;
-		}
+		if (!player2.stunned) {
+			player2.playerSpeed = Vector3(0, 0, 0);
+			if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT)) speed2 *= 10; //move faster with left shift
+			if (Input::isKeyPressed(SDL_SCANCODE_UP)) {
+				player2.playerSpeed = player2.playerSpeed + (player2Front * -speed2);
+				player2.dir = Player::type::FORWARD;
+				player2.moving = true;
+				player2.moving_counter = time;
+				/*world.player.model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));*/
+			}
+			if (Input::isKeyPressed(SDL_SCANCODE_DOWN)) {
+				player2.playerSpeed = player2.playerSpeed + (player2Front * speed2);
+				player2.dir = Player::type::BACKWARD;
+				player2.moving = true;
+				player2.moving_counter = time;
+				/*world.player.model.rotate(0 * DEG2RAD, Vector3(0, 1, 0));*/
+			}
+			if (Input::isKeyPressed(SDL_SCANCODE_LEFT)) {
+				player2.playerSpeed = player2.playerSpeed + (player2Right * speed2);
+				player2.dir = Player::type::LEFT;
+				player2.moving = true;
+				player2.moving_counter = time;
+				/*world.player.model.rotate(90 * DEG2RAD, Vector3(0, 1, 0));*/
+			}
+			if (Input::isKeyPressed(SDL_SCANCODE_RIGHT)) {
+				player2.playerSpeed = player2.playerSpeed + (player2Right * -speed2);
+				player2.dir = Player::type::RIGHT;
+				player2.moving = true;
+				player2.moving_counter = time;
+				/*world.player.model.rotate(-90 * DEG2RAD, Vector3(0, 1, 0));*/
+			}
+			if (time - player2.kick_counter >= player2.kick_cooldown) {
+				if (Input::wasKeyPressed(SDL_SCANCODE_L)) {
+					player2.kick = true;
+					player2.kick_counter = time;
+					player2.moving = false;
+				}
+			}
 
-		if (Input::isKeyPressed(SDL_SCANCODE_I)) player2.yaw -= rot_speed2;
-		if (Input::isKeyPressed(SDL_SCANCODE_O)) player2.yaw += rot_speed2;
-
+			if (Input::isKeyPressed(SDL_SCANCODE_I)) player2.yaw -= rot_speed2;
+			if (Input::isKeyPressed(SDL_SCANCODE_O)) player2.yaw += rot_speed2;
+		}
 
 		for (int i = 0; i < world.players.size(); i++) {
 			Player& player = world.players[i];
 			Vector3& playerSpeed = world.players[i].playerSpeed;
 			Vector3& targetPos = world.players[i].pos + playerSpeed;
-			Vector3& targetPos2 = targetPos + playerSpeed;
 
-			world.penguinCollision(player, targetPos, targetPos2, elapsed_time, camera);
-			world.penguinCollision(player, targetPos, targetPos2, elapsed_time, player2Cam);
+			world.penguinCollision(player, targetPos, elapsed_time);
+
+			if(player.id == world.players[1].id){
+				world.stunPlayer1(targetPos, time);
+			}else{	world.stunPlayer2(targetPos, time); }
+			
 			float checker = world.isPlayeronaBlock(targetPos);
 			if (checker == -5) {
 				targetPos.y -= player.speed * elapsed_time;
@@ -408,7 +417,22 @@ void Game::update(double seconds_elapsed)
 				
 			}
 		}
-
+		if (player1.pos.y <= -4) {
+			for (int i = 0; i < world.blocks.size(); i++) {
+				if (world.blocks[i].fallen == false) {
+					player1.pos = world.blocks[i].model.getTranslation();
+					break;
+				}
+			}
+		}
+		if (player2.pos.y <= -4) {
+			for (int i = 0; i < world.blocks.size(); i++) {
+				if (world.blocks[i].fallen == false) {
+					player2.pos = world.blocks[i].model.getTranslation();
+					break;
+				}
+			}
+		}
 		
 	}
 

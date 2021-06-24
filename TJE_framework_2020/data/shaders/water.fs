@@ -40,7 +40,7 @@ void main()
     vec2 uv_reflection = vec2(yaw, clamp(pitch, 0.0, 1.0) );
 
     vec4 sky_color = texture2DLod( u_texture, uv_reflection, 0.0);
-    sky_color.a = 0.7;
+    sky_color.a = 0.5;
 
     gl_FragColor = u_color * sky_color;
 }

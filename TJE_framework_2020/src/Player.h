@@ -27,6 +27,8 @@ public:
     bool moving;
     float moving_counter;
     float kick_counter;
+    float stun_counter;
+    float kick_cooldown;
     bool stunned;
     Vector3 pos;
     Matrix44 model;
