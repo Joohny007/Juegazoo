@@ -117,6 +117,7 @@ void World::inicializeSea()
 	this->sea_mesh = Mesh::Get("data/agua.ASE");
 	this->sea_tex = Texture::Get("data/cielo.tga");
 	this->sea_shader = Shader::Get("data/shaders/basic.vs", "data/shaders/water.fs");
+	sea_mesh->createSubdividedPlane(100000, 40, true);
 }
 
 void World::renderSea(Camera* camera)
@@ -126,7 +127,7 @@ void World::renderSea(Camera* camera)
 	
 
 	//enable shader and pass uniforms
-	sea_mesh->createSubdividedPlane(100000, 40, true);
+	//sea_mesh->createSubdividedPlane(100000, 40, true);
 	//sea_model.translate(camera->eye.x * 0.01, 0.0f, camera->eye.z * 0.01);
 
 	sea_shader->enable();
@@ -256,7 +257,7 @@ void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_t
 					currentPingu->dir = Penguin::type::LEFT;
 					/*currentPingu->model.setRotation(-90 * DEG2RAD, Vector3(0, 1, 0));
 					currentPingu->model.translate(position.z, position.y, position.x);*/
-					currentPingu->model.translate(-easeOutQuint(20 * elapsed_time), 0, 0);
+					currentPingu->model.translate(-easeOutQuint(200 * elapsed_time), 0, 0);
 					currentPingu->pos = currentPingu->model.getTranslation();
 					currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinFront * -speed_peng);
 				}
@@ -264,7 +265,7 @@ void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_t
 					currentPingu->dir = Penguin::type::RIGHT;
 					/*currentPingu->model.setRotation(90 * DEG2RAD, Vector3(0, 1, 0));
 					currentPingu->model.translate(position.z, position.y, position.x);*/
-					currentPingu->model.translate(easeOutQuint(20 * elapsed_time), 0, 0);
+					currentPingu->model.translate(easeOutQuint(200 * elapsed_time), 0, 0);
 					currentPingu->pos = currentPingu->model.getTranslation();
 					currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinFront * speed_peng);
 				}
@@ -272,7 +273,7 @@ void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_t
 					currentPingu->dir = Penguin::type::FORWARD;
 					/*currentPingu->model.setRotation(0 * DEG2RAD, Vector3(0, 1, 0));
 					currentPingu->model.translate(position.z, position.y, position.x);*/
-					currentPingu->model.translate(0, 0, -easeOutQuint(20 * elapsed_time));
+					currentPingu->model.translate(0, 0, -easeOutQuint(200 * elapsed_time));
 					currentPingu->pos = currentPingu->model.getTranslation();
 					currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinRight * speed_peng);
 				}
@@ -280,7 +281,7 @@ void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_t
 					currentPingu->dir = Penguin::type::BACKWARD;
 					/*currentPingu->model.setRotation(180 * DEG2RAD, Vector3(0, 1, 0));
 					currentPingu->model.translate(position.z, position.y, position.x);*/
-					currentPingu->model.translate(0, 0, easeOutQuint(20 * elapsed_time));
+					currentPingu->model.translate(0, 0, easeOutQuint(200 * elapsed_time));
 					currentPingu->pos = currentPingu->model.getTranslation();
 					currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinRight * -speed_peng);
 				}
