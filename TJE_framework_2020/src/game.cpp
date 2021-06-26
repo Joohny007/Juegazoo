@@ -12,6 +12,7 @@
 #include <cmath>
 #include <chrono>
 #include <ctime>
+#include "extra/bass.h"
 
 //some globals JOAN ERES UNA BELLISIMA PERSONA ESPERO QUE TE VAYA TODO BIEN EN LA VIDA PRECIOSO
 Mesh* mesh = NULL;
