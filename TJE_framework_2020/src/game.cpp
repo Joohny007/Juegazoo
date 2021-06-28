@@ -100,7 +100,7 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	auto start_time = std::chrono::system_clock::now();
 }
 
-void GUI(int x1, int x2, int x3, int x4, const char* s, bool player_kick) {
+void kickGUI(int x1, int x2, int x3, int x4, const char* s, bool player_kick) {
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
@@ -115,6 +115,31 @@ void GUI(int x1, int x2, int x3, int x4, const char* s, bool player_kick) {
 	Vector4 normalColor = Vector4(1, 1, 1, 1);
 	Vector4 gris = Vector4(1, 1, 1, 0.35);
 	shader->setUniform("u_color", player_kick ? gris : normalColor);
+	shader->setUniform("u_viewprojection", cam2D.viewprojection_matrix);
+	shader->setUniform("u_texture", Texture::Get(s), 0);
+	Matrix44 quadModel;
+	shader->setUniform("u_model", quadModel);
+	shader->setUniform("u_texture_tilling", 1.0f);
+	quad.render(GL_TRIANGLES);
+	shader->disable();
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
+}
+
+void GUI(int x1, int x2, int x3, int x4, const char* s) {
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	Camera cam2D;
+	cam2D.setOrthographic(0, Game::instance->window_width, Game::instance->window_height, 0, -1, 1);
+	cam2D.enable();
+	Mesh quad;
+	quad.createQuad(x1, x2, x3, x4, true);
+	Shader* shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+	shader->enable();
+	shader->setUniform("u_color", Vector4(1, 1, 1, 1));
 	shader->setUniform("u_viewprojection", cam2D.viewprojection_matrix);
 	shader->setUniform("u_texture", Texture::Get(s), 0);
 	Matrix44 quadModel;
@@ -165,7 +190,10 @@ void RenderFirstCam(Camera* camera, Camera* player2Cam, float time_float)
 	world.renderPenguins(renderBoundings, camera);
 	float x = Game::instance->window_width - (Game::instance->window_width - 150);
 	float y = Game::instance->window_height - (Game::instance->window_height - 60);
-	GUI(x, y, x, y, "data/GUI/high-kick.png", player1.kick);
+	kickGUI(x, y, x, y, "data/GUI/high-kick.png", player1.kick);
+	float x2 = Game::instance->window_width - 80;
+	float y2 = Game::instance->window_height - 50;
+	GUI( x2, y2, 120 , 70, "data/GUI/medallist.png");
 }
 
 void RenderSecondCam(Camera* camera, Camera* player2Cam, float time_float)
@@ -207,7 +235,10 @@ void RenderSecondCam(Camera* camera, Camera* player2Cam, float time_float)
 
 	float x = Game::instance->window_width/2 - (Game::instance->window_width/2 - 150);
 	float y = Game::instance->window_height - (Game::instance->window_height - 60);
-	GUI(x, y, x, y, "data/GUI/high-kick.png", player2.kick);
+	kickGUI(x, y, x, y, "data/GUI/high-kick.png", player2.kick);
+	float x2 = Game::instance->window_width - 80;
+	float y2 = Game::instance->window_height - 50;
+	GUI(x2, y2, 120, 70, "data/GUI/medallist2.png");
 
 }
 
@@ -240,7 +271,7 @@ void RenderTitle(Camera* camera, Camera* player2Cam, float time_float)
 	int x2 = Game::instance->window_height / 2;
 	int x3 = 600;
 	int x4 = 600;
-	GUI(x1, x2, x3, x4, s, player1.kick);
+	GUI(x1, x2, x3, x4, s);
 }
 
 //what to do when the image has to be draw
