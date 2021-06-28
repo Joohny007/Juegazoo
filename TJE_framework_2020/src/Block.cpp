@@ -22,6 +22,26 @@ void Block::inicialize()
 	}
 }
 
+void Block::inicialize32()
+{
+	if (this->fallen == false) {
+		this->mesh = Mesh::Get("data/bloquePrueba5.obj");
+		this->texture = Texture::Get("data/asul.png");
+		// example of shader loading using the shaders manager
+		this->shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+	}
+}
+
+void Block::inicialize23()
+{
+	if (this->fallen == false) {
+		this->mesh = Mesh::Get("data/bloquePrueba5.obj");
+		this->texture = Texture::Get("data/rojo.png");
+		// example of shader loading using the shaders manager
+		this->shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+	}
+}
+
 void Block::render(Camera* camera)
 {
 	//get the last camera that was activated

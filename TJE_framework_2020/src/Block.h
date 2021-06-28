@@ -28,4 +28,6 @@ public:
     void inicialize();
     void render(Camera* camera);
     void vibrate(float et);
+    void inicialize32();
+    void inicialize23();
 };

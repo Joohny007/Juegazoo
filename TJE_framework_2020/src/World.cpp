@@ -46,6 +46,12 @@ void World::inicializeBlocks()
 		this->blocks.push_back(Block(id, pos));
 		pos.x += 6.5;
 		blocks[id].inicialize();
+		if (id == 23) {
+			blocks[id].inicialize23();
+		}
+		if (id == 32) {
+			blocks[id].inicialize32();
+		}
 		if (pos.x == (7*6.5) + 1) {
 			pos.x = 1;
 			pos.z += 4.9;
