@@ -8,6 +8,8 @@ Penguin::Penguin(int id, Vector3 pos)
 	this->dir = BACKWARD;
 	this->pos = pos;
 	this->fallen = false;
+	this->isMoving = false;
+	this->acumulative = 0.0f;
 }
 
 void Penguin::inicialize()

@@ -18,6 +18,8 @@ public:
     float dir;
     float speed;
     bool fallen;
+    bool isMoving;
+    float acumulative;
     Vector3 penguinSpeed;
     Matrix44 model;
     Mesh* mesh;
