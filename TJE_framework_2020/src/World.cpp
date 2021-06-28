@@ -115,8 +115,8 @@ void World::renderSky(Camera* camera)
 void World::inicializeSea()
 {
 	this->sea_mesh = Mesh::Get("data/agua.ASE");
-	this->sea_tex = Texture::Get("data/cielo.tga");
-	this->sea_shader = Shader::Get("data/shaders/basic.vs", "data/shaders/water.fs");
+	this->sea_tex = Texture::Get("data/agua.tga");
+	this->sea_shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
 	sea_mesh->createSubdividedPlane(100000, 40, true);
 }
 
@@ -193,10 +193,10 @@ void World::BlockVibration(float et) {
 	}
 }
 float World::easeOutQuint(float x) {
-	return 1 - pow(1 - x, 1);
+	return 1 - pow(1 - x, 5);
 }
 
-void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_time)
+void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_time, float time_float)
 {
 	for (int i = 0; i < penguins.size(); i++) {
 		Penguin* currentPingu = &penguins[i];
@@ -248,7 +248,7 @@ void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_t
 			}
 		}
 		else {
-			if (currentPingu->mesh->testSphereCollision(currentPingu->model, characterTargetCenter, 1.5, coll, collmore)) {
+			if (currentPingu->mesh->testSphereCollision(currentPingu->model, characterTargetCenter, 1.3, coll, collmore)) {
 				Vector3 push_away = normalize(coll - characterTargetCenter) * elapsed_time;
 
 				currentPingu->penguinSpeed = Vector3(0, 0, 0);
@@ -257,7 +257,7 @@ void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_t
 					currentPingu->dir = Penguin::type::LEFT;
 					/*currentPingu->model.setRotation(-90 * DEG2RAD, Vector3(0, 1, 0));
 					currentPingu->model.translate(position.z, position.y, position.x);*/
-					currentPingu->model.translate(-easeOutQuint(200 * elapsed_time), 0, 0);
+					currentPingu->model.translate(-easeOutQuint(time_float - player.kick_counter)*100, 0, 0);
 					currentPingu->pos = currentPingu->model.getTranslation();
 					currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinFront * -speed_peng);
 				}
@@ -265,7 +265,7 @@ void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_t
 					currentPingu->dir = Penguin::type::RIGHT;
 					/*currentPingu->model.setRotation(90 * DEG2RAD, Vector3(0, 1, 0));
 					currentPingu->model.translate(position.z, position.y, position.x);*/
-					currentPingu->model.translate(easeOutQuint(200 * elapsed_time), 0, 0);
+					currentPingu->model.translate(easeOutQuint(time_float - player.kick_counter)*100, 0, 0);
 					currentPingu->pos = currentPingu->model.getTranslation();
 					currentPingu->penguinSpeed = currentPingu->penguinSpeed + (penguinFront * speed_peng);
 				}
@@ -313,37 +313,6 @@ void World::penguinCollision(Player& player, Vector3& targetPos, float elapsed_t
 				currentPingu->pos = pengTargetPos;
 
 			}
-			//float checker = isPlayeronaBlock(pengTargetPos);
-			//if (checker == -5) {
-			//	pengTargetPos.y -= currentPingu->speed * elapsed_time;
-			//	
-			//}
-			//else if (checker + 2 > currentPingu->pos.y) {
-			//	if (checker + 2 - currentPingu->pos.y > 1) {
-			//		float checker2 = isPlayeronaBlock(currentPingu->pos);
-			//		if (checker2 - currentPingu->pos.y > 2) {
-			//			currentPingu->pos.y -= currentPingu->speed * elapsed_time;
-			//		}
-			//		else {
-			//			currentPingu->pos.y = checker2 + 2;
-			//		}
-
-			//	}
-			//	else {
-			//		pengTargetPos.y = checker + 2;
-			//		currentPingu->pos = pengTargetPos;
-			//	}
-			//}
-			//else {
-			//	if (currentPingu->pos.y - currentPingu->speed * elapsed_time > checker + 2) {
-			//		pengTargetPos.y -= currentPingu->speed * elapsed_time;
-			//		currentPingu->pos = pengTargetPos;
-			//	}
-			//	else {
-			//		pengTargetPos.y = checker + 2;
-			//		currentPingu->pos = pengTargetPos;
-			//	}
-			//}
 		}
 	}
 }
@@ -681,4 +650,9 @@ void World::stunPlayer2(Vector3& player1_targetPos, float time)
 			player2.stun_counter = time;
 		}
 	}
+}
+
+void World::renderGUI(Camera* cam)
+{
+	
 }

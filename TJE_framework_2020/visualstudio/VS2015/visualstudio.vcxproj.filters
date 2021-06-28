@@ -67,7 +67,6 @@
     <ClCompile Include="..\..\src\Player.cpp" />
     <ClCompile Include="..\..\src\Penguin.cpp" />
     <ClCompile Include="..\..\src\Block.cpp" />
-    <ClCompile Include="..\..\src\Bloque.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\camera.h" />
@@ -132,7 +131,6 @@
     <ClInclude Include="..\..\src\Player.h" />
     <ClInclude Include="..\..\src\Penguin.h" />
     <ClInclude Include="..\..\src\Block.h" />
-    <ClInclude Include="..\..\src\Bloque.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="extra">

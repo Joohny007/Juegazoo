@@ -128,7 +128,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\animation.cpp" />
     <ClCompile Include="..\..\src\Block.cpp" />
-    <ClCompile Include="..\..\src\Bloque.cpp" />
     <ClCompile Include="..\..\src\camera.cpp" />
     <ClCompile Include="..\..\src\Entity.cpp" />
     <ClCompile Include="..\..\src\EntityMesh.cpp" />
@@ -159,7 +158,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\src\animation.h" />
     <ClInclude Include="..\..\src\Block.h" />
-    <ClInclude Include="..\..\src\Bloque.h" />
     <ClInclude Include="..\..\src\camera.h" />
     <ClInclude Include="..\..\src\Entity.h" />
     <ClInclude Include="..\..\src\EntityMesh.h" />

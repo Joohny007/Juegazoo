@@ -17,6 +17,7 @@ public:
 	int id;
     float dir;
     float speed;
+    bool fallen;
     Vector3 penguinSpeed;
     Matrix44 model;
     Mesh* mesh;

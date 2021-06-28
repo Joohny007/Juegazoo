@@ -100,6 +100,31 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	auto start_time = std::chrono::system_clock::now();
 }
 
+void GUI(int x1, int x2, int x3, int x4, const char* s) {
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	Camera cam2D;
+	cam2D.setOrthographic(0, Game::instance->window_width, Game::instance->window_height, 0, -1, 1);
+	cam2D.enable();
+	Mesh quad;
+	quad.createQuad(450, 300, 600, 600, true);
+	Shader* shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+	shader->enable();
+	shader->setUniform("u_color", Vector4(1, 1, 1, 1));
+	shader->setUniform("u_viewprojection", cam2D.viewprojection_matrix);
+	shader->setUniform("u_texture", Texture::Get(s), 0);
+	Matrix44 quadModel;
+	shader->setUniform("u_model", quadModel);
+	shader->setUniform("u_texture_tilling", 1.0f);
+	quad.render(GL_TRIANGLES);
+	shader->disable();
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
+}
+
 void RenderFirstCam(Camera* camera, Camera* player2Cam, float time_float)
 {
 	glViewport(0, 0, Game::instance->window_width / 2, Game::instance->window_height);
@@ -172,6 +197,7 @@ void RenderSecondCam(Camera* camera, Camera* player2Cam, float time_float)
 
 	world.kickAnimation2(player2Cam, skinning, shader, textureMesh, anim, time_float);
 
+
 	world.renderBlocks(renderBoundings, player2Cam);
 	world.renderPenguins(renderBoundings, player2Cam);
 
@@ -201,6 +227,12 @@ void RenderTitle(Camera* camera, Camera* player2Cam, float time_float)
 	world.renderBlocks(renderBoundings, camera);
 	world.renderPenguins(renderBoundings, camera);
 
+	const char* s = "data/Vikinguinos.png";
+	int x1 = 450;
+	int x2 = 300;
+	int x3 = 600;
+	int x4 = 600;
+	GUI(x1, x2, x3, x4, s);
 }
 
 //what to do when the image has to be draw
@@ -216,11 +248,6 @@ void Game::render(void)
 	camera->enable();
 	player2Cam->enable();
 	TitleCam->enable();
-
-	//set flags
-	glDisable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
    
 
 	if (!shader) return;
@@ -394,7 +421,7 @@ void Game::update(double seconds_elapsed)
 				Vector3& playerSpeed = world.players[i].playerSpeed;
 				Vector3& targetPos = world.players[i].pos + playerSpeed;
 
-				world.penguinCollision(player, targetPos, elapsed_time);
+				world.penguinCollision(player, targetPos, elapsed_time, time);
 
 				if (player.id == world.players[1].id) {
 					world.stunPlayer1(targetPos, time);
@@ -436,9 +463,31 @@ void Game::update(double seconds_elapsed)
 			world.BlockVibration(elapsed_time);
 			for (int i = 0; i < world.penguins.size(); i++) {
 				Penguin& penguin = world.penguins[i];
+				if (penguin.fallen) {
+					continue;
+				}
 				Vector3 trans = penguin.pos;
 				float checker = world.isPlayeronaBlock(penguin.pos);
 				if (checker == -5) {
+					if (trans.y <= -2) {
+						penguin.fallen = true;
+						if (BASS_Init(-1, 44100, 0, 0, NULL) == false) //-1 significa usar el por defecto del sistema operativo
+						{
+							//error abriendo la tarjeta de sonido...
+						}
+						HSAMPLE hSample;
+						HCHANNEL hSampleChannel;
+						hSample = BASS_SampleLoad(false, "data/wav/Quack.wav", 0, 0, 3, 0);
+						if (hSample == 0)
+						{
+						}
+
+						hSampleChannel = BASS_SampleGetChannel(hSample, false);
+
+
+						//Lanzamos un sample
+						BASS_ChannelPlay(hSampleChannel, true);
+					}
 					penguin.pos.y -= penguin.speed * elapsed_time;
 				}
 				else {

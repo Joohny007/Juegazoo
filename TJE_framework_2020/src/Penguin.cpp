@@ -7,6 +7,7 @@ Penguin::Penguin(int id, Vector3 pos)
 	this->model.translate(pos.x, pos.y, pos.z);
 	this->dir = BACKWARD;
 	this->pos = pos;
+	this->fallen = false;
 }
 
 void Penguin::inicialize()
