@@ -109,7 +109,7 @@ void GUI(int x1, int x2, int x3, int x4, const char* s) {
 	cam2D.setOrthographic(0, Game::instance->window_width, Game::instance->window_height, 0, -1, 1);
 	cam2D.enable();
 	Mesh quad;
-	quad.createQuad(450, 300, 600, 600, true);
+	quad.createQuad(Game::instance->window_width/2, Game::instance->window_height/2, x3, x4, true);
 	Shader* shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
 	shader->enable();
 	shader->setUniform("u_color", Vector4(1, 1, 1, 1));
