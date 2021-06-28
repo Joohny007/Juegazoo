@@ -479,22 +479,7 @@ void Game::update(double seconds_elapsed)
 				if (checker == -5) {
 					if (trans.y <= -2) {
 						penguin.fallen = true;
-						if (BASS_Init(-1, 44100, 0, 0, NULL) == false) //-1 significa usar el por defecto del sistema operativo
-						{
-							//error abriendo la tarjeta de sonido...
-						}
-						HSAMPLE hSample;
-						HCHANNEL hSampleChannel;
-						hSample = BASS_SampleLoad(false, "data/wav/Quack.wav", 0, 0, 3, 0);
-						if (hSample == 0)
-						{
-						}
-
-						hSampleChannel = BASS_SampleGetChannel(hSample, false);
-
-
-						//Lanzamos un sample
-						BASS_ChannelPlay(hSampleChannel, true);
+						world.playSound("data/wav/Quack.wav");
 					}
 					penguin.pos.y -= penguin.speed * elapsed_time;
 				}

@@ -10,6 +10,8 @@
 #include "Penguin.h"
 #include "animation.h"
 #include "game.h"
+#include "extra/bass.h"
+
 
 class World 
 {
@@ -62,4 +64,5 @@ public:
 	void stunPlayer1(Vector3& targetPos, float time);
 	void stunPlayer2(Vector3& targetPos, float time);
 	void renderGUI(Camera* cam);
+	void playSound(const char* sound);
 };

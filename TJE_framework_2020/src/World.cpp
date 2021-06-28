@@ -757,3 +757,23 @@ void World::renderGUI(Camera* cam)
 {
 	
 }
+
+void World::playSound(const char* sound)
+{
+	if (BASS_Init(-1, 44100, 0, 0, NULL) == false) //-1 significa usar el por defecto del sistema operativo
+	{
+		//error abriendo la tarjeta de sonido...
+	}
+	HSAMPLE hSample;
+	HCHANNEL hSampleChannel;
+	hSample = BASS_SampleLoad(false, sound, 0, 0, 3, 0);
+	if (hSample == 0)
+	{
+	}
+
+	hSampleChannel = BASS_SampleGetChannel(hSample, false);
+
+
+	//Lanzamos un sample
+	BASS_ChannelPlay(hSampleChannel, true);
+}
