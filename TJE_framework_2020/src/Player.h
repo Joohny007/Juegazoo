@@ -30,6 +30,7 @@ public:
     float stun_counter;
     float kick_cooldown;
     bool stunned;
+    int score;
     Vector3 pos;
     Matrix44 model;
     Matrix44 rot;

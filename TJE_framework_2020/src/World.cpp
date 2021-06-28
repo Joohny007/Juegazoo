@@ -777,3 +777,23 @@ void World::playSound(const char* sound)
 	//Lanzamos un sample
 	BASS_ChannelPlay(hSampleChannel, true);
 }
+
+void World::calculateScore()
+{
+	Vector3 player1WinBlockPos = blocks[32].model.getTranslation();
+	Vector3 player2WinBlockPos = blocks[23].model.getTranslation();
+
+	for (int j = 0; j < penguins.size(); j++) {
+		Penguin& penguin = penguins[j];
+
+		if ((((player1WinBlockPos.x - 3.25) <= (penguin.pos.x + .25)) && ((penguin.pos.x + .25) <= (player1WinBlockPos.x + 3.25)) && ((player1WinBlockPos.z - 2.45) <= (penguin.pos.z + .25)) && ((penguin.pos.z + .25) <= (player1WinBlockPos.z + 2.45)))) { players[0].score++; continue; }
+		if (((player1WinBlockPos.x - 3.25) <= (penguin.pos.x + .25)) && ((penguin.pos.x + .25) <= (player1WinBlockPos.x + 3.25)) && ((player1WinBlockPos.z - 2.45) <= (penguin.pos.z - .25)) && ((penguin.pos.z - .25) <= (player1WinBlockPos.z + 2.45))) { players[0].score++; continue; }
+		if (((player1WinBlockPos.x - 3.25) <= (penguin.pos.x - .25)) && ((penguin.pos.x - .25) <= (player1WinBlockPos.x + 3.25)) && ((player1WinBlockPos.z - 2.45) <= (penguin.pos.z + .25)) && ((penguin.pos.z + .25) <= (player1WinBlockPos.z + 2.45))) { players[0].score++; continue; }
+		if (((player1WinBlockPos.x - 3.25) <= (penguin.pos.x - .25)) && ((penguin.pos.x - .25) <= (player1WinBlockPos.x + 3.25)) && ((player1WinBlockPos.z - 2.45) <= (penguin.pos.z - .25)) && ((penguin.pos.z - .25) <= (player1WinBlockPos.z + 2.45))) { players[0].score++; continue; }
+
+		if ((((player2WinBlockPos.x - 3.25) <= (penguin.pos.x + .25)) && ((penguin.pos.x + .25) <= (player2WinBlockPos.x + 3.25)) && ((player2WinBlockPos.z - 2.45) <= (penguin.pos.z + .25)) && ((penguin.pos.z + .25) <= (player2WinBlockPos.z + 2.45)))) { players[1].score++; continue; }
+		if (((player2WinBlockPos.x - 3.25) <= (penguin.pos.x + .25)) && ((penguin.pos.x + .25) <= (player2WinBlockPos.x + 3.25)) && ((player2WinBlockPos.z - 2.45) <= (penguin.pos.z - .25)) && ((penguin.pos.z - .25) <= (player2WinBlockPos.z + 2.45))) { players[1].score++; continue; }
+		if (((player2WinBlockPos.x - 3.25) <= (penguin.pos.x - .25)) && ((penguin.pos.x - .25) <= (player2WinBlockPos.x + 3.25)) && ((player2WinBlockPos.z - 2.45) <= (penguin.pos.z + .25)) && ((penguin.pos.z + .25) <= (player2WinBlockPos.z + 2.45))) { players[1].score++; continue; }
+		if (((player2WinBlockPos.x - 3.25) <= (penguin.pos.x - .25)) && ((penguin.pos.x - .25) <= (player2WinBlockPos.x + 3.25)) && ((player2WinBlockPos.z - 2.45) <= (penguin.pos.z - .25)) && ((penguin.pos.z - .25) <= (player2WinBlockPos.z + 2.45))) { players[1].score++; continue; }
+	}
+}

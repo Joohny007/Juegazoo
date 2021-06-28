@@ -15,6 +15,7 @@ Player::Player()
 	this->stunned = false;
 	this->stun_counter = 0.0f;
 	this->kick_cooldown = 3.5f;
+	this->score = 0; 
 }
 Player::Player(int id)
 {
@@ -33,6 +34,7 @@ Player::Player(int id)
 	this->stunned = false;
 	this->stun_counter = 0.0f;
 	this->kick_cooldown = 3.5f;
+	this->score = 0;
 }
 
 void Player::setPos(Vector3 pos)

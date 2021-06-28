@@ -65,4 +65,5 @@ public:
 	void stunPlayer2(Vector3& targetPos, float time);
 	void renderGUI(Camera* cam);
 	void playSound(const char* sound);
+	void calculateScore();
 };
