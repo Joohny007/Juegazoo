@@ -398,7 +398,7 @@ void Game::update(double seconds_elapsed)
 	else if (st == GAME) {
 		//example
 		angle += (float)seconds_elapsed * 10.0f;
-		if (world.game_time > 10) { st = END; }
+		if (world.game_time > 220) { st = END; }
 		//mouse input to rotate the cam
 		if ((Input::mouse_state & SDL_BUTTON_LEFT) || mouse_locked) //is left button pressed?
 		{
