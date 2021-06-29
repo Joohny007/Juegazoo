@@ -64,4 +64,9 @@ public:
 	void stunPlayer2(Vector3& targetPos, float time);
 	void playSound(const char* sound);
 	void calculateScore();
+	void player1Victory(Camera* camera, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* victory, Animation* defeat, float time_float);
+	void player2Victory(Camera* player2Cam, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* victory, Animation* defeat, float time_float);
+	void DRAW1(Camera* camera, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* woman, Animation* man, float time_float);
+	void DRAW2(Camera* player2Cam, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* man, Animation* woman, float time_float);
+	void replay();
 };

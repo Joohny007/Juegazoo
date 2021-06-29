@@ -809,3 +809,172 @@ void World::calculateScore()
 		}
 	}
 }
+
+void World::player1Victory(Camera* camera, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* victory, Animation* defeat, float time_float)
+{
+	Player& player1 = players[0];
+
+	victory->assignTime(time_float);
+	skinning->enable();
+
+	skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
+
+	skinning->setUniform("u_viewprojection", camera->viewprojection_matrix);
+	skinning->setUniform("u_texture", player1.texture, 0);
+	skinning->setUniform("u_time", time_float);
+	skinning->setUniform("u_model", player1.model);
+	skinning->setUniform("u_texture_tiling", 1.0f);
+	player1.mesh->renderAnimated(GL_TRIANGLES, &victory->skeleton);
+
+	skinning->disable();
+	
+//-------------------------------------------------------------------------------------------------------
+	Player& player2 = players[1];
+	
+	defeat->assignTime(time_float);
+	skinning->enable();
+
+	skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
+
+	skinning->setUniform("u_viewprojection", camera->viewprojection_matrix);
+	skinning->setUniform("u_texture", player2.texture, 0);
+	skinning->setUniform("u_time", time_float);
+	skinning->setUniform("u_model", player2.model);
+	skinning->setUniform("u_texture_tiling", 1.0f);
+	player2.mesh->renderAnimated(GL_TRIANGLES, &defeat->skeleton);
+
+	skinning->disable();
+}
+
+void World::player2Victory(Camera* player2Cam, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* victory, Animation* defeat, float time_float)
+{
+	Player& player2 = players[1];
+
+	victory->assignTime(time_float);
+	skinning->enable();
+
+	skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
+
+	skinning->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
+	skinning->setUniform("u_texture", player2.texture, 0);
+	skinning->setUniform("u_time", time_float);
+	skinning->setUniform("u_model", player2.model);
+	skinning->setUniform("u_texture_tiling", 1.0f);
+	player2.mesh->renderAnimated(GL_TRIANGLES, &victory->skeleton);
+
+	skinning->disable();
+
+	//-------------------------------------------------------------------------------------------------------
+	Player& player1 = players[0];
+
+	defeat->assignTime(time_float);
+	skinning->enable();
+
+	skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
+
+	skinning->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
+	skinning->setUniform("u_texture", player1.texture, 0);
+	skinning->setUniform("u_time", time_float);
+	skinning->setUniform("u_model", player1.model);
+	skinning->setUniform("u_texture_tiling", 1.0f);
+	player1.mesh->renderAnimated(GL_TRIANGLES, &defeat->skeleton);
+
+	skinning->disable();
+}
+
+void World::DRAW1(Camera* camera, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* woman, Animation* man, float time_float)
+{
+	Player& player1 = players[0];
+
+	woman->assignTime(time_float);
+	skinning->enable();
+
+	skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
+
+	skinning->setUniform("u_viewprojection", camera->viewprojection_matrix);
+	skinning->setUniform("u_texture", player1.texture, 0);
+	skinning->setUniform("u_time", time_float);
+	skinning->setUniform("u_model", player1.model);
+	skinning->setUniform("u_texture_tiling", 1.0f);
+	player1.mesh->renderAnimated(GL_TRIANGLES, &woman->skeleton);
+
+	skinning->disable();
+
+	//-------------------------------------------------------------------------------------------------------
+	Player& player2 = players[1];
+
+	man->assignTime(time_float);
+	skinning->enable();
+
+	skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
+
+	skinning->setUniform("u_viewprojection", camera->viewprojection_matrix);
+	skinning->setUniform("u_texture", player2.texture, 0);
+	skinning->setUniform("u_time", time_float);
+	skinning->setUniform("u_model", player2.model);
+	skinning->setUniform("u_texture_tiling", 1.0f);
+	player2.mesh->renderAnimated(GL_TRIANGLES, &man->skeleton);
+
+	skinning->disable();
+}
+
+void World::DRAW2(Camera* player2Cam, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* man, Animation* woman, float time_float)
+{
+	Player& player2 = players[1];
+
+	man->assignTime(time_float);
+	skinning->enable();
+
+	skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
+
+	skinning->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
+	skinning->setUniform("u_texture", player2.texture, 0);
+	skinning->setUniform("u_time", time_float);
+	skinning->setUniform("u_model", player2.model);
+	skinning->setUniform("u_texture_tiling", 1.0f);
+	player2.mesh->renderAnimated(GL_TRIANGLES, &man->skeleton);
+
+	skinning->disable();
+
+	//-------------------------------------------------------------------------------------------------------
+	Player& player1 = players[0];
+
+	woman->assignTime(time_float);
+	skinning->enable();
+
+	skinning->setUniform("u_color", Vector4(1, 1, 1, 1));
+
+	skinning->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
+	skinning->setUniform("u_texture", player1.texture, 0);
+	skinning->setUniform("u_time", time_float);
+	skinning->setUniform("u_model", player1.model);
+	skinning->setUniform("u_texture_tiling", 1.0f);
+	player1.mesh->renderAnimated(GL_TRIANGLES, &woman->skeleton);
+
+	skinning->disable();
+}
+
+void World::replay() {
+	for (int id = 0; id < max_blocks; id++) {
+		this->blocks[id].fallen = false;
+		this->blocks[id].vel = 5.0f;
+		Vector3 pos = blocks[id].model.getTranslation();
+		this->blocks[id].model.setTranslation(pos.x, 0, pos.z);
+	}
+	for (int id = 0; id < max_blocks; id++) {
+		this->penguins[id].fallen = false;
+		this->penguins[id].isMoving = false;
+		this->penguins[id].acumulative = false;
+		this->penguins[id].inBlock23 = false;
+		this->penguins[id].inBlock32 = false;
+		Vector3 block_pos = this->blocks[id].model.getTranslation();
+		this->penguins[id].pos = block_pos;
+		this->penguins[id].model.setTranslation(block_pos.x, block_pos.y + 2, block_pos.z);
+		this->penguins[id].model.rotate(180 * DEG2RAD, Vector3(0, 1, 0));
+	}
+	this->players[0].pos = Vector3(0, 0, 0);
+	this->players[1].pos = Vector3(0, 0, 0);
+	this->players[0].score = 0;
+	this->players[1].score = 0;
+	game_time = 0;
+}

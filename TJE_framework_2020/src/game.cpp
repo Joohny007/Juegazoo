@@ -33,8 +33,8 @@ float mouse_speed = 10.0f;
 
 enum stages {
 	TITLE,
-	TUTORIAL,
 	HOW_TO_PLAY,
+	TUTORIAL,
 	GAME,
 	END
 };
@@ -154,109 +154,122 @@ void GUI(int x1, int x2, int x3, int x4, const char* s) {
 	glDisable(GL_BLEND);
 }
 
-void RenderFirstCam(Camera* camera, Camera* player2Cam, float time_float)
+void RenderFirstCam(Camera* camera, float time_float)
 {
 	glViewport(0, 0, Game::instance->window_width / 2, Game::instance->window_height);
 	
 	world.renderSky(camera);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	world.renderSea(camera);
-	glDisable(GL_BLEND);
+
 
 	if (!free_camera) {
 		player1.model.setTranslation(player1.pos.x, player1.pos.y, player1.pos.z);
-		/*Matrix44 rotation_matrix;
-		rotation_matrix.setRotation(player1.yaw * DEG2RAD, Vector3(0, 1, 0));
-		player1.model = rotation_matrix * player1.model;
-		*/
 		player2.model.setTranslation(player2.pos.x, player2.pos.y, player2.pos.z);
-		/*Matrix44 rotation_matrix2;
-		rotation_matrix2.setRotation(player2.yaw * DEG2RAD, Vector3(0, 1, 0));
-		player2.model = rotation_matrix2 * player2.model;*/
 
-		Vector3 eye1 = player1.model * Vector3(0.0f, 8.0f, -5.5f);
-		Vector3 center1 = player1.model * Vector3(0.0f, 0.0f, 10.0f);
-		Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
-		camera->lookAt(eye1, center1, up);
+		if (st == END) {
+			Vector3 eye2 = player1.model * Vector3(0.0f, 2.0f, 3.5f);
+			Vector3 center2 = player1.model * Vector3(0.0f, 0.0f, -10.0f);
+			Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
+			camera->lookAt(eye2, center2, up);
+		}
+		else {
+			Vector3 eye1 = player1.model * Vector3(0.0f, 8.0f, -5.5f);
+			Vector3 center1 = player1.model * Vector3(0.0f, 0.0f, 10.0f);
+			Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
+			camera->lookAt(eye1, center1, up);
+		}
 	}
+	else {
+		drawText((Game::instance->window_width / 2) - 200, Game::instance->window_height / 2 - 50, "PAUSE", Vector3(0, 0.098, 0.098), 13);
+	}
+
 	Animation* anim_woman = Animation::Get("data/Animaciones/Skanim/mma_kick_woman.skanim");
-	Animation* walk_anim_woman = Animation::Get("data/Animaciones/Skanim/walking_woman.skanim");
 
-
-	//world.moving1(camera, skinning, shader, textureMesh, walk_anim_woman, time_float);
-
-	world.kickAnimation1(camera, skinning, shader, textureMesh, anim_woman, time_float);
-
+	if (st == GAME) {
+		world.kickAnimation1(camera, skinning, shader, textureMesh, anim_woman, time_float);
+	}
 	world.renderBlocks(renderBoundings, camera);
 	world.renderPenguins(renderBoundings, camera);
 	float x = Game::instance->window_width - (Game::instance->window_width - 150);
 	float y = Game::instance->window_height - (Game::instance->window_height - 60);
 	kickGUI(x, y, x, y, "data/GUI/high-kick.png", player1.kick);
+
 	float x2 = Game::instance->window_width - 80;
 	float y2 = Game::instance->window_height - 50;
 	GUI( x2, y2, 120 , 70, "data/GUI/medallist.png");
+
 	if (player1.stunned) {
 		x = Game::instance->window_width / 2;
 		y = Game::instance->window_height - (Game::instance->window_height - 190);
 		GUI(x, y, 520, 190, "data/GUI/stunned.png");
 	}
+
 	drawText(x2 - 300, 20, "SCORE =" + player1.scoreToString(), Vector3(0, 0, 1), 6);
-	if (free_camera) {
-		drawText((Game::instance->window_width / 2) - 200, Game::instance->window_height / 2 - 50, "PAUSE", Vector3(0, 0.098, 0.098), 13);
-	}
+
+
 	if (st == END) {
+		Animation* victory = Animation::Get("data/Animaciones/Skanim/victory.skanim");
+		Animation* victory_woman = Animation::Get("data/Animaciones/Skanim/victory_woman.skanim");
+		Animation* defeat = Animation::Get("data/Animaciones/Skanim/defeated.skanim");
+		Animation* defeat_woman = Animation::Get("data/Animaciones/Skanim/defeated_woman.skanim");
+		Animation* draw_man = Animation::Get("data/Animaciones/Skanim/belly_dance.skanim");
+		Animation* draw_woman = Animation::Get("data/Animaciones/Skanim/belly_dance_woman.skanim");
+
 		if (player1.score > player2.score) {
 			float x2 = Game::instance->window_width - 400;
 			float y2 = Game::instance->window_height - 300;
+			world.player1Victory(camera, skinning, shader, textureMesh, victory_woman, defeat, time_float);
 			GUI(x2, y2, 800, 500, "data/GUI/YOUWIN.png");
 		}
 		else if (player1.score < player2.score) {
 			float x2 = Game::instance->window_width - 400;
 			float y2 = Game::instance->window_height - 300;
+			world.player2Victory(camera, skinning, shader, textureMesh, victory, defeat_woman, time_float);
 			GUI(x2, y2, 800, 500, "data/GUI/YOULOSE.png");
 		}
 		else {
 			float x2 = Game::instance->window_width - 400;
 			float y2 = Game::instance->window_height - 300;
+			world.DRAW1(camera, skinning, shader, textureMesh, draw_woman, draw_man, time_float);
 			GUI(x2, y2, 800, 500, "data/GUI/DRAW.png");
 		}
 	}
 }
 
-void RenderSecondCam(Camera* camera, Camera* player2Cam, float time_float)
+void RenderSecondCam(Camera* player2Cam, float time_float)
 {
 	glViewport(Game::instance->window_width / 2, 0, Game::instance->window_width / 2, Game::instance->window_height);
 
 	world.renderSky(player2Cam);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	world.renderSea(player2Cam);
-	glDisable(GL_BLEND);
+
 
 	if (!free_camera) {
 		player1.model.setTranslation(player1.pos.x, player1.pos.y, player1.pos.z);
-		/*Matrix44 rotation_matrix;
-		rotation_matrix.setRotation(player1.yaw * DEG2RAD, Vector3(0, 1, 0));
-		player1.model = rotation_matrix * player1.model;*/
-
 		player2.model.setTranslation(player2.pos.x, player2.pos.y, player2.pos.z);
-		/*Matrix44 rotation_matrix2;
-		rotation_matrix2.setRotation(player2.yaw * DEG2RAD, Vector3(0, 1, 0));
-		player2.model = rotation_matrix2 * player2.model;*/
 
-		Vector3 eye2 = player2.model * Vector3(0.0f, 8.0f, -5.5f);
-		Vector3 center2 = player2.model * Vector3(0.0f, 0.0f, 10.0f);
-		Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
-		player2Cam->lookAt(eye2, center2, up);
+		if (st == END) {
+			Vector3 eye2 = player2.model * Vector3(0.0f, 2.0f, 3.5f);
+			Vector3 center2 = player2.model * Vector3(0.0f, 0.0f, -10.0f);
+			Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
+			player2Cam->lookAt(eye2, center2, up);
+		}
+		else{
+			Vector3 eye2 = player2.model * Vector3(0.0f, 8.0f, -5.5f);
+			Vector3 center2 = player2.model * Vector3(0.0f, 0.0f, 10.0f);
+			Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
+			player2Cam->lookAt(eye2, center2, up);
+		}
 	}
+	else {
+		drawText((Game::instance->window_width / 2) - 200, Game::instance->window_height / 2 - 50, "PAUSE", Vector3(0, 0.098, 0.098), 13);
+	}
+
 	Animation* anim = Animation::Get("data/Animaciones/Skanim/mma_kick.skanim");
-	Animation* walk_anim = Animation::Get("data/Animaciones/Skanim/walking.skanim");
-	
-	//world.moving2(player2Cam, skinning, shader, textureMesh, walk_anim, time_float);
 
-	world.kickAnimation2(player2Cam, skinning, shader, textureMesh, anim, time_float);
-
+	if (st == GAME) {
+		world.kickAnimation2(player2Cam, skinning, shader, textureMesh, anim, time_float);
+	}
 
 	world.renderBlocks(renderBoundings, player2Cam);
 	world.renderPenguins(renderBoundings, player2Cam);
@@ -264,50 +277,55 @@ void RenderSecondCam(Camera* camera, Camera* player2Cam, float time_float)
 	float x = Game::instance->window_width/2 - (Game::instance->window_width/2 - 150);
 	float y = Game::instance->window_height - (Game::instance->window_height - 60);
 	kickGUI(x, y, x, y, "data/GUI/high-kick.png", player2.kick);
+
 	float x2 = Game::instance->window_width - 80;
 	float y2 = Game::instance->window_height - 50;
 	GUI(x2, y2, 120, 70, "data/GUI/medallist2.png");
+
 	if (player2.stunned) {
 		x = Game::instance->window_width / 2 ;
 		y = Game::instance->window_height - (Game::instance->window_height - 190);
 		GUI(x, y, 520, 190, "data/GUI/stunned.png");
 	}
 	drawText(x2 - 300, 20, "SCORE =" + player2.scoreToString(), Vector3(1, 0, 0), 6);
-	if (free_camera) {
-		drawText((Game::instance->window_width / 2) - 200, Game::instance->window_height / 2 - 50, "PAUSE", Vector3(0, 0.098, 0.098), 13);
-	}
+
 	if (st == END) {
+		Animation* victory = Animation::Get("data/Animaciones/Skanim/victory.skanim");
+		Animation* victory_woman = Animation::Get("data/Animaciones/Skanim/victory_woman.skanim");
+		Animation* defeat = Animation::Get("data/Animaciones/Skanim/defeated.skanim");
+		Animation* defeat_woman = Animation::Get("data/Animaciones/Skanim/defeated_woman.skanim");
+		Animation* draw_man = Animation::Get("data/Animaciones/Skanim/belly_dance.skanim");
+		Animation* draw_woman = Animation::Get("data/Animaciones/Skanim/belly_dance_woman.skanim");
+
 		if (player2.score > player1.score) {
 			float x2 = Game::instance->window_width - 400;
 			float y2 = Game::instance->window_height - 300;
+			world.player2Victory(player2Cam, skinning, shader, textureMesh, victory, defeat_woman, time_float);
 			GUI(x2, y2, 800, 500, "data/GUI/YOUWIN.png");
 		}
 		else if (player2.score < player1.score) {
 			float x2 = Game::instance->window_width - 400;
 			float y2 = Game::instance->window_height - 300;
+			world.player1Victory(player2Cam, skinning, shader, textureMesh, victory_woman, defeat, time_float);
 			GUI(x2, y2, 800, 500, "data/GUI/YOULOSE.png");
 		}
 		else {
 			float x2 = Game::instance->window_width - 400;
 			float y2 = Game::instance->window_height - 300;
+			world.DRAW2(player2Cam, skinning, shader, textureMesh, draw_man, draw_woman, time_float);
 			GUI(x2, y2, 800, 500, "data/GUI/DRAW.png");
 		}
 	}
 
 }
 
-void RenderTitle(Camera* camera, Camera* player2Cam, float time_float)
+void RenderTitle(Camera* camera, float time_float, const char* s)
 {
 	glViewport(0, 0, Game::instance->window_width, Game::instance->window_height);
 
 	world.renderSky(camera);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	world.renderSea(camera);
-	glDisable(GL_BLEND);
 
-
-	//world.moving1(camera, skinning, shader, textureMesh, walk_anim_woman, time_float);
 	shader->enable();
 
 	shader->setUniform("u_color", Vector4(1, 1, 1, 1));
@@ -320,11 +338,10 @@ void RenderTitle(Camera* camera, Camera* player2Cam, float time_float)
 	world.renderBlocks(renderBoundings, camera);
 	world.renderPenguins(renderBoundings, camera);
 
-	const char* s = "data/Vikinguinos.png";
 	int x1 = Game::instance->window_width / 2;
 	int x2 = Game::instance->window_height / 2;
-	int x3 = 600;
-	int x4 = 600;
+	int x3 = Game::instance->window_width;
+	int x4 = Game::instance->window_height;
 	GUI(x1, x2, x3, x4, s);
 }
 
@@ -345,30 +362,18 @@ void Game::render(void)
 
 	if (!shader) return;
 
-	//do the draw call
-	//mesh->render( GL_TRIANGLES );
-	//mesh2->render(GL_TRIANGLES);
-	//player.render();
-	/*world.renderPlayer(camera);
-	world.renderBlocks(renderBoundings);
-	world.renderPenguins(renderBoundings);*/
-
-	if (st == TITLE) { RenderTitle(TitleCam, player2Cam, time); }
+	if (st == TITLE) { RenderTitle(TitleCam, time, "data/Vikinguinos.png"); }
+	else if (st == HOW_TO_PLAY) { RenderTitle(TitleCam, time, "data/GUI/how_to_play.png"); }
+	else if (st == TUTORIAL) { RenderTitle(TitleCam, time, "data/GUI/controls.png"); }
 	else {
-		RenderFirstCam(camera, player2Cam, time);
-		RenderSecondCam(camera, player2Cam, time);
+		RenderFirstCam(camera, time);
+		RenderSecondCam(player2Cam, time);
 	}
-
-	//disable shader
-	//shader->disable();
-
-	
 
 	//Draw the floor grid
 	drawGrid();
 
 	//render the FPS, Draw Calls, etc
-	//drawText(20, 2, getGPUStats(), Vector3(1, 1, 1), 2);
 
 	//swap between front buffer and back buffer
 	SDL_GL_SwapWindow(this->window);
@@ -377,17 +382,23 @@ void Game::render(void)
 void Game::update(double seconds_elapsed)
 {
 	if (st == TITLE) {
-		if (Input::isKeyPressed(SDL_SCANCODE_W) || Input::isKeyPressed(SDL_SCANCODE_UP)) { st = GAME; };
+		if (Input::wasKeyPressed(SDL_SCANCODE_W) || Input::wasKeyPressed(SDL_SCANCODE_UP)) { st = HOW_TO_PLAY; };
 
 		TitleCam->rotate(0.005f, Vector3(0.0f, -1.0f, 0.0f));
 	}
-	else if (st == END) {
-
+	else if (st == HOW_TO_PLAY) {
+		if (Input::wasKeyPressed(SDL_SCANCODE_W) || Input::wasKeyPressed(SDL_SCANCODE_UP)) { st = TUTORIAL; };
 	}
-	else {
+	else if (st == TUTORIAL) {
+		if (Input::wasKeyPressed(SDL_SCANCODE_W) || Input::wasKeyPressed(SDL_SCANCODE_UP)) { st = GAME; };
+	}
+	else if (st == END) {
+		if (Input::wasKeyPressed(SDL_SCANCODE_W) || Input::wasKeyPressed(SDL_SCANCODE_UP)) { world.replay(); st = GAME; };
+	}
+	else if (st == GAME) {
 		//example
 		angle += (float)seconds_elapsed * 10.0f;
-		if (world.game_time > 230) { st = END; }
+		if (world.game_time > 10) { st = END; }
 		//mouse input to rotate the cam
 		if ((Input::mouse_state & SDL_BUTTON_LEFT) || mouse_locked) //is left button pressed?
 		{
@@ -465,12 +476,9 @@ void Game::update(double seconds_elapsed)
 			float rot_speed2 = player2.rot_speed * elapsed_time;
 			float character_radius2 = 0.5;
 
-			//player.model.rotate(player.yaw * DEG2RAD, Vector3(0, 1, 0));
-
 			Vector3& player2Front = player2.model.rotateVector(Vector3(0.0f, 0.0f, -1.0f));
 			Vector3& player2Right = player2.model.rotateVector(Vector3(1.0f, 0.0f, 0.0f));
 
-			//Vector3 playerSpeed2;
 			if (!player2.stunned) {
 				player2.playerSpeed = Vector3(0, 0, 0);
 				if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT)) speed2 *= 2; //move faster with left shift
