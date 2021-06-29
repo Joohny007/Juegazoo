@@ -199,7 +199,10 @@ void RenderFirstCam(Camera* camera, Camera* player2Cam, float time_float)
 		y = Game::instance->window_height - (Game::instance->window_height - 190);
 		GUI(x, y, 520, 190, "data/GUI/stunned.png");
 	}
-	drawText(x2-300, 20, "SCORE =" + player1.scoreToString(), Vector3(1, 1, 1), 6);
+	drawText(x2 - 300, 20, "SCORE =" + player1.scoreToString(), Vector3(0, 0, 1), 6);
+	if (free_camera) {
+		drawText((Game::instance->window_width / 2) - 200, Game::instance->window_height / 2 - 50, "PAUSE", Vector3(0, 0.098, 0.098), 13);
+	}
 	if (st == END) {
 		if (player1.score > player2.score) { drawText(x2 - 300, 20, "YOU WIN" + player2.scoreToString(), Vector3(1, 1, 1), 6); }
 		else if (player1.score < player2.score) { drawText(x2 - 300, 20, "YOU LOSE" + player2.scoreToString(), Vector3(1, 1, 1), 6); }
@@ -255,7 +258,10 @@ void RenderSecondCam(Camera* camera, Camera* player2Cam, float time_float)
 		y = Game::instance->window_height - (Game::instance->window_height - 190);
 		GUI(x, y, 520, 190, "data/GUI/stunned.png");
 	}
-	drawText(x2-300, 20, "SCORE =" + player2.scoreToString(), Vector3(1, 1, 1), 6);
+	drawText(x2 - 300, 20, "SCORE =" + player2.scoreToString(), Vector3(1, 0, 0), 6);
+	if (free_camera) {
+		drawText((Game::instance->window_width / 2) - 200, Game::instance->window_height / 2 - 50, "PAUSE", Vector3(0, 0.098, 0.098), 13);
+	}
 	if (st == END) {
 		if (player2.score > player1.score){ drawText(x2 - 300, 20, "YOU WIN" + player2.scoreToString(), Vector3(1, 1, 1), 6); }
 		else if (player2.score < player1.score) { drawText(x2 - 300, 20, "YOU LOSE" + player2.scoreToString(), Vector3(1, 1, 1), 6); }
@@ -336,7 +342,7 @@ void Game::render(void)
 	drawGrid();
 
 	//render the FPS, Draw Calls, etc
-	drawText(20, 2, getGPUStats(), Vector3(1, 1, 1), 2);
+	//drawText(20, 2, getGPUStats(), Vector3(1, 1, 1), 2);
 
 	//swap between front buffer and back buffer
 	SDL_GL_SwapWindow(this->window);
@@ -550,6 +556,7 @@ void Game::update(double seconds_elapsed)
 				for (int i = 0; i < world.blocks.size(); i++) {
 					if (world.blocks[i].fallen == false) {
 						player1.pos = world.blocks[i].model.getTranslation();
+						player1.score--;
 						break;
 					}
 				}
@@ -558,6 +565,7 @@ void Game::update(double seconds_elapsed)
 				for (int i = 0; i < world.blocks.size(); i++) {
 					if (world.blocks[i].fallen == false) {
 						player2.pos = world.blocks[i].model.getTranslation();
+						player2.score--;
 						break;
 					}
 				}
