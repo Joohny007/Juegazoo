@@ -20,6 +20,8 @@ public:
     bool fallen;
     bool isMoving;
     float acumulative;
+    bool inBlock23;
+    bool inBlock32;
     Vector3 penguinSpeed;
     Matrix44 model;
     Mesh* mesh;
@@ -28,7 +30,6 @@ public:
     Vector4 color;
     Vector3 pos;
 
-    Penguin();
 	Penguin(int id, Vector3 pos);
 
     void inicialize();

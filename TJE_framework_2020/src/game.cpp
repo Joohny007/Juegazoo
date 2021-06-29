@@ -194,6 +194,11 @@ void RenderFirstCam(Camera* camera, Camera* player2Cam, float time_float)
 	float x2 = Game::instance->window_width - 80;
 	float y2 = Game::instance->window_height - 50;
 	GUI( x2, y2, 120 , 70, "data/GUI/medallist.png");
+	if (player1.stunned) {
+		x = Game::instance->window_width / 2;
+		y = Game::instance->window_height - (Game::instance->window_height - 190);
+		GUI(x, y, 520, 190, "data/GUI/stunned.png");
+	}
 	drawText(x2-300, 20, "SCORE =" + player1.scoreToString(), Vector3(1, 1, 1), 6);
 }
 
@@ -240,7 +245,11 @@ void RenderSecondCam(Camera* camera, Camera* player2Cam, float time_float)
 	float x2 = Game::instance->window_width - 80;
 	float y2 = Game::instance->window_height - 50;
 	GUI(x2, y2, 120, 70, "data/GUI/medallist2.png");
-
+	if (player2.stunned) {
+		x = Game::instance->window_width / 2 ;
+		y = Game::instance->window_height - (Game::instance->window_height - 190);
+		GUI(x, y, 520, 190, "data/GUI/stunned.png");
+	}
 	drawText(x2-300, 20, "SCORE =" + player2.scoreToString(), Vector3(1, 1, 1), 6);
 
 }

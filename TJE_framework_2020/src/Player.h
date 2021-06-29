@@ -7,7 +7,6 @@
 #include "shader.h"
 #include "Penguin.h"
 
-#define MAX_PENGUINS 300
 class Player
 {
 public:
@@ -33,7 +32,6 @@ public:
     float kick_cooldown;
     bool stunned;
     int score;
-    std::vector<Penguin> penguins;
     Vector3 pos;
     Matrix44 model;
     Matrix44 rot;

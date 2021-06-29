@@ -10,16 +10,10 @@ Penguin::Penguin(int id, Vector3 pos)
 	this->fallen = false;
 	this->isMoving = false;
 	this->acumulative = 0.0f;
+	this->inBlock23 = false;
+	this->inBlock32 = false;
 }
 
-Penguin::Penguin()
-{
-	this->speed = 10.0f;
-	this->dir = BACKWARD;
-	this->fallen = false;
-	this->isMoving = false;
-	this->acumulative = 0.0f;
-}
 
 void Penguin::inicialize()
 {

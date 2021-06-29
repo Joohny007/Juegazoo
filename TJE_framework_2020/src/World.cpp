@@ -777,20 +777,6 @@ void World::playSound(const char* sound)
 	BASS_ChannelPlay(hSampleChannel, true);
 }
 
-bool World::checkPenguinInBlockList(Player& player)
-{
-	for (int j = 0; j < penguins.size(); j++) {
-		Penguin& penguin = penguins[j];
-
-		for (int k = 0; k < player.penguins.size(); k++) {
-			if (penguin.id == player.penguins[k].id) {
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
 void World::calculateScore()
 {
 	Vector3 player1WinBlockPos = blocks[32].model.getTranslation();
@@ -799,33 +785,35 @@ void World::calculateScore()
 	for (int j = 0; j < penguins.size(); j++) {
 		Penguin& penguin = penguins[j];
 
-		if (!checkPenguinInBlockList(players[0])) { //si no está lo añadimos
-			if ((((player1WinBlockPos.x - 3.25) <= (penguin.pos.x + .25)) && ((penguin.pos.x + .25) <= (player1WinBlockPos.x + 3.25)) && ((player1WinBlockPos.z - 2.45) <= (penguin.pos.z + .25)) && ((penguin.pos.z + .25) <= (player1WinBlockPos.z + 2.45)))) { players[0].score++; players[0].penguins.push_back(penguin); continue; }
-			if (((player1WinBlockPos.x - 3.25) <= (penguin.pos.x + .25)) && ((penguin.pos.x + .25) <= (player1WinBlockPos.x + 3.25)) && ((player1WinBlockPos.z - 2.45) <= (penguin.pos.z - .25)) && ((penguin.pos.z - .25) <= (player1WinBlockPos.z + 2.45))) { players[0].score++; players[0].penguins.push_back(penguin); continue; }
-			if (((player1WinBlockPos.x - 3.25) <= (penguin.pos.x - .25)) && ((penguin.pos.x - .25) <= (player1WinBlockPos.x + 3.25)) && ((player1WinBlockPos.z - 2.45) <= (penguin.pos.z + .25)) && ((penguin.pos.z + .25) <= (player1WinBlockPos.z + 2.45))) { players[0].score++; players[0].penguins.push_back(penguin); continue; }
-			if (((player1WinBlockPos.x - 3.25) <= (penguin.pos.x - .25)) && ((penguin.pos.x - .25) <= (player1WinBlockPos.x + 3.25)) && ((player1WinBlockPos.z - 2.45) <= (penguin.pos.z - .25)) && ((penguin.pos.z - .25) <= (player1WinBlockPos.z + 2.45))) { players[0].score++; players[0].penguins.push_back(penguin); continue; }
+		if (!penguin.inBlock32) { //si no está lo añadimos
+			if ((((player1WinBlockPos.x - 3.25) <= (penguin.pos.x + .25)) && ((penguin.pos.x + .25) <= (player1WinBlockPos.x + 3.25)) && ((player1WinBlockPos.z - 2.45) <= (penguin.pos.z + .25)) && ((penguin.pos.z + .25) <= (player1WinBlockPos.z + 2.45)))) { players[0].score++; penguin.inBlock32 = true; continue; }
+			if (((player1WinBlockPos.x - 3.25) <= (penguin.pos.x + .25)) && ((penguin.pos.x + .25) <= (player1WinBlockPos.x + 3.25)) && ((player1WinBlockPos.z - 2.45) <= (penguin.pos.z - .25)) && ((penguin.pos.z - .25) <= (player1WinBlockPos.z + 2.45))) { players[0].score++; penguin.inBlock32 = true;  continue; }
+			if (((player1WinBlockPos.x - 3.25) <= (penguin.pos.x - .25)) && ((penguin.pos.x - .25) <= (player1WinBlockPos.x + 3.25)) && ((player1WinBlockPos.z - 2.45) <= (penguin.pos.z + .25)) && ((penguin.pos.z + .25) <= (player1WinBlockPos.z + 2.45))) { players[0].score++; penguin.inBlock32 = true; continue; }
+			if (((player1WinBlockPos.x - 3.25) <= (penguin.pos.x - .25)) && ((penguin.pos.x - .25) <= (player1WinBlockPos.x + 3.25)) && ((player1WinBlockPos.z - 2.45) <= (penguin.pos.z - .25)) && ((penguin.pos.z - .25) <= (player1WinBlockPos.z + 2.45))) { players[0].score++; penguin.inBlock32 = true; continue; }
 		}
 
-		if (checkPenguinInBlockList(players[0])) { //si está en la lista pero no en el bloque, lo sacamos y restamos
-			if ((((player1WinBlockPos.x - 3.25) <= (penguin.pos.x + .25)) && ((penguin.pos.x + .25) <= (player1WinBlockPos.x + 3.25)) && ((player1WinBlockPos.z - 2.45) <= (penguin.pos.z + .25)) && ((penguin.pos.z + .25) <= (player1WinBlockPos.z + 2.45)))) { players[0].penguins.erase(penguin); continue; }
+		if (penguin.inBlock32) { //si está en la lista pero no en el bloque, lo sacamos y restamos
+			if ((((player1WinBlockPos.x - 3.25) <= (penguin.pos.x + .25)) && ((penguin.pos.x + .25) <= (player1WinBlockPos.x + 3.25)) && ((player1WinBlockPos.z - 2.45) <= (penguin.pos.z + .25)) && ((penguin.pos.z + .25) <= (player1WinBlockPos.z + 2.45)))) { continue; }
 			if (((player1WinBlockPos.x - 3.25) <= (penguin.pos.x + .25)) && ((penguin.pos.x + .25) <= (player1WinBlockPos.x + 3.25)) && ((player1WinBlockPos.z - 2.45) <= (penguin.pos.z - .25)) && ((penguin.pos.z - .25) <= (player1WinBlockPos.z + 2.45))) {  continue; }
 			if (((player1WinBlockPos.x - 3.25) <= (penguin.pos.x - .25)) && ((penguin.pos.x - .25) <= (player1WinBlockPos.x + 3.25)) && ((player1WinBlockPos.z - 2.45) <= (penguin.pos.z + .25)) && ((penguin.pos.z + .25) <= (player1WinBlockPos.z + 2.45))) {  continue; }
 			if (((player1WinBlockPos.x - 3.25) <= (penguin.pos.x - .25)) && ((penguin.pos.x - .25) <= (player1WinBlockPos.x + 3.25)) && ((player1WinBlockPos.z - 2.45) <= (penguin.pos.z - .25)) && ((penguin.pos.z - .25) <= (player1WinBlockPos.z + 2.45))) {  continue; }
+			penguin.inBlock32 = false;
 			players[0].score--;
 		}
 
-		if (!checkPenguinInBlockList(players[1])) {
-			if ((((player2WinBlockPos.x - 3.25) <= (penguin.pos.x + .25)) && ((penguin.pos.x + .25) <= (player2WinBlockPos.x + 3.25)) && ((player2WinBlockPos.z - 2.45) <= (penguin.pos.z + .25)) && ((penguin.pos.z + .25) <= (player2WinBlockPos.z + 2.45)))) { players[1].score++;  players[1].penguins.push_back(penguin); continue; }
-			if (((player2WinBlockPos.x - 3.25) <= (penguin.pos.x + .25)) && ((penguin.pos.x + .25) <= (player2WinBlockPos.x + 3.25)) && ((player2WinBlockPos.z - 2.45) <= (penguin.pos.z - .25)) && ((penguin.pos.z - .25) <= (player2WinBlockPos.z + 2.45))) { players[1].score++;  players[1].penguins.push_back(penguin); continue; }
-			if (((player2WinBlockPos.x - 3.25) <= (penguin.pos.x - .25)) && ((penguin.pos.x - .25) <= (player2WinBlockPos.x + 3.25)) && ((player2WinBlockPos.z - 2.45) <= (penguin.pos.z + .25)) && ((penguin.pos.z + .25) <= (player2WinBlockPos.z + 2.45))) { players[1].score++;  players[1].penguins.push_back(penguin); continue; }
-			if (((player2WinBlockPos.x - 3.25) <= (penguin.pos.x - .25)) && ((penguin.pos.x - .25) <= (player2WinBlockPos.x + 3.25)) && ((player2WinBlockPos.z - 2.45) <= (penguin.pos.z - .25)) && ((penguin.pos.z - .25) <= (player2WinBlockPos.z + 2.45))) { players[1].score++;  players[1].penguins.push_back(penguin); continue; }
+		if (!penguin.inBlock23) {
+			if ((((player2WinBlockPos.x - 3.25) <= (penguin.pos.x + .25)) && ((penguin.pos.x + .25) <= (player2WinBlockPos.x + 3.25)) && ((player2WinBlockPos.z - 2.45) <= (penguin.pos.z + .25)) && ((penguin.pos.z + .25) <= (player2WinBlockPos.z + 2.45)))) { players[1].score++; penguin.inBlock23 = true; continue; }
+			if (((player2WinBlockPos.x - 3.25) <= (penguin.pos.x + .25)) && ((penguin.pos.x + .25) <= (player2WinBlockPos.x + 3.25)) && ((player2WinBlockPos.z - 2.45) <= (penguin.pos.z - .25)) && ((penguin.pos.z - .25) <= (player2WinBlockPos.z + 2.45))) { players[1].score++; penguin.inBlock23 = true; continue; }
+			if (((player2WinBlockPos.x - 3.25) <= (penguin.pos.x - .25)) && ((penguin.pos.x - .25) <= (player2WinBlockPos.x + 3.25)) && ((player2WinBlockPos.z - 2.45) <= (penguin.pos.z + .25)) && ((penguin.pos.z + .25) <= (player2WinBlockPos.z + 2.45))) { players[1].score++; penguin.inBlock23 = true; continue; }
+			if (((player2WinBlockPos.x - 3.25) <= (penguin.pos.x - .25)) && ((penguin.pos.x - .25) <= (player2WinBlockPos.x + 3.25)) && ((player2WinBlockPos.z - 2.45) <= (penguin.pos.z - .25)) && ((penguin.pos.z - .25) <= (player2WinBlockPos.z + 2.45))) { players[1].score++; penguin.inBlock23 = true; continue; }
 		}
 
-		if (checkPenguinInBlockList(players[1])) {
+		if (penguin.inBlock23) {
 			if ((((player2WinBlockPos.x - 3.25) <= (penguin.pos.x + .25)) && ((penguin.pos.x + .25) <= (player2WinBlockPos.x + 3.25)) && ((player2WinBlockPos.z - 2.45) <= (penguin.pos.z + .25)) && ((penguin.pos.z + .25) <= (player2WinBlockPos.z + 2.45)))) { continue; }
 			if (((player2WinBlockPos.x - 3.25) <= (penguin.pos.x + .25)) && ((penguin.pos.x + .25) <= (player2WinBlockPos.x + 3.25)) && ((player2WinBlockPos.z - 2.45) <= (penguin.pos.z - .25)) && ((penguin.pos.z - .25) <= (player2WinBlockPos.z + 2.45))) { continue; }
 			if (((player2WinBlockPos.x - 3.25) <= (penguin.pos.x - .25)) && ((penguin.pos.x - .25) <= (player2WinBlockPos.x + 3.25)) && ((player2WinBlockPos.z - 2.45) <= (penguin.pos.z + .25)) && ((penguin.pos.z + .25) <= (player2WinBlockPos.z + 2.45))) { continue; }
 			if (((player2WinBlockPos.x - 3.25) <= (penguin.pos.x - .25)) && ((penguin.pos.x - .25) <= (player2WinBlockPos.x + 3.25)) && ((player2WinBlockPos.z - 2.45) <= (penguin.pos.z - .25)) && ((penguin.pos.z - .25) <= (player2WinBlockPos.z + 2.45))) { continue; }
+			penguin.inBlock23 = false;
 			players[1].score--;
 		}
 	}

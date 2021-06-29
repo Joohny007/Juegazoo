@@ -16,7 +16,6 @@ Player::Player()
 	this->stun_counter = 0.0f;
 	this->kick_cooldown = 3.5f;
 	this->score = 0;
-	this->penguins.resize(MAX_PENGUINS);
 }
 Player::Player(int id)
 {
@@ -36,7 +35,6 @@ Player::Player(int id)
 	this->stun_counter = 0.0f;
 	this->kick_cooldown = 3.5f;
 	this->score = 0;
-	this->penguins.resize(MAX_PENGUINS);
 }
 
 void Player::setPos(Vector3 pos)

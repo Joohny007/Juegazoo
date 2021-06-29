@@ -64,6 +64,5 @@ public:
 	void stunPlayer2(Vector3& targetPos, float time);
 	void renderGUI(Camera* cam);
 	void playSound(const char* sound);
-	bool checkPenguinInBlockList(Player& player);
 	void calculateScore();
 };
