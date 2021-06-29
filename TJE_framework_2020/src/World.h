@@ -27,7 +27,6 @@ public:
 	std::vector<Block> blocks;
 	std::vector<Penguin> penguins;
 	std::vector<Player> players;
-	Player player;
 	float game_time;
 	int pingu_counter;
 	int max_penguins;
@@ -65,5 +64,6 @@ public:
 	void stunPlayer2(Vector3& targetPos, float time);
 	void renderGUI(Camera* cam);
 	void playSound(const char* sound);
+	bool checkPenguinInBlockList(Player& player);
 	void calculateScore();
 };

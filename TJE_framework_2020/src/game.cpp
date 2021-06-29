@@ -194,6 +194,7 @@ void RenderFirstCam(Camera* camera, Camera* player2Cam, float time_float)
 	float x2 = Game::instance->window_width - 80;
 	float y2 = Game::instance->window_height - 50;
 	GUI( x2, y2, 120 , 70, "data/GUI/medallist.png");
+	drawText(x2-300, 20, "SCORE =" + player1.scoreToString(), Vector3(1, 1, 1), 6);
 }
 
 void RenderSecondCam(Camera* camera, Camera* player2Cam, float time_float)
@@ -239,6 +240,8 @@ void RenderSecondCam(Camera* camera, Camera* player2Cam, float time_float)
 	float x2 = Game::instance->window_width - 80;
 	float y2 = Game::instance->window_height - 50;
 	GUI(x2, y2, 120, 70, "data/GUI/medallist2.png");
+
+	drawText(x2-300, 20, "SCORE =" + player2.scoreToString(), Vector3(1, 1, 1), 6);
 
 }
 
@@ -348,6 +351,8 @@ void Game::update(double seconds_elapsed)
 			if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) camera->move(Vector3(-1.0f, 0.0f, 0.0f) * speed);
 		}
 		else {
+			world.calculateScore();
+
 			float speed1 = player1.speed * elapsed_time;
 			float rot_speed1 = player1.rot_speed * elapsed_time;
 			float character_radius1 = 0.5;

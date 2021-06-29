@@ -12,6 +12,15 @@ Penguin::Penguin(int id, Vector3 pos)
 	this->acumulative = 0.0f;
 }
 
+Penguin::Penguin()
+{
+	this->speed = 10.0f;
+	this->dir = BACKWARD;
+	this->fallen = false;
+	this->isMoving = false;
+	this->acumulative = 0.0f;
+}
+
 void Penguin::inicialize()
 {
 	//enable shader and pass uniforms

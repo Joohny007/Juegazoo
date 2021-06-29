@@ -28,6 +28,7 @@ public:
     Vector4 color;
     Vector3 pos;
 
+    Penguin();
 	Penguin(int id, Vector3 pos);
 
     void inicialize();

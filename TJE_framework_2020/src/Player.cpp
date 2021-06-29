@@ -15,7 +15,8 @@ Player::Player()
 	this->stunned = false;
 	this->stun_counter = 0.0f;
 	this->kick_cooldown = 3.5f;
-	this->score = 0; 
+	this->score = 0;
+	this->penguins.resize(MAX_PENGUINS);
 }
 Player::Player(int id)
 {
@@ -35,6 +36,7 @@ Player::Player(int id)
 	this->stun_counter = 0.0f;
 	this->kick_cooldown = 3.5f;
 	this->score = 0;
+	this->penguins.resize(MAX_PENGUINS);
 }
 
 void Player::setPos(Vector3 pos)
@@ -80,9 +82,8 @@ void Player::render(Camera* camera)
 	shader->disable();
 }
 
-bool Player::penguinCollision()
+
+std::string Player::scoreToString()
 {
-	/*if (abs(center.x - bullet.center.x) > (width / 2) + (bullet.width / 2)) return false;
-	if (abs(center.y - bullet.center.y) > (height / 2) + (bullet.height / 2)) return false;*/
-	return true;
+	return std::to_string(score);
 }
