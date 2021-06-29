@@ -14,7 +14,7 @@
 #include <ctime>
 #include "extra/bass.h"
 
-//some globals JOAN ERES UNA BELLISIMA PERSONA ESPERO QUE TE VAYA TODO BIEN EN LA VIDA PRECIOSO
+//some globals JOAN ERES UNA BELLISIMA PERSONA ESPERO QUE TE VAYA TODO BIEN EN LA VIDA PRECIOSO QUE GRANDE OJALA REGALRTE UN DURUM
 Mesh* mesh = NULL;
 Mesh* mesh2 = NULL;
 Mesh* mesh3 = NULL;
@@ -200,6 +200,11 @@ void RenderFirstCam(Camera* camera, Camera* player2Cam, float time_float)
 		GUI(x, y, 520, 190, "data/GUI/stunned.png");
 	}
 	drawText(x2-300, 20, "SCORE =" + player1.scoreToString(), Vector3(1, 1, 1), 6);
+	if (st == END) {
+		if (player1.score > player2.score) { drawText(x2 - 300, 20, "YOU WIN" + player2.scoreToString(), Vector3(1, 1, 1), 6); }
+		else if (player1.score < player2.score) { drawText(x2 - 300, 20, "YOU LOSE" + player2.scoreToString(), Vector3(1, 1, 1), 6); }
+		else { drawText(x2 - 300, 20, "DRAW" + player2.scoreToString(), Vector3(1, 1, 1), 6); }
+	}
 }
 
 void RenderSecondCam(Camera* camera, Camera* player2Cam, float time_float)
@@ -251,6 +256,11 @@ void RenderSecondCam(Camera* camera, Camera* player2Cam, float time_float)
 		GUI(x, y, 520, 190, "data/GUI/stunned.png");
 	}
 	drawText(x2-300, 20, "SCORE =" + player2.scoreToString(), Vector3(1, 1, 1), 6);
+	if (st == END) {
+		if (player2.score > player1.score){ drawText(x2 - 300, 20, "YOU WIN" + player2.scoreToString(), Vector3(1, 1, 1), 6); }
+		else if (player2.score < player1.score) { drawText(x2 - 300, 20, "YOU LOSE" + player2.scoreToString(), Vector3(1, 1, 1), 6); }
+		else{ drawText(x2 - 300, 20, "DRAW" + player2.scoreToString(), Vector3(1, 1, 1), 6); }
+	}
 
 }
 
@@ -339,10 +349,13 @@ void Game::update(double seconds_elapsed)
 
 		TitleCam->rotate(0.005f, Vector3(0.0f, -1.0f, 0.0f));
 	}
+	else if (st == END) {
+
+	}
 	else {
 		//example
 		angle += (float)seconds_elapsed * 10.0f;
-
+		if (world.game_time > 230) { st = END; }
 		//mouse input to rotate the cam
 		if ((Input::mouse_state & SDL_BUTTON_LEFT) || mouse_locked) //is left button pressed?
 		{
