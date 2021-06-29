@@ -33,6 +33,8 @@ float mouse_speed = 10.0f;
 
 enum stages {
 	TITLE,
+	TUTORIAL,
+	HOW_TO_PLAY,
 	GAME,
 	END
 };
@@ -204,9 +206,21 @@ void RenderFirstCam(Camera* camera, Camera* player2Cam, float time_float)
 		drawText((Game::instance->window_width / 2) - 200, Game::instance->window_height / 2 - 50, "PAUSE", Vector3(0, 0.098, 0.098), 13);
 	}
 	if (st == END) {
-		if (player1.score > player2.score) { drawText(x2 - 300, 20, "YOU WIN" + player2.scoreToString(), Vector3(1, 1, 1), 6); }
-		else if (player1.score < player2.score) { drawText(x2 - 300, 20, "YOU LOSE" + player2.scoreToString(), Vector3(1, 1, 1), 6); }
-		else { drawText(x2 - 300, 20, "DRAW" + player2.scoreToString(), Vector3(1, 1, 1), 6); }
+		if (player1.score > player2.score) {
+			float x2 = Game::instance->window_width - 400;
+			float y2 = Game::instance->window_height - 300;
+			GUI(x2, y2, 800, 500, "data/GUI/YOUWIN.png");
+		}
+		else if (player1.score < player2.score) {
+			float x2 = Game::instance->window_width - 400;
+			float y2 = Game::instance->window_height - 300;
+			GUI(x2, y2, 800, 500, "data/GUI/YOULOSE.png");
+		}
+		else {
+			float x2 = Game::instance->window_width - 400;
+			float y2 = Game::instance->window_height - 300;
+			GUI(x2, y2, 800, 500, "data/GUI/DRAW.png");
+		}
 	}
 }
 
@@ -263,9 +277,21 @@ void RenderSecondCam(Camera* camera, Camera* player2Cam, float time_float)
 		drawText((Game::instance->window_width / 2) - 200, Game::instance->window_height / 2 - 50, "PAUSE", Vector3(0, 0.098, 0.098), 13);
 	}
 	if (st == END) {
-		if (player2.score > player1.score){ drawText(x2 - 300, 20, "YOU WIN" + player2.scoreToString(), Vector3(1, 1, 1), 6); }
-		else if (player2.score < player1.score) { drawText(x2 - 300, 20, "YOU LOSE" + player2.scoreToString(), Vector3(1, 1, 1), 6); }
-		else{ drawText(x2 - 300, 20, "DRAW" + player2.scoreToString(), Vector3(1, 1, 1), 6); }
+		if (player2.score > player1.score) {
+			float x2 = Game::instance->window_width - 400;
+			float y2 = Game::instance->window_height - 300;
+			GUI(x2, y2, 800, 500, "data/GUI/YOUWIN.png");
+		}
+		else if (player2.score < player1.score) {
+			float x2 = Game::instance->window_width - 400;
+			float y2 = Game::instance->window_height - 300;
+			GUI(x2, y2, 800, 500, "data/GUI/YOULOSE.png");
+		}
+		else {
+			float x2 = Game::instance->window_width - 400;
+			float y2 = Game::instance->window_height - 300;
+			GUI(x2, y2, 800, 500, "data/GUI/DRAW.png");
+		}
 	}
 
 }
@@ -393,7 +419,7 @@ void Game::update(double seconds_elapsed)
 			//Vector3 playerSpeed;
 			if (!player1.stunned) {
 				player1.playerSpeed = Vector3(0, 0, 0);
-				if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT)) speed1 *= 10; //move faster with left shift
+				if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT)) speed1 *= 2; //move faster with left shift
 				if (Input::isKeyPressed(SDL_SCANCODE_W)) {
 					player1.playerSpeed = player1.playerSpeed + (player1Front * -speed1);
 					player1.dir = Player::type::FORWARD;
@@ -447,7 +473,7 @@ void Game::update(double seconds_elapsed)
 			//Vector3 playerSpeed2;
 			if (!player2.stunned) {
 				player2.playerSpeed = Vector3(0, 0, 0);
-				if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT)) speed2 *= 10; //move faster with left shift
+				if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT)) speed2 *= 2; //move faster with left shift
 				if (Input::isKeyPressed(SDL_SCANCODE_UP)) {
 					player2.playerSpeed = player2.playerSpeed + (player2Front * -speed2);
 					player2.dir = Player::type::FORWARD;

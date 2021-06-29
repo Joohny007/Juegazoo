@@ -62,7 +62,6 @@ public:
 	void moving2(Camera* player2Cam, Shader* skinning, Shader* shader, Texture* textureMesh, Animation* anim, float time_float);
 	void stunPlayer1(Vector3& targetPos, float time);
 	void stunPlayer2(Vector3& targetPos, float time);
-	void renderGUI(Camera* cam);
 	void playSound(const char* sound);
 	void calculateScore();
 };

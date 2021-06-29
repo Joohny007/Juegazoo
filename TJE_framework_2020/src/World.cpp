@@ -384,18 +384,16 @@ void World::kickAnimation1(Camera* camera, Shader* skinning, Shader* shader, Tex
 			if (time_float - player1.kick_counter >= player1.kick_cooldown) {
 				player1.kick = false;
 			}
-			else {
-				shader->enable();
+			shader->enable();
 
-				shader->setUniform("u_color", Vector4(1, 1, 1, 1));
-				shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
-				shader->setUniform("u_texture", textureMesh, 0);
-				shader->setUniform("u_model", Matrix44());
-				shader->setUniform("u_time", time_float);
+			shader->setUniform("u_color", Vector4(1, 1, 1, 1));
+			shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
+			shader->setUniform("u_texture", textureMesh, 0);
+			shader->setUniform("u_model", Matrix44());
+			shader->setUniform("u_time", time_float);
 
-				renderPlayer1(camera);
-				shader->disable();
-			}
+			renderPlayer1(camera);
+			shader->disable();
 		}
 	}
 	else {
@@ -432,18 +430,17 @@ void World::kickAnimation1(Camera* camera, Shader* skinning, Shader* shader, Tex
 			if (time_float - player2.kick_counter >= player2.kick_cooldown) {
 				player2.kick = false;
 			}
-			else {
-				shader->enable();
+			shader->enable();
 
-				shader->setUniform("u_color", Vector4(1, 1, 1, 1));
-				shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
-				shader->setUniform("u_texture", textureMesh, 0);
-				shader->setUniform("u_model", Matrix44());
-				shader->setUniform("u_time", time_float);
+			shader->setUniform("u_color", Vector4(1, 1, 1, 1));
+			shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
+			shader->setUniform("u_texture", textureMesh, 0);
+			shader->setUniform("u_model", Matrix44());
+			shader->setUniform("u_time", time_float);
 
-				renderPlayer2(camera);
-				shader->disable();
-			}
+			renderPlayer2(camera);
+			shader->disable();
+
 		}
 	}
 	else {
@@ -483,18 +480,17 @@ void World::kickAnimation2(Camera* player2Cam, Shader* skinning, Shader* shader,
 			if (time_float - player2.kick_counter >= player2.kick_cooldown) {
 				player2.kick = false;
 			}
-			else {
-				shader->enable();
+			shader->enable();
 
-				shader->setUniform("u_color", Vector4(1, 1, 1, 1));
-				shader->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
-				shader->setUniform("u_texture", textureMesh, 0);
-				shader->setUniform("u_model", Matrix44());
-				shader->setUniform("u_time", time_float);
+			shader->setUniform("u_color", Vector4(1, 1, 1, 1));
+			shader->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
+			shader->setUniform("u_texture", textureMesh, 0);
+			shader->setUniform("u_model", Matrix44());
+			shader->setUniform("u_time", time_float);
 
-				renderPlayer2(player2Cam);
-				shader->disable();
-			}
+			renderPlayer2(player2Cam);
+			shader->disable();
+
 		}
 	}
 	else {
@@ -531,18 +527,16 @@ void World::kickAnimation2(Camera* player2Cam, Shader* skinning, Shader* shader,
 			if (time_float - player1.kick_counter >= player1.kick_cooldown) {
 				player1.kick = false;
 			}
-			else {
-				shader->enable();
+			shader->enable();
 
-				shader->setUniform("u_color", Vector4(1, 1, 1, 1));
-				shader->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
-				shader->setUniform("u_texture", textureMesh, 0);
-				shader->setUniform("u_model", Matrix44());
-				shader->setUniform("u_time", time_float);
+			shader->setUniform("u_color", Vector4(1, 1, 1, 1));
+			shader->setUniform("u_viewprojection", player2Cam->viewprojection_matrix);
+			shader->setUniform("u_texture", textureMesh, 0);
+			shader->setUniform("u_model", Matrix44());
+			shader->setUniform("u_time", time_float);
 
-				renderPlayer1(player2Cam);
-				shader->disable();
-			}
+			renderPlayer1(player2Cam);
+			shader->disable();
 		}
 	}
 	else {
@@ -719,7 +713,7 @@ void World::stunPlayer1(Vector3& player2_targetPos, float time)
 			player1.stunned = false;
 		}
 	}
-	else if (player2.kick) {
+	else if (time - player2.kick_counter <= 1) {
 		Vector3 characterTargetCenter = player2_targetPos + Vector3(0, 1, 0);
 		Vector3 coll;
 		Vector3 collmore;
@@ -727,6 +721,7 @@ void World::stunPlayer1(Vector3& player2_targetPos, float time)
 		if (player1.mesh->testSphereCollision(player1.model, characterTargetCenter, 1.2, coll, collmore)) {
 			player1.stunned = true;
 			player1.stun_counter = time;
+			playSound("data/wav/oof.wav");
 		}
 	}
 }
@@ -740,7 +735,7 @@ void World::stunPlayer2(Vector3& player1_targetPos, float time)
 			player2.stunned = false;
 		}
 	}
-	else if (player1.kick) {
+	else if (time - player1.kick_counter <= 1) {
 		Vector3 characterTargetCenter = player1_targetPos + Vector3(0, 1, 0);
 		Vector3 coll;
 		Vector3 collmore;
@@ -748,13 +743,9 @@ void World::stunPlayer2(Vector3& player1_targetPos, float time)
 		if (player2.mesh->testSphereCollision(player2.model, characterTargetCenter, 1.2, coll, collmore)) {
 			player2.stunned = true;
 			player2.stun_counter = time;
+			playSound("data/wav/oof.wav");
 		}
 	}
-}
-
-void World::renderGUI(Camera* cam)
-{
-	
 }
 
 void World::playSound(const char* sound)
