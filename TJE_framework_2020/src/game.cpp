@@ -373,8 +373,6 @@ void Game::render(void)
 	//Draw the floor grid
 	drawGrid();
 
-	//render the FPS, Draw Calls, etc
-
 	//swap between front buffer and back buffer
 	SDL_GL_SwapWindow(this->window);
 }
@@ -398,7 +396,7 @@ void Game::update(double seconds_elapsed)
 	else if (st == GAME) {
 		//example
 		angle += (float)seconds_elapsed * 10.0f;
-		if (world.game_time > 220) { st = END; }
+		if (world.game_time > 230) { st = END; }
 		//mouse input to rotate the cam
 		if ((Input::mouse_state & SDL_BUTTON_LEFT) || mouse_locked) //is left button pressed?
 		{
@@ -467,9 +465,6 @@ void Game::update(double seconds_elapsed)
 					}
 				}
 
-				if (Input::isKeyPressed(SDL_SCANCODE_Q)) player1.yaw -= rot_speed1;
-				if (Input::isKeyPressed(SDL_SCANCODE_E)) player1.yaw += rot_speed1;
-
 			}
 			//---------------------------------------------------------------------------------------------------------
 			float speed2 = player2.speed * elapsed_time;
@@ -517,9 +512,6 @@ void Game::update(double seconds_elapsed)
 						player2.moving = false;
 					}
 				}
-
-				if (Input::isKeyPressed(SDL_SCANCODE_I)) player2.yaw -= rot_speed2;
-				if (Input::isKeyPressed(SDL_SCANCODE_O)) player2.yaw += rot_speed2;
 			}
 
 			for (int i = 0; i < world.players.size(); i++) {
@@ -555,6 +547,7 @@ void Game::update(double seconds_elapsed)
 						player.pos = targetPos;
 					}
 				}
+
 				else {
 					if (player.pos.y - player.speed * elapsed_time > checker + 2) {
 						targetPos.y -= player.speed * elapsed_time;
