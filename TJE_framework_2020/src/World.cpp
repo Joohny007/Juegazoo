@@ -977,4 +977,5 @@ void World::replay() {
 	this->players[0].score = 0;
 	this->players[1].score = 0;
 	game_time = 0;
+	playSound("data/wav/Wellerman.wav");
 }

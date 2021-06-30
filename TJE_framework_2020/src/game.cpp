@@ -30,6 +30,7 @@ Animation* walk_anim_woman = NULL;
 float counter = 0.0f;
 float angle = 0;
 float mouse_speed = 10.0f;
+bool play = false;
 
 enum stages {
 	TITLE,
@@ -100,6 +101,8 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	//hide the cursor
 	SDL_ShowCursor(!mouse_locked); //hide or show the mouse
 	auto start_time = std::chrono::system_clock::now();
+
+	world.playSound("data/wav/Wellerman.wav");
 }
 
 void kickGUI(int x1, int x2, int x3, int x4, const char* s, bool player_kick) {
@@ -362,6 +365,7 @@ void Game::render(void)
 
 	if (!shader) return;
 
+	
 	if (st == TITLE) { RenderTitle(TitleCam, time, "data/Vikinguinos.png"); }
 	else if (st == HOW_TO_PLAY) { RenderTitle(TitleCam, time, "data/GUI/how_to_play.png"); }
 	else if (st == TUTORIAL) { RenderTitle(TitleCam, time, "data/GUI/controls.png"); }
@@ -369,7 +373,6 @@ void Game::render(void)
 		RenderFirstCam(camera, time);
 		RenderSecondCam(player2Cam, time);
 	}
-
 	//Draw the floor grid
 	drawGrid();
 
@@ -407,7 +410,6 @@ void Game::update(double seconds_elapsed)
 		if (free_camera) {
 			float speed = seconds_elapsed * mouse_speed; //the speed is defined by the seconds_elapsed so it goes constant
 			//async input to move the camera around
-			if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT)) speed *= 10; //move faster with left shift
 			if (Input::isKeyPressed(SDL_SCANCODE_W) || Input::isKeyPressed(SDL_SCANCODE_UP)) camera->move(Vector3(0.0f, 0.0f, 1.0f) * speed);
 			if (Input::isKeyPressed(SDL_SCANCODE_S) || Input::isKeyPressed(SDL_SCANCODE_DOWN)) camera->move(Vector3(0.0f, 0.0f, -1.0f) * speed);
 			if (Input::isKeyPressed(SDL_SCANCODE_A) || Input::isKeyPressed(SDL_SCANCODE_LEFT)) camera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
@@ -476,7 +478,6 @@ void Game::update(double seconds_elapsed)
 
 			if (!player2.stunned) {
 				player2.playerSpeed = Vector3(0, 0, 0);
-				if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT)) speed2 *= 2; //move faster with left shift
 				if (Input::isKeyPressed(SDL_SCANCODE_UP)) {
 					player2.playerSpeed = player2.playerSpeed + (player2Front * -speed2);
 					player2.dir = Player::type::FORWARD;
